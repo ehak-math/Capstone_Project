@@ -13,15 +13,7 @@ function toggleSidebar() {
     }
 }
 
-function setActive(element) {
-    // Remove 'active' class from all links
-    let links = document.querySelectorAll('.sidebar a');
-    links.forEach(function (link) {
-        link.classList.remove('active');
-    });
 
-    element.classList.add('active');
-}
 
 // calender
 

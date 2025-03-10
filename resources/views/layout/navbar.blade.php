@@ -39,31 +39,29 @@
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-        <div>
-            
-        </div>
-        <a href="/dashboard" class="nav-link active" onclick="setActive(this)">
+        <a href="/dashboard" class="nav-link active">
             <i class="fa-solid fa-gauge"></i><span>Dashboard</span>
         </a>
-        <a href="teacher.html" class="nav-link" onclick="setActive(this)">
+        <a href="/teacher" class="nav-link">
             <i class="fa-solid fa-chalkboard-user"></i><span>Teacher</span>
         </a>
-        <a href="student.html" class="nav-link" onclick="setActive(this)">
+        <a href="/student" class="nav-link">
             <i class="fa-solid fa-graduation-cap"></i><span>Students</span>
         </a>
-        <a href="scheldule.html" class="nav-link" onclick="setActive(this)">
+        <a href="/scheldule" class="nav-link">
             <i class="fa-solid fa-calendar-days"></i><span>Scheldule</span>
         </a>
-        <a href="users.html" class="nav-link" onclick="setActive(this)">
+        <a href="/users" class="nav-link">
             <i class="fa-solid fa-users"></i><span>Users</span>
         </a>
-        <a href="#" class="nav-link" onclick="setActive(this)">
+        <a href="/message" class="nav-link">
             <i class="fa-solid fa-message"></i><span>Message</span>
         </a>
-        <a href="#" class="nav-link" onclick="setActive(this)">
+        <a href="/notice" class="nav-link">
             <i class="fa-solid fa-circle-exclamation"></i><span>Notice</span>
         </a>
     </div>
+
 
     <!-- main content -->
     @yield('mainContent')
