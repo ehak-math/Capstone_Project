@@ -39,25 +39,25 @@
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-        <a href="/dashboard" class="nav-link active">
+        <a href="/dashboard" class="nav-link {{ Request::is('dashboard') ? 'active' : '' }}" id="dashboard-link">
             <i class="fa-solid fa-gauge"></i><span>Dashboard</span>
         </a>
-        <a href="/teacher" class="nav-link">
+        <a href="/teacher" class="nav-link {{ Request::is('teacher') ? 'active' : '' }}" id="teacher-link">
             <i class="fa-solid fa-chalkboard-user"></i><span>Teacher</span>
         </a>
-        <a href="/student" class="nav-link">
+        <a href="/student" class="nav-link {{ Request::is('student') ? 'active' : '' }}" id="student-link">
             <i class="fa-solid fa-graduation-cap"></i><span>Students</span>
         </a>
-        <a href="/scheldule" class="nav-link">
+        <a href="/scheldule" class="nav-link {{ Request::is('scheldule') ? 'active' : '' }}" id="scheldule-link">
             <i class="fa-solid fa-calendar-days"></i><span>Scheldule</span>
         </a>
-        <a href="/users" class="nav-link">
+        <a href="/users" class="nav-link {{ Request::is('users') ? 'active' : '' }}" id="users-link">
             <i class="fa-solid fa-users"></i><span>Users</span>
         </a>
-        <a href="/message" class="nav-link">
+        <a href="/message" class="nav-link {{ Request::is('message') ? 'active' : '' }}" id="message-link">
             <i class="fa-solid fa-message"></i><span>Message</span>
         </a>
-        <a href="/notice" class="nav-link">
+        <a href="/notice" class="nav-link {{ Request::is('notice') ? 'active' : '' }}" id="notice-link">
             <i class="fa-solid fa-circle-exclamation"></i><span>Notice</span>
         </a>
     </div>
