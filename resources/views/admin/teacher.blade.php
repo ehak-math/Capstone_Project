@@ -34,56 +34,58 @@
                                     </div>
                                     <div class="modal-body">
                                         <!-- form -->
-                                        <form action="" method="POST" class="form-horizontal" role="form">
+                                        <form action="{{ route('teacher.store') }}" method="POST" class="form-horizontal" role="form">
+                                            @csrf
                                             <div class="form-group mb-3">
-                                                <label for="" class="form-label">First Name</label>
-                                                <input type="text" class="form-control">
+                                                <label for="tea_fname" class="form-label">FullName</label>
+                                                <input type="text" name="tea_fname" class="form-control">
                                             </div>
                                             <div class="form-group mb-3">
-                                                <label for="" class="form-label">Last Name</label>
-                                                <input type="text" class="form-control">
+                                                <label for="tea_username" class="form-label">Username</label>
+                                                <input type="text" name="tea_username" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="tea_password" class="form-label">Password</label>
+                                                <input type="password" class="form-control" id="tea_password" name="tea_password" required>
                                             </div>
                                             <div class="form-group mb-3 d-flex justify-content-between">
                                                 <div class="col-sm-5">
-                                                    <label for="" class="form-label">Gender</label>
-                                                    <select name="" id="" class="form-select">
+                                                    <label for="tea_gender" class="form-label">Gender</label>
+                                                    <select name="tea_gender" id="tea_gender" class="form-select">
                                                         <option value="male">Male</option>
                                                         <option value="female">Femal</option>
                                                     </select>
                                                 </div>
                                                 <div class="col-sm-5">
-                                                    <label for="" class="form-label">Subject</label>
-                                                    <select name="" id="" class="form-select">
-                                                        <option value="math">Math</option>
-                                                        <option value="khmer">Khmer</option>
-                                                        <option value="english">English</option>
+                                                    <label for="tea_subject" class="form-label">Subject</label>
+                                                    <select name="tea_subject" id="tea_subject" class="form-select">
+                                                        @foreach($sub as $subject)
+                                                        <option value="{{$subject->sub_id}}">{{$subject->sub_name}}</option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group mb-3">
-                                                <label for="" class="form-label">Phone Number</label>
-                                                <input type="text" class="form-control">
+                                                <label for="tea_ph_number" class="form-label">Phone Number</label>
+                                                <input type="text"name="tea_ph_number" class="form-control">
                                             </div>
                                             <div class="form-group mb-3">
-                                                <label for="" class="form-label">Email Address</label>
-                                                <input type="email" class="form-control">
+                                                <label for="tea_dob" class="form-label">Date of Birth</label>
+                                                <input type="date" name="tea_dob" class="form-control">
                                             </div>
+
                                             <div class="form-group mb-3">
-                                                <label for="" class="form-label">Password</label>
-                                                <input type="password" class="form-control">
+                                                <label for="tea_profile" class="form-label">Profile</label>
+                                                <input type="text" name="tea_profile" class="form-control">
                                             </div>
-                                            <div class="form-group mb-3">
-                                                <label for="" class="form-label">Address</label>
-                                                <input type="text" class="form-control">
-                                            </div>
-                                            
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">ADD</button>
+                                                </div>        
                                         </form>
                                         
                                     </div>
-                                    <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">ADD</button>
-                                    </div>
+                                    
                                 </div>
                                 </div>
                             </div>
@@ -115,35 +117,23 @@
                             <thead>
                                 <tr>
                                     <th>REF ID</th>
-                                    <th>FIRST NAME</th>
-                                    <th>LAST NAME</th>
+                                    <th>USERNAME</th>
+                                    <th>FULLNAME</th>
                                     <th>GENDER</th>  
                                     <th>SUBJECT</th>
 
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach($teach as $teacher)
                                 <tr>
-                                    <td>TEA1234</td>
-                                    <td>Ming</td>
-                                    <td>Ting</td>
-                                    <td>Male</td>
-                                    <td>Khmer</td>
+                                    <td>{{$teacher->tea_id}}</td>
+                                    <td>{{$teacher->tea_fname}}</td>
+                                    <td>{{$teacher->tea_username}}</td>
+                                    <td>{{$teacher->tea_gender}}</td>
+                                    <td>{{$teacher->tea_subject}}</td>
                                 </tr>
-                                <tr>
-                                    <td>TEA1234</td>
-                                    <td>Ming</td>
-                                    <td>Ting</td>
-                                    <td>Male</td>
-                                    <td>Math</td>
-                                </tr>
-                                <tr>
-                                    <td>TEA1234</td>
-                                    <td>Ming</td>
-                                    <td>Ting</td>
-                                    <td>Male</td>
-                                    <td>Math</td>
-                                </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -167,40 +157,41 @@
                     <div class="d-flex flex-column gap-2">
                         <div class="d-flex justify-content-between">
                             <span>REF ID:</span>
-                            <p>Ming</p>
+                            <p>{{$teacherId->tea_id}}</p>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <span>FIRST NAME:</span>
-                            <p>Ming</p>
+                            <span>FULL NAME:</span>
+                            <p>{{ $teacherId->tea_fname }}</p>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <span>LAST NAME:</span>
-                            <p>Ting</p>
+                            <span>USERNAME:</span>
+                            <p>{{ $teacherId->tea_username}}</p>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>GENDER:</span>
-                            <p>MALE</p>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span>PHONE:</span>
-                            <p>+123456789</p>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span>EMAIL:</span>
-                            <p>teacher.subject@gmail.com</p>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span>ADDRESS:</span>
-                            <p>143b 163 st. Phnom Penh</p>
+                            <p>{{ $teacherId->tea_gender }}</p>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>SUBJEC:</span>
-                            <p>Khmer</p>
+                            <p>{{ $teacherId->tea_subject }}</p>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <span>TEACHER STATUS:</span>
-                            <p>Current</p>
+                            <span>PHONE:</span>
+                            <p> +885 {{ $teacherId->tea_ph_number }}</p>
                         </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Date of Birth:</span>
+                            <p>{{$teacherId->tea_dob}}</p>
+                        </div>
+                        {{-- <div class="d-flex justify-content-between">
+                            <span>ADDRESS:</span>
+                            <p>{{ $teacherId->tea_fname }}</p>
+                        </div>
+                       
+                        <div class="d-flex justify-content-between">
+                            <span>TEACHER STATUS:</span>
+                            <p>{{ $teacherId->tea_fname }}</p>
+                        </div> --}}
                         <div class="d-flex justify-content-between mt-4">
                             <button type="button" class="btn btn-primary">EDIT</button>
                             <button type="button" class="btn btn-danger">DELETE</button>

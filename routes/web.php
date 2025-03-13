@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TeacherController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -11,9 +12,8 @@ Route::get('/', function () {
 // admin
 ////////////
 
-Route::get('/dashboard', function () {
-    return view('admin.dashboard');
-});
+Route::get('/admin/teacher', [TeacherController::class, 'displayTeacher'])->name('admin.teacher');
+Route::post('/admin/teacher/store', [TeacherController::class, 'store'])->name('teacher.store');
 
 Route::get('/teacher', function () {
     return view('admin.teacher');
