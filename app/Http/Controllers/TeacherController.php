@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 class TeacherController extends Controller
 {
     //
+    
     function displayTeacher(){
         $teachers = Teachers::all();
         $teacher_id = Teachers::find(3);

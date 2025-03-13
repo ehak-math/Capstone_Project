@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\StudentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,9 +20,7 @@ Route::get('/teacher', function () {
     return view('admin.teacher');
 });
 
-Route::get('/student', function () {
-    return view('admin.student');
-});
+Route::get('/student', [StudentController::class, 'displayStudent'])->name('student');
 
 Route::get('/scheldule', function () {
     return view('admin.scheldule');

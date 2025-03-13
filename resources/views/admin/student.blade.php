@@ -37,11 +37,11 @@
                                             <!-- form -->
                                             <form action="" method="POST" class="form-horizontal" role="form">
                                                 <div class="form-group mb-3">
-                                                    <label for="" class="form-label">First Name</label>
+                                                    <label for="" class="form-label">Full Name</label>
                                                     <input type="text" class="form-control">
                                                 </div>
                                                 <div class="form-group mb-3">
-                                                    <label for="" class="form-label">Last Name</label>
+                                                    <label for="" class="form-label">Username</label>
                                                     <input type="text" class="form-control">
                                                 </div>
                                                 <div class="form-group mb-3 d-flex justify-content-between">
@@ -115,35 +115,29 @@
                             <thead>
                                 <tr>
                                     <th>REF ID</th>
-                                    <th>FIRST NAME</th>
-                                    <th>LAST NAME</th>
+                                    <th>USERNAME</th>
+                                    <th>FULLNAME</th>
                                     <th>GENDER</th>  
-                                    <th>DEPARTMENT</th>
+                                    <th>Grade</th>
 
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody>   
+                                @if($students->count() > 0)
+                                @foreach($students as $stu)
                                 <tr>
-                                    <td>STU1234</td>
-                                    <td>Long</td>
-                                    <td>Pisent</td>
-                                    <td>Male</td>
-                                    <td>Science</td>
+                                    <td>{{$stu->stu_id}}</td>
+                                    <td>{{$stu->stu_fname}}</td>
+                                    <td>{{$stu->stu_username}}</td>
+                                    <td>{{$stu->stu_gender}}</td>
+                                    <td>{{$stu->stu_grade}}</td>
                                 </tr>
+                                @endforeach
+                                    @else
                                 <tr>
-                                    <td>STU1234</td>
-                                    <td>Hong</td>
-                                    <td>Pich</td>
-                                    <td>Male</td>
-                                    <td>Science</td>
+                                    <td colspan="5" class="text-center">No students found</td>
                                 </tr>
-                                <tr>
-                                    <td>STU1234</td>
-                                    <td>Kong</td>
-                                    <td>Vichet</td>
-                                    <td>Male</td>
-                                    <td>Science</td>
-                                </tr>
+                                    @endif
                             </tbody>
                         </table>
                     </div>

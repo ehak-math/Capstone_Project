@@ -102,10 +102,9 @@
                                 <option value="female">Female</option>
                             </select>
                             <select class="form-select" aria-label="Department select">
-                                <option selected value="">Subject</option>
-                                <option value="math">Math</option>
-                                <option value="khmer">Science</option>
-                                <option value="english">English</option>
+                                @foreach($sub as $subject)
+                                <option selected value="">{{$subject->sub_name}}</option>
+                                @endforeach
                             </select>
                             <button class="btn btn-primary">Filter</button>
                         </div>

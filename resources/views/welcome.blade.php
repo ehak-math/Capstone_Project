@@ -23,7 +23,7 @@
                 <input type="checkbox" class="form-check-input" id="exampleCheck1">
                 <label class="form-check-label" for="exampleCheck1">Check me out</label>
             </div>
-            <a href="/dashboard" class="btn btn-primary">Login</a>
+            <a href="/admin/teacher" class="btn btn-primary">Login</a>
             
         </form>
     </div>
