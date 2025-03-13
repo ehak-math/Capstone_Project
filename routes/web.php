@@ -16,6 +16,10 @@ Route::get('/', function () {
 Route::get('/admin/teacher', [TeacherController::class, 'displayTeacher'])->name('admin.teacher');
 Route::post('/admin/teacher/store', [TeacherController::class, 'store'])->name('teacher.store');
 
+Route::get('/dashboard', function () {
+    return view('admin.dashboard');
+});
+
 Route::get('/teacher', function () {
     return view('admin.teacher');
 });

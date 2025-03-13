@@ -192,7 +192,74 @@
                             <p>{{ $teacherId->tea_fname }}</p>
                         </div> --}}
                         <div class="d-flex justify-content-between mt-4">
-                            <button type="button" class="btn btn-primary">EDIT</button>
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                EDIT
+                            </button>
+                                
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Teacher</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- form -->
+                                        <form action="" method="POST" class="form-horizontal" role="form">
+                                            <div class="form-group mb-3">
+                                                <label for="" class="form-label">First Name</label>
+                                                <input type="text" class="form-control">
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label for="" class="form-label">Last Name</label>
+                                                <input type="text" class="form-control">
+                                            </div>
+                                            <div class="form-group mb-3 d-flex justify-content-between">
+                                                <div class="col-sm-5">
+                                                    <label for="" class="form-label">Gender</label>
+                                                    <select name="" id="" class="form-select">
+                                                        <option value="male">Male</option>
+                                                        <option value="female">Femal</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <label for="" class="form-label">Subject</label>
+                                                    <select name="" id="" class="form-select">
+                                                        <option value="math">Math</option>
+                                                        <option value="khmer">Khmer</option>
+                                                        <option value="english">English</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label for="" class="form-label">Phone Number</label>
+                                                <input type="text" class="form-control">
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label for="" class="form-label">Email Address</label>
+                                                <input type="email" class="form-control">
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label for="" class="form-label">Password</label>
+                                                <input type="password" class="form-control">
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label for="" class="form-label">Address</label>
+                                                <input type="text" class="form-control">
+                                            </div>
+                                            
+                                        </form>
+                                        
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary">ADD</button>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
                             <button type="button" class="btn btn-danger">DELETE</button>
                         </div>
                     </div>
