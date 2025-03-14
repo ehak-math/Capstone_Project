@@ -13,18 +13,21 @@ Route::get('/', function () {
 // admin
 ////////////
 
-Route::get('/admin/teacher', [TeacherController::class, 'displayTeacher'])->name('admin.teacher');
-Route::post('/admin/teacher/store', [TeacherController::class, 'store'])->name('teacher.store');
+Route::get('admin/teacher', [TeacherController::class, 'displayTeacher'])->name('admin.teacher');
+Route::post('admin/teacher/store', [TeacherController::class, 'store'])->name('teacher.store');
+Route::post('admin/teacher/edit', [TeacherController::class, 'edit'])->name('teacher.edit');
 
 Route::get('/dashboard', function () {
     return view('admin.dashboard');
 });
 
-Route::get('/teacher', function () {
+Route::get('teacher', function () {
     return view('admin.teacher');
 });
-
-Route::get('/student', [StudentController::class, 'displayStudent'])->name('student');
+//student
+Route::get('admin/student', [StudentController::class, 'displayStudent'])->name('admin.student');
+Route::post('admin/student/storeStudent', [StudentController::class, 'storeStudent'])->name('student.storeStudent');
+Route::put('/student/{id}', [StudentController::class, 'update'])->name('student.update');
 
 Route::get('/scheldule', function () {
     return view('admin.scheldule');

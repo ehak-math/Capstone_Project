@@ -56,14 +56,14 @@
                                                         <option value="female">Femal</option>
                                                     </select>
                                                 </div>
-                                                <div class="col-sm-5">
+                                                {{-- <div class="col-sm-5">
                                                     <label for="tea_subject" class="form-label">Subject</label>
                                                     <select name="tea_subject" id="tea_subject" class="form-select">
                                                         @foreach($sub as $subject)
                                                         <option value="{{$subject->sub_id}}">{{$subject->sub_name}}</option>
                                                         @endforeach
                                                     </select>
-                                                </div>
+                                                </div> --}}
                                             </div>
                                             <div class="form-group mb-3">
                                                 <label for="tea_ph_number" class="form-label">Phone Number</label>

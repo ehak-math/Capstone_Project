@@ -24,7 +24,7 @@
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                     ADD
                                 </button>
-                                
+
                                 <!-- Modal -->
                                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog">
@@ -34,57 +34,80 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <!-- form -->
-                                            <form action="" method="POST" class="form-horizontal" role="form">
+                                            <!-- form for add user-->
+                                            <form action="{{ route('student.storeStudent') }}" method="POST" class="form-horizontal" role="form">
+                                                @csrf
                                                 <div class="form-group mb-3">
-                                                    <label for="" class="form-label">Full Name</label>
-                                                    <input type="text" class="form-control">
+                                                    <label for="stu_fname" class="form-label">Full Name</label>
+                                                    <input type="text" name="stu_fname" class="form-control">
                                                 </div>
+
                                                 <div class="form-group mb-3">
-                                                    <label for="" class="form-label">Username</label>
-                                                    <input type="text" class="form-control">
+                                                    <label for="stu_username" class="form-label">Username</label>
+                                                    <input type="text" name="stu_username" class="form-control">
                                                 </div>
+
+                                                <div class="form-group mb-3">
+                                                    <label for="stu_password" class="form-label">Password</label>
+                                                    <input type="password" name="stu_password" class="form-control">
+                                                </div>
+
                                                 <div class="form-group mb-3 d-flex justify-content-between">
                                                     <div class="col-sm-5">
-                                                        <label for="" class="form-label">Gender</label>
-                                                        <select name="" id="" class="form-select">
+                                                        <label for="stu_gender" class="form-label">Gender</label>
+                                                        <select name="stu_gender" id="" class="form-select">
                                                             <option value="male">Male</option>
                                                             <option value="female">Femal</option>
                                                         </select>
                                                     </div>
+
                                                     <div class="col-sm-5">
-                                                        <label for="" class="form-label">Subject</label>
-                                                        <select name="" id="" class="form-select">
-                                                            <option value="math">Math</option>
-                                                            <option value="khmer">Khmer</option>
-                                                            <option value="english">English</option>
+                                                        <label for="stu_grade" class="form-label">Grade</label>
+                                                        <select name="stu_grade" id="" class="form-select">
+                                                            <option value="12">12</option>
+                                                            <option value="11">11</option>
+                                                            <option value="10">10</option>
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="form-group mb-3">
-                                                    <label for="" class="form-label">Phone Number</label>
-                                                    <input type="text" class="form-control">
+
+                                                <div class="col-sm-5">
+                                                    <label for="stu_group" class="form-label">Grade</label>
+                                                    <select name="stu_group" id="" class="form-select">
+                                                        <option value="A">A</option>
+                                                        <option value="B">B</option>
+                                                        <option value="C">C</option>
+                                                    </select>
                                                 </div>
+
                                                 <div class="form-group mb-3">
-                                                    <label for="" class="form-label">Email Address</label>
-                                                    <input type="email" class="form-control">
+                                                    <label for="stu_ph_number" class="form-label">Phone Number</label>
+                                                    <input type="text" name="stu_ph_number" class="form-control">
                                                 </div>
+
                                                 <div class="form-group mb-3">
-                                                    <label for="" class="form-label">Password</label>
-                                                    <input type="password" class="form-control">
+                                                    <label for="stu_parent_number" class="form-label">Parant Phone Number</label>
+                                                    <input type="text" name="stu_parent_number" class="form-control">
                                                 </div>
+
                                                 <div class="form-group mb-3">
-                                                    <label for="" class="form-label">Address</label>
-                                                    <input type="text" class="form-control">
+                                                    <label for="stu_dob" class="form-label">Date of Birth</label>
+                                                    <input type="date" name="stu_dob" class="form-control">
                                                 </div>
-                                                
+
+                                                <div class="form-group mb-3">
+                                                    <label for="stu_profile" class="form-label">Profile</label>
+                                                    <input type="text" name="stu_profile" class="form-control">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">ADD</button>
+                                                </div>
                                             </form>
-                                            
+
+
                                         </div>
-                                        <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary">ADD</button>
-                                        </div>
+
                                     </div>
                                     </div>
                                 </div>
@@ -111,27 +134,36 @@
                     <!-- list teacher -->
                     <hr>
                     <div class="table-responsive">
+
                         <table class="table  table-hover">
                             <thead>
                                 <tr>
                                     <th>REF ID</th>
                                     <th>USERNAME</th>
                                     <th>FULLNAME</th>
-                                    <th>GENDER</th>  
+                                    <th>GENDER</th>
                                     <th>Grade</th>
+                                    <th>View</th>
 
                                 </tr>
                             </thead>
-                            <tbody>   
+                            <tbody>
                                 @if($students->count() > 0)
                                 @foreach($students as $stu)
-                                <tr>
+
+                               <tr>
                                     <td>{{$stu->stu_id}}</td>
                                     <td>{{$stu->stu_fname}}</td>
                                     <td>{{$stu->stu_username}}</td>
                                     <td>{{$stu->stu_gender}}</td>
                                     <td>{{$stu->stu_grade}}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Modal">
+                                           View
+                                        </button></td>
+
                                 </tr>
+
                                 @endforeach
                                     @else
                                 <tr>
@@ -141,14 +173,14 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
 
                  </div>
             </div>
-    
+
             <!-- info section -->
             <div class="col-lg-4 col-md-12 mt-4 mt-lg-5 p-3 scheldule-section">
-                <!-- teacher details info -->
+                <!-- student details info -->
                 <div class="teacher-details rounded mt-4 p-3">
                     <div class="d-flex align-items-center justify-content-between">
                         <h4>Student Details</h4>
@@ -161,48 +193,44 @@
                     <div class="d-flex flex-column gap-2">
                         <div class="d-flex justify-content-between">
                             <span>REF ID:</span>
-                            <p>STU123</p>
+                            <p>{{$student->stu_id}}</p>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <span>FIRST NAME:</span>
-                            <p>Long</p>
+                            <span>Full Name</span>
+                            <p>{{$student->stu_fname}}</p>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <span>LAST NAME:</span>
-                            <p>Pisen</p>
+                            <span>Username</span>
+                            <p>{{$student->stu_username}}</p>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>GENDER:</span>
-                            <p>MALE</p>
+                            <p>{{$student->stu_gender}}</p>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>PHONE:</span>
-                            <p>+123456789</p>
+                            <p>{{$student->stu_ph_number}}</p>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <span>EMAIL:</span>
-                            <p>student@gmail.com</p>
+                            <span>PHONE PARENT:</span>
+                            <p>{{$student->stu_parent_number}}</p>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <span>CLASS:</span>
+                            <p>{{$student->stu_grade}}{{$student->stu_group}}</p>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <span>ADDRESS:</span>
-                            <p>143b 163 st. Phnom Penh</p>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span>DEPARTMENT:</span>
-                            <p>Science</p>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span>STUDENT STATUS:</span>
-                            <p>Current</p>
+                            <span>STUDENT DOB:</span>
+                            <p>{{$student->stu_dob}}</p>
                         </div>
                         <div class="d-flex justify-content-between mt-4">
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Modal">
                                 EDIT
                             </button>
-                                
                             <!-- Modal -->
-                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -211,56 +239,78 @@
                                     </div>
                                     <div class="modal-body">
                                         <!-- form -->
-                                        <form action="" method="POST" class="form-horizontal" role="form">
+                                        @if($student)
+                                        <form action="{{ route('student.update', $student->stu_id) }}" method="POST" class="form-horizontal" role="form">
+                                             @csrf
+                                             @method('PUT')
                                             <div class="form-group mb-3">
-                                                <label for="" class="form-label">First Name</label>
-                                                <input type="text" class="form-control">
+                                                <label for="stu_fname" class="form-label">Full Name</label>
+                                                <input type="text" name="stu_fname" class="form-control" value="{{ $student->stu_fname }}">
                                             </div>
+
                                             <div class="form-group mb-3">
-                                                <label for="" class="form-label">Last Name</label>
-                                                <input type="text" class="form-control">
+                                                <label for="stu_username" class="form-label">Username</label>
+                                                <input type="text" name="stu_username" class="form-control" value="{{ $student->stu_username }}">
                                             </div>
+
                                             <div class="form-group mb-3 d-flex justify-content-between">
                                                 <div class="col-sm-5">
-                                                    <label for="" class="form-label">Gender</label>
-                                                    <select name="" id="" class="form-select">
-                                                        <option value="male">Male</option>
-                                                        <option value="female">Femal</option>
+                                                    <label for="stu_gender" class="form-label">Gender</label>
+                                                    <select name="stu_gender" id="stu_gender" class="form-select">
+                                                        <option value="male" {{ $student->stu_gender == 'male' ? 'selected' : '' }}>Male</option>
+                                                        <option value="female" {{ $student->stu_gender == 'female' ? 'selected' : '' }}>Female</option>
                                                     </select>
                                                 </div>
+
                                                 <div class="col-sm-5">
-                                                    <label for="" class="form-label">Subject</label>
-                                                    <select name="" id="" class="form-select">
-                                                        <option value="math">Math</option>
-                                                        <option value="khmer">Khmer</option>
-                                                        <option value="english">English</option>
+                                                    <label for="stu_grade" class="form-label">Grade</label>
+                                                    <select name="stu_grade" id="stu_grade" class="form-select">
+                                                        <option value="12" {{ $student->stu_grade == '12' ? 'selected' : '' }}>12</option>
+                                                        <option value="11" {{ $student->stu_grade == '11' ? 'selected' : '' }}>11</option>
+                                                        <option value="10" {{ $student->stu_grade == '10' ? 'selected' : '' }}>10</option>
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="form-group mb-3">
-                                                <label for="" class="form-label">Phone Number</label>
-                                                <input type="text" class="form-control">
+
+                                            <div class="col-sm-5">
+                                                <label for="stu_group" class="form-label">Group</label>
+                                                <select name="stu_group" id="stu_group" class="form-select">
+                                                    <option value="A" {{ $student->stu_group == 'A' ? 'selected' : '' }}>A</option>
+                                                    <option value="B" {{ $student->stu_group == 'B' ? 'selected' : '' }}>B</option>
+                                                    <option value="C" {{ $student->stu_group == 'C' ? 'selected' : '' }}>C</option>
+                                                </select>
                                             </div>
+
                                             <div class="form-group mb-3">
-                                                <label for="" class="form-label">Email Address</label>
-                                                <input type="email" class="form-control">
+                                                <label for="stu_ph_number" class="form-label">Phone Number</label>
+                                                <input type="text" name="stu_ph_number" class="form-control" value="{{ $student->stu_ph_number }}">
                                             </div>
+
                                             <div class="form-group mb-3">
-                                                <label for="" class="form-label">Password</label>
-                                                <input type="password" class="form-control">
+                                                <label for="stu_parent_number" class="form-label">Parent Phone Number</label>
+                                                <input type="text" name="stu_parent_number" class="form-control" value="{{ $student->stu_parent_number }}">
                                             </div>
+
                                             <div class="form-group mb-3">
-                                                <label for="" class="form-label">Address</label>
-                                                <input type="text" class="form-control">
+                                                <label for="stu_dob" class="form-label">Date of Birth</label>
+                                                <input type="date" name="stu_dob" class="form-control" value="{{ $student->stu_dob }}">
                                             </div>
-                                            
+
+                                            <div class="form-group mb-3">
+                                                <label for="stu_profile" class="form-label">Profile</label>
+                                                <input type="file" name="stu_profile" class="form-control">
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Update</button>
+                                            </div>
                                         </form>
-                                        
+                                        @else
+                                        <p>No student selected for editing</p>
+                                        @endif
                                     </div>
-                                    <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">ADD</button>
-                                    </div>
+
                                 </div>
                                 </div>
                             </div>
