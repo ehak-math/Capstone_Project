@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 class TeacherController extends Controller
 {
     //
-    
+
     function displayTeacher(){
         $teachers = Teachers::all();
         $teacher_id = Teachers::find(3);
@@ -42,4 +42,36 @@ class TeacherController extends Controller
         return redirect()->route('admin.teacher')
             ->with('success', 'Teacher created successfully.');
     }
+
+    public function updateTeacher(Request $request, $id ){
+        $validated = $request->validate([
+            'tea_fname' => 'required',
+            'tea_username' => 'required|unique:teachers',
+            'tea_gender' => 'required',
+            'tea_subject' => 'required',
+            'tea_ph_number' => 'required',
+            'tea_dob' => 'required|date',
+            'tea_password' => 'required|min:6'
+        ]);
+
+        $teachers = Teachers::findOrfail($id);
+
+        $updateTeacher = [
+            'tea_fname' => $request->tea_fname ,
+            'tea_username' => $request->tea_username,
+            'tea_gender' => $request->tea_gender,
+            'tea_subject' => $request->tea_subject,
+            'tea_ph_number' => $request->tea_ph_number,
+            'tea_dob' => $request->tea_dob,
+            'tea_password' => $request->tea_password
+        ];
+        $teachers->update($updateTeacher);
+
+        return redirect()->route('admin.teacher')
+            ->with('success', 'Teacher updated successfully');
+
+
+    }
+
+
 }

@@ -23,7 +23,7 @@
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 ADD
                             </button>
-                            
+
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
@@ -81,11 +81,11 @@
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                 <button type="submit" class="btn btn-primary">ADD</button>
-                                                </div>        
+                                                </div>
                                         </form>
-                                        
+
                                     </div>
-                                    
+
                                 </div>
                                 </div>
                             </div>
@@ -118,7 +118,7 @@
                                     <th>REF ID</th>
                                     <th>USERNAME</th>
                                     <th>FULLNAME</th>
-                                    <th>GENDER</th>  
+                                    <th>GENDER</th>
                                     <th>SUBJECT</th>
 
                                 </tr>
@@ -136,11 +136,11 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
 
                  </div>
             </div>
-    
+
             <!-- info section -->
             <div class="col-lg-4 col-md-12 mt-4 mt-lg-5 p-3 scheldule-section">
                 <!-- teacher details info -->
@@ -186,77 +186,83 @@
                             <span>ADDRESS:</span>
                             <p>{{ $teacherId->tea_fname }}</p>
                         </div>
-                       
+
                         <div class="d-flex justify-content-between">
                             <span>TEACHER STATUS:</span>
                             <p>{{ $teacherId->tea_fname }}</p>
                         </div> --}}
                         <div class="d-flex justify-content-between mt-4">
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Modal">
                                 EDIT
                             </button>
-                                
+
                             <!-- Modal -->
-                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Teacher</h1>
+                                    <h1 class="modal-title fs-5" id="ModalLabel">Add Teacher</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <!-- form -->
-                                        <form action="" method="POST" class="form-horizontal" role="form">
+                                        <form action="{{ route('teacher.updateTeacher', $teacher->tea_id) }}" method="POST" class="form-horizontal" role="form">
+                                            @csrf
                                             <div class="form-group mb-3">
-                                                <label for="" class="form-label">First Name</label>
-                                                <input type="text" class="form-control">
+                                                <label for="tea_fname" class="form-label">FullName</label>
+                                                <input type="text" name="tea_fname" class="form-control" value="{{$teacher->tea_fname}}">
                                             </div>
+
                                             <div class="form-group mb-3">
-                                                <label for="" class="form-label">Last Name</label>
-                                                <input type="text" class="form-control">
+                                                <label for="tea_username" class="form-label">Username</label>
+                                                <input type="text" name="tea_username" class="form-control" value="{{$teacher->tea_username}}">
                                             </div>
+
+                                            <div class="mb-3">
+                                                <label for="tea_password" class="form-label">Password</label>
+                                                <input type="password" class="form-control" value="{{$teacher->tea_password}}" id="tea_password" name="tea_password" required>
+                                            </div>
+
                                             <div class="form-group mb-3 d-flex justify-content-between">
                                                 <div class="col-sm-5">
-                                                    <label for="" class="form-label">Gender</label>
-                                                    <select name="" id="" class="form-select">
+                                                    <label for="tea_gender" class="form-label">Gender</label>
+                                                    <select name="tea_gender" id="tea_gender" class="form-select">
                                                         <option value="male">Male</option>
                                                         <option value="female">Femal</option>
                                                     </select>
                                                 </div>
-                                                <div class="col-sm-5">
-                                                    <label for="" class="form-label">Subject</label>
-                                                    <select name="" id="" class="form-select">
-                                                        <option value="math">Math</option>
-                                                        <option value="khmer">Khmer</option>
-                                                        <option value="english">English</option>
+                                                 <div class="col-sm-5">
+                                                    <label for="tea_subject" class="form-label">Subject</label>
+                                                    <select name="tea_subject" id="tea_subject" class="form-select">
+                                                        @foreach($sub as $subject)
+                                                        <option value="{{$subject->sub_id}}">{{$subject->sub_name}}</option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group mb-3">
-                                                <label for="" class="form-label">Phone Number</label>
-                                                <input type="text" class="form-control">
+                                                <label for="tea_ph_number" class="form-label">Phone Number</label>
+                                                <input type="text"name="tea_ph_number"value="{{$teacher->tea_ph_number}}" class="form-control">
                                             </div>
                                             <div class="form-group mb-3">
-                                                <label for="" class="form-label">Email Address</label>
-                                                <input type="email" class="form-control">
+                                                <label for="tea_dob" class="form-label">Date of Birth</label>
+                                                <input type="date" name="tea_dob"value="{{$teacher->tea_dob}}" class="form-control">
                                             </div>
-                                            <div class="form-group mb-3">
-                                                <label for="" class="form-label">Password</label>
-                                                <input type="password" class="form-control">
+
+{{--                                            <div class="form-group mb-3">--}}
+{{--                                                <label for="tea_profile" class="form-label">Profile</label>--}}
+{{--                                                <input type="text" name="tea_profile" value="{{$teacher->}}" class="form-control">--}}
+{{--                                            </div>--}}
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">ADD</button>
                                             </div>
-                                            <div class="form-group mb-3">
-                                                <label for="" class="form-label">Address</label>
-                                                <input type="text" class="form-control">
-                                            </div>
-                                            
                                         </form>
-                                        
+
+
                                     </div>
-                                    <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">ADD</button>
-                                    </div>
+
                                 </div>
                                 </div>
                             </div>
