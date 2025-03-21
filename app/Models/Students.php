@@ -25,4 +25,13 @@ class Students extends Model
         'stu_parent_number',
         'stu_profile'
     ];
+
+    public static function displayStudent()
+    {
+        $students = self::join('grade', 'students.stu_gra_id','=','grade.gra_id')
+                ->get();
+        return $students;
+    }
+
+
 }

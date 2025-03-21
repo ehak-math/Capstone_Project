@@ -16,7 +16,7 @@ class Admins extends Model
 
     public static function disAdmin()
     {
-        $select = Admins::all() ;
+        $select = self::all() ;
         return $select;
     }
 

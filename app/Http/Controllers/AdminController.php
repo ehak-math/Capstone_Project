@@ -22,14 +22,12 @@ class AdminController extends Controller
     function displayStudent()
     {
         $students = Students::join('grade', 'students.stu_gra_id','=','grade.gra_id')
-//            ->join('teams', 'teams.team_id','=','grade.gra_id')
-            ->get();
+                ->get();
         return $students;
     }
     function displaygrade()
     {
         $grades = Grade::all();
-//            ->get();
         return $grades;
     }
     function addStudent(Request $request)
@@ -76,9 +74,11 @@ class AdminController extends Controller
 
         return view('admin.student_detial', compact('stubyId'));
     }
+    
+    
     function displayOnStu()
     {
-        $students = $this->displayStudent();
+        $students = Students::displayStudent();
         $grades = $this->displayGrade();
         return view('admin.student', ['students' => $students, 'grades' => $grades]);
 
@@ -174,7 +174,7 @@ class AdminController extends Controller
 
     public function displayAdmin()
     {
-        $admin = Admins::all();
+        $admin = Admins::disAdmin();
         $images = Storage::disk('public')->files('images');
         
         return view('listadmin', [
@@ -219,19 +219,5 @@ class AdminController extends Controller
                 ->withInput();
         }
     }
-    // public function uploadFile(Request $request)
-    // {
-    //     $request->validate([
-    //         'file' => 'required|image|mimes:jpg,png,jpeg|max:2048'
-    //     ]);
-
-    //     if ($request->hasFile('file')) {
-    //         $file = $request->file('file');
-    //         $path = $file->store('images', 'public');
-
-    //         return redirect()->back()->with('success', 'Image uploaded successfully');
-    //     }
-
-    //     return redirect()->back()->with('error', 'No file uploaded');
-    // }
+   
 }
