@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admins;
 use Illuminate\Http\Request;
 use App\Models\Students;
 use App\Models\Teachers;
@@ -11,6 +12,8 @@ use App\Models\Course;
 use App\Models\Schedules;
 use App\Models\Attendances;
 use App\Models\Attendancesubmit;
+use Illuminate\Support\Facades\Storage;
+
 use Carbon\Carbon;
 
 class AdminController extends Controller
@@ -169,5 +172,66 @@ class AdminController extends Controller
         ]);
     }
 
+    public function displayAdmin()
+    {
+        $admin = Admins::all();
+        $images = Storage::disk('public')->files('images');
+        
+        return view('listadmin', [
+            'admin' => $admin,
+            'images' => $images ?? []
+        ]);
+    }
 
+    public function creatAdmin(Request $request)
+    {
+        try {
+            // Validate request
+            $validated = $request->validate([
+                'username' => 'required|unique:admins,adm_username',
+                'password' => 'required|min:6',
+                'profile' => 'required|image|mimes:jpg,png,jpeg|max:2048'
+            ]);
+
+            if ($request->hasFile('profile')) {
+                $file = $request->file('profile');
+                
+                // Create unique filename
+                $imageName = $request->username . '_' . time() . '.' . $file->getClientOriginalExtension();
+                
+                // Store file in public/images directory
+                $path = $file->storeAs('images', $imageName, 'public');
+                
+                // Create new admin
+                $admin = Admins::create([
+                    'adm_username' => $request->username,
+                    'adm_password' => $request->password, // Hash password
+                    'adm_profile' => $path
+                ]);
+
+                return redirect()->back()->with('success', 'Admin created successfully!');
+            }
+
+            return redirect()->back()->with('error', 'Profile image is required.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Error creating admin: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+    // public function uploadFile(Request $request)
+    // {
+    //     $request->validate([
+    //         'file' => 'required|image|mimes:jpg,png,jpeg|max:2048'
+    //     ]);
+
+    //     if ($request->hasFile('file')) {
+    //         $file = $request->file('file');
+    //         $path = $file->store('images', 'public');
+
+    //         return redirect()->back()->with('success', 'Image uploaded successfully');
+    //     }
+
+    //     return redirect()->back()->with('error', 'No file uploaded');
+    // }
 }

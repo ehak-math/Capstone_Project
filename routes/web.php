@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SubjectController;
 use Illuminate\Support\Facades\Route;
 //use App\Http\Controllers\TeacherController;
 //use App\Http\Controllers\StudentController;
@@ -14,6 +15,10 @@ Route::get('/', function () {
 ///////////////
 //// admin
 //////////////
+///
+Route::post('admin.uploadImage', [AdminController::class, 'creatAdmin'])->name('uploadfile');
+
+Route::get('admin',[AdminController::class,'displayAdmin']);
 Route::get('student',[AdminController::class,'displayOnStu']);
 Route::post('student.addStudent',[AdminController::class,'addStudent'])->name('addStudent');
 Route::get('details/{id}', [AdminController::class, 'selectbyId'])->name('showDetails');
@@ -23,6 +28,7 @@ Route::get('scheldule',[AdminController::class,'getschedule']);
 Route::post('scheldule.crategrade',[AdminController::class,'createGrade'])->name('crategrade');
 Route::post('scheldule.createcourse',[AdminController::class,'createCourse'])->name('createcourse');
 Route::post('scheldule.createschedule',[AdminController::class,'createSchedule'])->name('createschedule');
+
 
 //Route::get('admin/teacher', [TeacherController::class, 'displayTeacher'])->name('admin.teacher');
 //Route::post('admin/teacher/store', [TeacherController::class, 'store'])->name('teacher.store');

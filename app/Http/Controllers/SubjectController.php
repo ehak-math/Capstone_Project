@@ -7,10 +7,10 @@ use App\Models\Subjects;
 
 class SubjectController extends Controller
 {
-    
-    // function displaySubject(){
-    //     $subjects = Subjects::all();
-    //     // $subject_id = Subjects::find(3);
-    //     return view('admin.teacher', ['sub' => $subjects]);
+
+    // function uploadImage(Request $req)
+    // {
+    //     $path = $req->file('file')->store('public');
+    //     return $path;
     // }
 }
