@@ -44,7 +44,7 @@
     </div>
 </div>
 
-<style>
+<!-- <style>
     .card {
         width: 150px;
         height: 100px;
@@ -59,5 +59,5 @@
         height: 200px;
         object-fit: cover;
     }
-</style>
+</style> -->
 
