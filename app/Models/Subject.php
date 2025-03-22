@@ -16,4 +16,5 @@ class Subject extends Model
         'sub_name',
         'sub_image'
     ];
+    
 }

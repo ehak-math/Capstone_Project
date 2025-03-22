@@ -13,4 +13,10 @@ class Grade extends Model
     public $timestamps = false;
     protected $pramary = 'gra_id';
     protected $fillable = ['gra_class','gra_team_id' , 'gra_group'];
-}
+
+    public static function displayGrade()
+    {
+        $grades = self::all();
+        return $grades;
+    }
+}   

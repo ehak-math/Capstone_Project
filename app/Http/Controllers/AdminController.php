@@ -19,17 +19,7 @@ use Carbon\Carbon;
 class AdminController extends Controller
 {
 //admin.student
-    function displayStudent()
-    {
-        $students = Students::join('grade', 'students.stu_gra_id','=','grade.gra_id')
-                ->get();
-        return $students;
-    }
-    function displaygrade()
-    {
-        $grades = Grade::all();
-        return $grades;
-    }
+    
     function addStudent(Request $request)
     {
         $request->validate([
@@ -79,7 +69,7 @@ class AdminController extends Controller
     function displayOnStu()
     {
         $students = Students::displayStudent();
-        $grades = $this->displayGrade();
+        $grades = Grade::displayGrade();
         return view('admin.student', ['students' => $students, 'grades' => $grades]);
 
     }
