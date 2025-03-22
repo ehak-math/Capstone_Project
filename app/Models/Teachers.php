@@ -42,4 +42,5 @@ class teachers extends Model
         $teacher->tea_profile =  $data['tea_profile'];
         $teacher->save();
     }
+    
 }

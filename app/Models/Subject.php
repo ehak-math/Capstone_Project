@@ -29,5 +29,20 @@ class Subject extends Model
         $subject->sub_image = $data['sub_image'];
         $subject->save();
     }
-    
+
+    public static function updateSubject($id, $data)
+    {
+        $subject = self::findOrFail($id);
+        
+        if (isset($data['sub_name'])) {
+            $subject->sub_name = $data['sub_name'];
+        }
+        
+        if (isset($data['sub_image'])) {
+            $subject->sub_image = $data['sub_image'];
+        }
+        
+        $subject->save();
+        return $subject;
+    }
 }

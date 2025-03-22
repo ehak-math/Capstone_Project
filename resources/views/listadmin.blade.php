@@ -47,8 +47,9 @@
             <h4>{{$sub->sub_id}}</h4>
             <span>{{$sub->sub_name}}</span>
             <img src="{{ asset('storage/' . $sub->sub_image) }}" >
+            <span><a href="{{ route("subject.edit",['id' => $sub->sub_id]) }}">Edit</a></span>
             @endforeach
-            
+
             <form action="{{ route('addsub') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <input type="file" name="sub_image" accept="image/*">
@@ -62,6 +63,7 @@
             <h4>{{$tea->tea_id}}</h4>
             <span>{{$tea->tea_fname}}</span>
             <span>{{$tea->sub_name}}</span>
+
             @endforeach
         </div>
     </div>
