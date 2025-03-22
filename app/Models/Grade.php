@@ -19,4 +19,12 @@ class Grade extends Model
         $grades = self::all();
         return $grades;
     }
+    public static function insertGrade($data){
+        $grade = new Grade();
+        $grade->gra_class = $data['gra_class'];
+        $grade->gra_team_id = $data['gra_team_id'];
+        $grade->gra_group = $data['gra_group'];
+        $grade->save();
+        
+    }
 }   

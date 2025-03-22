@@ -20,4 +20,19 @@ class Documents extends Model
             'doc_cou_id',
             'doc_date'
         ];
+    public static function displayDocument()
+    {
+        $documents = self::all();
+        return $documents;
+    }
+    public static function insertDocument($data){
+        $documents = new Documents();
+        $documents->doc_type = $data['doc_type'];
+        $documents->doc_name = $data['doc_name'];
+        $documents->doc_deatial = $data['doc_deatial'];
+        $documents->doc_cou_id = $data['doc_cou_id'];
+        $documents->doc_date = $data['doc_date'];
+        $documents->save();
+        
+    }
 }

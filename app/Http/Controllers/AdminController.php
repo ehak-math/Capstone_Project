@@ -16,6 +16,7 @@ use App\Models\Subjects;
 use Illuminate\Support\Facades\Storage;
 
 use Carbon\Carbon;
+use Illuminate\Console\Scheduling\Schedule;
 
 class AdminController extends Controller
 {
@@ -113,7 +114,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Course created successfully!');
     }
 
-    function disCourse(){
+    function displayCourse(){
         $listCourse= Course::join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
             ->join('grade','grade.gra_id' ,'=', 'courses.cou_gra_id' )
             ->join('subjects','subjects.sub_id' ,'=', 'teachers.tea_id')
@@ -151,10 +152,10 @@ class AdminController extends Controller
 
     function getschedule()
     {
-        $listSchedule = $this->disSchedule();
-        $gradelist = $this->disGrade();
+        $listSchedule = Schedules::displaySchedule();
+        $gradelist = Grade::displayGrade();
         $listteacher = $this->disTeacher();
-        $listcourse = $this->disCourse();
+        $listcourse = Course::displayCourse();
         return view ('admin.scheldule', [
             'gradelist' => $gradelist,
             'listteacher' => $listteacher ,
