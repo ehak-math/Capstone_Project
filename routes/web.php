@@ -30,17 +30,26 @@ Route::post('scheldule.createcourse',[AdminController::class,'createCourse'])->n
 Route::post('scheldule.createschedule',[AdminController::class,'createSchedule'])->name('createschedule');
 
 
+// student
+Route::get('/student/dashboard', function () {
+    return view('student.dashboard');
+});
+
+Route::get('/student/subject', function () {
+    return view('student.subject');
+});
+
 //Route::get('admin/teacher', [TeacherController::class, 'displayTeacher'])->name('admin.teacher');
 //Route::post('admin/teacher/store', [TeacherController::class, 'store'])->name('teacher.store');
 //Route::put('admin/teacher/{id}', [TeacherController::class, 'updateTeacher'])->name('teacher.updateTeacher');
 //
-//Route::get('/dashboard', function () {
+// Route::get('/dashboard', function () {
 //    return view('admin.dashboard');
-//});
-//
-//Route::get('teacher', function () {
+// });
+
+// Route::get('teacher', function () {
 //    return view('admin.teacher');
-//});
+// });
 ////student
 //Route::get('admin/student', [StudentController::class, 'displayStudent'])->name('admin.student');
 //Route::post('admin/student/storeStudent', [StudentController::class, 'storeStudent'])->name('student.storeStudent');

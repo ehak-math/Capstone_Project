@@ -1,4 +1,4 @@
-@extends('layout.navbar_admin')
+@extends('layout.navbar_student')
 @section('title', 'Dashboard')
 @section('mainContent')
     <!-- Main Content -->
@@ -15,10 +15,10 @@
                         <div class="overview-box1 d-flex">
                             <canvas id="myChart"></canvas>
                             <div class="total-teach-stu">
-                                <h4>Teachers</h4>
+                                <h4>Attendance</h4>
                                 <div class="lh-1">
-                                    <p style="font-size: 10px"><span class="color-icon-female"><i class="fa-solid fa-droplet"></i></span>Female(60%)</p>
-                                    <p style="font-size: 10px"><span class="color-icon-male"><i class="fa-solid fa-droplet"></i></span>Male(40%)</p>
+                                    <p style="font-size: 10px"><span class="color-icon-female"><i class="fa-solid fa-droplet"></i></span>Absent(60%)</p>
+                                    <p style="font-size: 10px"><span class="color-icon-male"><i class="fa-solid fa-droplet"></i></span>Present(40%)</p>
                                 </div>
                                 <h2>108</h2>
                             </div>

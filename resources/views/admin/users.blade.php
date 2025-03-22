@@ -1,4 +1,4 @@
-@extends('layout.navbar')
+@extends('layout.navbar_admin')
 @section('title', 'users')
 @section('mainContent')
  <!-- Main Content -->
