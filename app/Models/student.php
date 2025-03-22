@@ -32,6 +32,19 @@ class Students extends Model
                 ->get();
         return $students;
     }
-
+    public static function insertStudent($data){
+        $students = new Students();
+        $students->stu_fname = $data['stu_fname'];
+        $students->stu_gra_id = $data['stu_gra_id'];
+        $students->stu_username = $data['stu_username'];
+        $students->stu_password = $data['stu_password'];
+        $students->stu_gender = $data['stu_gender'];
+        $students->stu_dob = $data['stu_dob'];
+        $students->stu_ph_number = $data['stu_ph_number'];
+        $students->stu_parent_number = $data['stu_parent_number'];
+        $students->stu_profile = $data['stu_profile'];
+        $students->save();
+        
+    }
 
 }

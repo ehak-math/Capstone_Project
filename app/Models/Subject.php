@@ -16,4 +16,33 @@ class Subject extends Model
         'sub_name',
         'sub_image'
     ];
+
+    public static function displaySubject()
+    {
+        $subjects = self::all();
+        return $subjects;
+    }
+
+    public static function insertSubject($data){
+        $subject = new Subject();
+        $subject->sub_name = $data['sub_name'];
+        $subject->sub_image = $data['sub_image'];
+        $subject->save();
+    }
+
+    public static function updateSubject($id, $data)
+    {
+        $subject = self::findOrFail($id);
+        
+        if (isset($data['sub_name'])) {
+            $subject->sub_name = $data['sub_name'];
+        }
+        
+        if (isset($data['sub_image'])) {
+            $subject->sub_image = $data['sub_image'];
+        }
+        
+        $subject->save();
+        return $subject;
+    }
 }

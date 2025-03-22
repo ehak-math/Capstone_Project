@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\SubjectController;
 use Illuminate\Support\Facades\Route;
-//use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\TeacherController;
 //use App\Http\Controllers\StudentController;
 use App\Http\Controllers\AdminController;
 
@@ -17,8 +17,15 @@ Route::get('/', function () {
 //////////////
 ///
 Route::post('admin.uploadImage', [AdminController::class, 'creatAdmin'])->name('uploadfile');
+// Route::get('/subjects/{id}/edit', [TeacherController::class, 'edit'])->name('subject.edit');
+Route::get('/subjects/{id}', [TeacherController::class, 'editsubject']);
+Route::get('/subjects/{id}/edit', [TeacherController::class, 'editsubject'])->name('subject.edit');
+Route::put('/subjects/{id}', [TeacherController::class, 'update'])->name('updatesub');
 
-Route::get('admin',[AdminController::class,'displayAdmin']);
+
+Route::get('admin',[TeacherController::class,'showsubject']);
+Route::post('admin.store', [TeacherController::class, 'store'])->name('addsub');
+
 Route::get('student',[AdminController::class,'displayOnStu']);
 Route::post('student.addStudent',[AdminController::class,'addStudent'])->name('addStudent');
 Route::get('details/{id}', [AdminController::class, 'selectbyId'])->name('showDetails');

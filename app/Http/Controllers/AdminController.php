@@ -12,24 +12,16 @@ use App\Models\Course;
 use App\Models\Schedules;
 use App\Models\Attendances;
 use App\Models\Attendancesubmit;
+use App\Models\Subjects;
 use Illuminate\Support\Facades\Storage;
 
 use Carbon\Carbon;
+use Illuminate\Console\Scheduling\Schedule;
 
 class AdminController extends Controller
 {
 //admin.student
-    function displayStudent()
-    {
-        $students = Students::join('grade', 'students.stu_gra_id','=','grade.gra_id')
-                ->get();
-        return $students;
-    }
-    function displaygrade()
-    {
-        $grades = Grade::all();
-        return $grades;
-    }
+    
     function addStudent(Request $request)
     {
         $request->validate([
@@ -79,7 +71,7 @@ class AdminController extends Controller
     function displayOnStu()
     {
         $students = Students::displayStudent();
-        $grades = $this->displayGrade();
+        $grades = Grade::displayGrade();
         return view('admin.student', ['students' => $students, 'grades' => $grades]);
 
     }
@@ -122,7 +114,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Course created successfully!');
     }
 
-    function disCourse(){
+    function displayCourse(){
         $listCourse= Course::join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
             ->join('grade','grade.gra_id' ,'=', 'courses.cou_gra_id' )
             ->join('subjects','subjects.sub_id' ,'=', 'teachers.tea_id')
@@ -160,10 +152,10 @@ class AdminController extends Controller
 
     function getschedule()
     {
-        $listSchedule = $this->disSchedule();
-        $gradelist = $this->disGrade();
+        $listSchedule = Schedules::displaySchedule();
+        $gradelist = Grade::displayGrade();
         $listteacher = $this->disTeacher();
-        $listcourse = $this->disCourse();
+        $listcourse = Course::displayCourse();
         return view ('admin.scheldule', [
             'gradelist' => $gradelist,
             'listteacher' => $listteacher ,
@@ -219,5 +211,36 @@ class AdminController extends Controller
                 ->withInput();
         }
     }
+
+    public function createSubject(Request $request)
+    {
+
+            // Validate request
+            $validated = $request->validate([
+                'sub_name' => 'required',
+                'sub_image' => 'required|image|mimes:jpg,png,jpeg|max:2048'
+            ]);
+
+            if ($request->hasFile('sub_image')) {
+                $file = $request->file('sub_image');
+                
+                // Create unique filename
+                $imageName = $request->sub_name . '_' . time() . '.' . $file->getClientOriginalExtension();
+                
+                // Store file in public/images directory
+                $path = $file->storeAs('images', $imageName, 'public');
+                $data = [
+                    'sub_name' => $request->sub_name,
+                    'sub_image' => $path
+                ];
+                // Create new subject
+                $subject = Subjects::insertSubject($data);
+
+                return redirect()->back()->with('success', 'Subject created successfully!');
+            }
+
+       
+        }
+
    
 }
