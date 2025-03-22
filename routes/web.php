@@ -43,7 +43,19 @@ Route::get('/student/dashboard', function () {
 });
 
 Route::get('/student/subject', function () {
-    return view('student.subject');
+    return view('student.courses.subject');
+});
+
+Route::get('student/course_detail', function () {
+    return view('student.courses.course_detail');
+});
+
+Route::get('/student/attendance', function () {
+    return view('student.attendance');
+});
+
+Route::get('/student/scheldule', function () {
+    return view('student.scheldule');
 });
 
 //Route::get('admin/teacher', [TeacherController::class, 'displayTeacher'])->name('admin.teacher');

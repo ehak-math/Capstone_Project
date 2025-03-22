@@ -408,3 +408,52 @@
     border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
+
+.attendance {
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.sub-attendance {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 10px 0px 10px;
+}
+
+.box-att {
+    
+    color: #ffff;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.image-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.sub-text {
+    color: #11117E;
+    line-height: 0.5;
+}
+
+.sub-text p {
+    color: #585c64;
+}
+
+.icon-back {
+    color: #11117E;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.btn-course-detail {
+    display: flex;
+    justify-content: space-around;
+    
+}

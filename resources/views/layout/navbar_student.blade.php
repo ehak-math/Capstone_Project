@@ -36,26 +36,26 @@
         </div>
     </div>
 
-
     <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
+    <div class="sidebar" id="sidebar" style="z-index: 1000;">
         <a href="/student/dashboard" class="nav-link {{ Request::is('student/dashboard') ? 'active' : '' }}" id="dashboard-link">
             <i class="fa-solid fa-gauge"></i><span>Dashboard</span>
         </a>
         <a href="/student/subject" class="nav-link {{ Request::is('student/subject') ? 'active' : '' }}" id="subject-link">
-            <i class="fa-solid fa-book-open-reader"></i><span>Subject</span>
+            <i class="fa-solid fa-book-open-reader"></i><span>Courses</span>
         </a>
-        <a href="/student/student" class="nav-link {{ Request::is('student/student') ? 'active' : '' }}" id="student-link">
-            <i class="fa-solid fa-graduation-cap"></i><span>Students</span>
+        <a href="/student/attendance" class="nav-link {{ Request::is('student/attendance') ? 'active' : '' }}" id="attendance-link">
+            <i class="fa-solid fa-user-clock"></i><span>Attendances</span>
         </a>
-        <a href="/scheldule" class="nav-link {{ Request::is('scheldule') ? 'active' : '' }}" id="scheldule-link">
+        <a href="/student/scheldule" class="nav-link {{ Request::is('student/scheldule') ? 'active' : '' }}" id="scheldule-link">
             <i class="fa-solid fa-calendar-days"></i><span>Schedule</span>
         </a>
     </div>
 
-
     <!-- main content -->
-    @yield('mainContent')
+    <div id="content">
+        @yield('mainContent')
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>

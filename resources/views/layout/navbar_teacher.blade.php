@@ -39,26 +39,17 @@
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar" style="z-index: 1000; ">
-        <a href="/admin/dashboard" class="nav-link {{ Request::is('/admin/dashboard') ? 'active' : '' }}" id="dashboard-link">
+        <a href="/student/dashboard" class="nav-link {{ Request::is('student/dashboard') ? 'active' : '' }}" id="dashboard-link">
             <i class="fa-solid fa-gauge"></i><span>Dashboard</span>
         </a>
-        <a href="/admin/teacher" class="nav-link {{ Request::is('/admin/teacher') ? 'active' : '' }}" id="teacher-link">
-            <i class="fa-solid fa-chalkboard-user"></i><span>Teacher</span>
+        <a href="/student/subject" class="nav-link {{ Request::is('student/subject') ? 'active' : '' }}" id="subject-link">
+            <i class="fa-solid fa-book-open-reader"></i><span>Courses</span>
         </a>
-        <a href="/admin/student" class="nav-link {{ Request::is('/admin/student') ? 'active' : '' }}" id="student-link">
+        <a href="/student/student" class="nav-link {{ Request::is('student/student') ? 'active' : '' }}" id="student-link">
             <i class="fa-solid fa-graduation-cap"></i><span>Students</span>
         </a>
-        <a href="/admin/scheldule" class="nav-link {{ Request::is('/admin/scheldule') ? 'active' : '' }}" id="scheldule-link">
-            <i class="fa-solid fa-calendar-days"></i><span>Scheldule</span>
-        </a>
-        <a href="/admin/users" class="nav-link {{ Request::is('/admin/users') ? 'active' : '' }}" id="users-link">
-            <i class="fa-solid fa-users"></i><span>Users</span>
-        </a>
-        <a href="/admin/message" class="nav-link {{ Request::is('/admin/message') ? 'active' : '' }}" id="message-link">
-            <i class="fa-solid fa-message"></i><span>Message</span>
-        </a>
-        <a href="/admin/notice" class="nav-link {{ Request::is('/admin/notice') ? 'active' : '' }}" id="notice-link">
-            <i class="fa-solid fa-circle-exclamation"></i><span>Notice</span>
+        <a href="/scheldule" class="nav-link {{ Request::is('scheldule') ? 'active' : '' }}" id="scheldule-link">
+            <i class="fa-solid fa-calendar-days"></i><span>Schedule</span>
         </a>
     </div>
 
