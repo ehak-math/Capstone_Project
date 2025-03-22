@@ -54,6 +54,10 @@ Route::get('/student/attendance', function () {
     return view('student.attendance');
 });
 
+Route::get('/student/score', function () {
+    return view('student.score');
+});
+
 Route::get('/student/scheldule', function () {
     return view('student.scheldule');
 });

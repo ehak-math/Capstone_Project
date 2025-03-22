@@ -47,6 +47,9 @@
         <a href="/student/attendance" class="nav-link {{ Request::is('student/attendance') ? 'active' : '' }}" id="attendance-link">
             <i class="fa-solid fa-user-clock"></i><span>Attendances</span>
         </a>
+        <a href="/student/score" class="nav-link {{ Request::is('student/score') ? 'active' : '' }}" id="attendance-link">
+            <i class="fa-solid fa-ranking-star"></i><span>Score</span>
+        </a>
         <a href="/student/scheldule" class="nav-link {{ Request::is('student/scheldule') ? 'active' : '' }}" id="scheldule-link">
             <i class="fa-solid fa-calendar-days"></i><span>Schedule</span>
         </a>
