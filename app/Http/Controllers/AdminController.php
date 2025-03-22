@@ -12,6 +12,7 @@ use App\Models\Course;
 use App\Models\Schedules;
 use App\Models\Attendances;
 use App\Models\Attendancesubmit;
+use App\Models\Subjects;
 use Illuminate\Support\Facades\Storage;
 
 use Carbon\Carbon;
@@ -219,5 +220,36 @@ class AdminController extends Controller
                 ->withInput();
         }
     }
+
+    public function createSubject(Request $request)
+    {
+
+            // Validate request
+            $validated = $request->validate([
+                'sub_name' => 'required',
+                'sub_image' => 'required|image|mimes:jpg,png,jpeg|max:2048'
+            ]);
+
+            if ($request->hasFile('sub_image')) {
+                $file = $request->file('sub_image');
+                
+                // Create unique filename
+                $imageName = $request->sub_name . '_' . time() . '.' . $file->getClientOriginalExtension();
+                
+                // Store file in public/images directory
+                $path = $file->storeAs('images', $imageName, 'public');
+                $data = [
+                    'sub_name' => $request->sub_name,
+                    'sub_image' => $path
+                ];
+                // Create new subject
+                $subject = Subjects::insertSubject($data);
+
+                return redirect()->back()->with('success', 'Subject created successfully!');
+            }
+
+       
+        }
+
    
 }

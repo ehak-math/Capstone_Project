@@ -33,5 +33,4 @@ class Students extends Model
         return $students;
     }
 
-
 }
