@@ -8,7 +8,12 @@
             <div class="col-lg-8 col-md-12">
                 <div class="date_name">
                     <h3>Greatings, Bro!</h3>
-                    <p id="currentDate"></p>
+                    <p >Welcome,
+                        {{ $student->stu_username }}
+                    </p>
+                    <p >You is grade,
+                        {{ $showStudent->gra_class }} || {{$showStudent->gra_group}}
+                    </p>
                 </div>
                 <div class="row g-4 mt-2">
                     <div class="col-md-6">

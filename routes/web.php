@@ -3,7 +3,7 @@
 use App\Http\Controllers\SubjectController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TeacherController;
-//use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\AdminController;
 
 
@@ -38,9 +38,20 @@ Route::post('scheldule.createschedule',[AdminController::class,'createSchedule']
 
 
 // student
-Route::get('/student/dashboard', function () {
-    return view('student.dashboard');
+
+// Route::get('/student/login', [StudentController::class, 'showLoginForm'])->name('student.login');
+// Route::post('/student/login', [StudentController::class, 'studentLogin'])->name('student.login.submit');
+// Route::get('/student/dashboard', [StudentController::class, 'dashboard'])->name('student.dashboard');
+
+Route::prefix('student')->group(function () {
+    Route::get('/login', [StudentController::class, 'showLoginForm'])->name('student.login');
+    Route::post('/login', [StudentController::class, 'studentLogin'])->name('student.login.submit');
+    Route::get('/dashboard', [StudentController::class, 'dashboard'])->name('student.dashboard');
+    Route::post('/logout', [StudentController::class, 'logout'])->name('student.logout');
 });
+// Route::get('/student/dashboard', function () {
+//     return view('student.dashboard');
+// });
 
 Route::get('/student/subject', function () {
     return view('student.courses.subject');
