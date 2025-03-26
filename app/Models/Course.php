@@ -22,11 +22,13 @@ class Course extends Model
             ->get();
         return $listcourses;
     }
+
+
     public static function insertCourse($data){
         $course = new Course();
         $course->cou_tea_id = $data['cou_tea_id'];
         $course->cou_gra_id = $data['cou_gra_id'];
         $course->save();
-        
+
     }
 }

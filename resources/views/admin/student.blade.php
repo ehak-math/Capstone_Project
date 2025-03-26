@@ -41,7 +41,7 @@
 {{--                                                </script>--}}
 {{--                                            @endif--}}
 
-                                            <form action="{{ route('addStudent') }}" method="POST" class="form-horizontal" role="form">
+                                            <form action="{{ route('addStudent') }}" method="POST" class="form-horizontal" role="form" enctype="multipart/form-data">
                                                 @csrf
                                                 <div class="form-group mb-3">
                                                     <label for="stu_fname" class="form-label">Full Name</label>
@@ -94,7 +94,7 @@
 
                                                 <div class="form-group mb-3">
                                                     <label for="stu_profile" class="form-label">Profile</label>
-                                                    <input type="text" name="stu_profile" class="form-control">
+                                                    <input type="file" name="stu_profile" class="form-control">
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -136,6 +136,7 @@
                             <thead>
                                 <tr>
                                     <th>REF ID</th>
+                                    <th>PROFILE</th>
                                     <th>USERNAME</th>
                                     <th>FULLNAME</th>
                                     <th>GENDER</th>
@@ -150,6 +151,12 @@
 
                                <tr>
                                     <td>{{$stu->stu_id}}</td>
+                                   @if($stu->stu_profile)
+
+                                    <td><img style="height: 50px ; width: 50px;" src="{{ asset('storage/' . $stu->stu_profile) }}" ></td>
+                                   @else
+                                       <th>Your Image is empty</th>
+                                   @endif
                                     <td>{{$stu->stu_fname}}</td>
                                     <td>{{$stu->stu_username}}</td>
                                     <td>{{$stu->stu_gender}}</td>

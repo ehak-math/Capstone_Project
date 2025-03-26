@@ -41,7 +41,7 @@
         <a href="/student/dashboard" class="nav-link {{ Request::is('student/dashboard') ? 'active' : '' }}" id="dashboard-link">
             <i class="fa-solid fa-gauge"></i><span>Dashboard</span>
         </a>
-        <a href="/student/subject" class="nav-link {{ Request::is('student/subject') ? 'active' : '' }}" id="subject-link">
+        <a href="courses/subject" class="nav-link {{ Request::is('student/subject') ? 'active' : '' }}" id="subject-link">
             <i class="fa-solid fa-book-open-reader"></i><span>Courses</span>
         </a>
         <a href="/student/attendance" class="nav-link {{ Request::is('student/attendance') ? 'active' : '' }}" id="attendance-link">

@@ -9,45 +9,31 @@
                 <div class="list-of-student m-2">
                     <h1 class="mt-5">List of Score</h1>
                     <!-- list of attendance -->
+                    @if($score)
+                    @foreach($score as $sco)
                      <div class="attendance d-flex justify-content-between">
                         <div class="image-text d-flex">
                             <img src="{{ asset('images/math.jpg') }}" class="rounded-3" alt="" width="80px" height="80px">
                             <div class="sub-text align-items-center justify-content-center">
-                                <h4>Math</h4>
-                                <p>Date: 22/03/2025</p>
+                                <h4>{{$sco->sub_name}}</h4>
+                                <h6>{{$sco->gra_class}}</h6>
+                                <p>Month : {{$sco->sco_month}}</p>
                             </div>
                         </div>
-                        <div class="sub-attendance">
-                            <p class="box-att" style="background: green;">Present</p>
-                        </div>
+                         @if($sco->sco_point > 50)
+                             <div class="sub-attendance">
+                                 <p class="box-att" style="background: green;">{{$sco->sco_point}}</p>
+                             </div>
+                         @else
+                             <div class="sub-attendance">
+                                 <p class="box-att" style="background: red;">{{$sco->sco_point}}</p>
+                             </div>
+                         @endif
                      </div>
-
-                     <div class="attendance d-flex justify-content-between mt-3">
-                        <div class="image-text d-flex">
-                            <img src="{{ asset('images/math.jpg') }}" class="rounded-3" alt="" width="80px" height="80px">
-                            <div class="sub-text align-items-center justify-content-center">
-                                <h4>Math</h4>
-                                <p>Date: 22/03/2025</p>
-                            </div>
-                        </div>
-                        <div class="sub-attendance">
-                            <p class="box-att" style="background: green;">Present</p>
-                        </div>
-                     </div>
-
-                     <div class="attendance d-flex justify-content-between mt-3">
-                        <div class="image-text d-flex">
-                            <img src="{{ asset('images/math.jpg') }}" class="rounded-3" alt="" width="80px" height="80px">
-                            <div class="sub-text align-items-center justify-content-center">
-                                <h4>Math</h4>
-                                <p>Date: 22/03/2025</p>
-                            </div>
-                        </div>
-                        <div class="sub-attendance">
-                            <p class="box-att" style="background: red;">Absent</p>
-                        </div>
-                     </div>
-                    
+                    @endforeach
+                    @else
+                        <h1>The Score is empty</h1>
+                    @endif
                 </div>
             </div>
         </div>

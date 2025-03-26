@@ -29,8 +29,32 @@ class Students extends Model
     public static function displayStudent()
     {
         $students = self::join('grade', 'students.stu_gra_id','=','grade.gra_id')
+
                 ->get();
         return $students;
+    }
+    public static function displayStudentById($id)
+    {
+        $course = self::join('grade', 'students.stu_gra_id', '=', 'grade.gra_id')
+            ->join('courses', 'grade.gra_id', '=', 'courses.cou_gra_id')
+            ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+            ->leftJoin('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+            ->where('students.stu_id', $id)
+            ->select(
+                'students.*',
+                'grade.gra_class',
+                'grade.gra_group',
+                'courses.cou_id',
+                'courses.cou_gra_id',
+                'teachers.tea_fname',
+                'teachers.tea_gender',
+                'teachers.tea_username',
+                'subjects.sub_name',
+                'subjects.sub_image'
+            )
+            ->get();
+
+        return $course;
     }
     public static function insertStudent($data){
         $students = new Students();
@@ -44,7 +68,7 @@ class Students extends Model
         $students->stu_parent_number = $data['stu_parent_number'];
         $students->stu_profile = $data['stu_profile'];
         $students->save();
-        
+
     }
 
 }

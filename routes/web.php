@@ -47,15 +47,17 @@ Route::prefix('student')->group(function () {
     Route::get('/login', [StudentController::class, 'showLoginForm'])->name('student.login');
     Route::post('/login', [StudentController::class, 'studentLogin'])->name('student.login.submit');
     Route::get('/dashboard', [StudentController::class, 'dashboard'])->name('student.dashboard');
+    Route::get('/courses/subject/', [StudentController::class, 'displayCourseStudent']);
     Route::post('/logout', [StudentController::class, 'logout'])->name('student.logout');
+    Route::get('/score',  [StudentController::class, 'displayStudentSocre'])->name('student.score');
 });
 // Route::get('/student/dashboard', function () {
 //     return view('student.dashboard');
 // });
 
-Route::get('/student/subject', function () {
-    return view('student.courses.subject');
-});
+//Route::get('/student/subject', function () {
+//    return view('student.courses.subject');
+//});
 
 Route::get('student/course_detail', function () {
     return view('student.courses.course_detail');
@@ -65,9 +67,9 @@ Route::get('/student/attendance', function () {
     return view('student.attendance');
 });
 
-Route::get('/student/score', function () {
-    return view('student.score');
-});
+//Route::get('/student/score', function () {
+//    return view('student.score');
+//});
 
 Route::get('/student/scheldule', function () {
     return view('student.scheldule');

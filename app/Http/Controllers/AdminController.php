@@ -21,7 +21,19 @@ use Illuminate\Console\Scheduling\Schedule;
 class AdminController extends Controller
 {
 //admin.student
-    
+    function uploadsIamge($data , $pathname){
+        if ($data) {
+            $file =$data;
+
+            // Create unique filename
+            $imageName = $pathname . '_' . time() . '.' . $file->getClientOriginalExtension();
+
+            // Store file in public/images directory
+            $path = $file->storeAs('images', $imageName, 'public');
+        }
+        return $path;
+
+    }
     function addStudent(Request $request)
     {
         $request->validate([
@@ -33,8 +45,10 @@ class AdminController extends Controller
             'stu_ph_number' =>  'required',
             'stu_parent_number' =>  'required',
             'stu_dob' =>  'required',
-            'stu_profile' =>  'required',
+            'stu_profile' =>  'required|image|mimes:jpg,png,jpeg|max:2048',
         ]);
+
+        $path = $this->uploadsIamge($request->file('stu_profile') , $request->stu_fname);
 
         $student = new Students();
         $student->stu_fname = $request->stu_fname;
@@ -45,7 +59,7 @@ class AdminController extends Controller
         $student->stu_dob = $request->stu_dob;
         $student->stu_ph_number= $request->stu_ph_number;
         $student->stu_parent_number = $request->stu_parent_number;
-        $student->stu_profile = $request->stu_profile;
+        $student->stu_profile = $path;
         $student->save();
 
         return redirect()->back()->with('success', 'Grade created successfully!');
@@ -66,8 +80,8 @@ class AdminController extends Controller
 
         return view('admin.student_detial', compact('stubyId'));
     }
-    
-    
+
+
     function displayOnStu()
     {
         $students = Students::displayStudent();
@@ -168,7 +182,7 @@ class AdminController extends Controller
     {
         $admin = Admins::disAdmin();
         $images = Storage::disk('public')->files('images');
-        
+
         return view('listadmin', [
             'admin' => $admin,
             'images' => $images ?? []
@@ -187,13 +201,13 @@ class AdminController extends Controller
 
             if ($request->hasFile('profile')) {
                 $file = $request->file('profile');
-                
+
                 // Create unique filename
                 $imageName = $request->username . '_' . time() . '.' . $file->getClientOriginalExtension();
-                
+
                 // Store file in public/images directory
                 $path = $file->storeAs('images', $imageName, 'public');
-                
+
                 // Create new admin
                 $admin = Admins::create([
                     'adm_username' => $request->username,
@@ -223,10 +237,10 @@ class AdminController extends Controller
 
             if ($request->hasFile('sub_image')) {
                 $file = $request->file('sub_image');
-                
+
                 // Create unique filename
                 $imageName = $request->sub_name . '_' . time() . '.' . $file->getClientOriginalExtension();
-                
+
                 // Store file in public/images directory
                 $path = $file->storeAs('images', $imageName, 'public');
                 $data = [
@@ -239,8 +253,8 @@ class AdminController extends Controller
                 return redirect()->back()->with('success', 'Subject created successfully!');
             }
 
-       
+
         }
 
-   
+
 }
