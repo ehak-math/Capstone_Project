@@ -2,7 +2,6 @@
 @section('title', 'Subject')
 @section('mainContent')
     <!-- Main Content -->
-
     <div class="content">
         <div class="row">
             <!-- Main content area -->

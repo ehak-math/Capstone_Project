@@ -75,6 +75,29 @@ Route::get('/student/scheldule', function () {
     return view('student.scheldule');
 });
 
+//
+// teacher
+//
+Route::get('/teacher/dashboard', function () {
+    return view('teacher.dashboard');
+});
+
+Route::get('/teacher/student', function () {
+    return view('teacher.students.student');
+});
+
+Route::get('/teacher/attendance', function () {
+    return view('teacher.attendance');
+});
+
+Route::get('/teacher/course', function () {
+    return view('teacher.courses.course');
+});
+
+Route::get('/teacher/scheldule', function () {
+    return view('teacher.scheldule');
+});
+
 //Route::get('admin/teacher', [TeacherController::class, 'displayTeacher'])->name('admin.teacher');
 //Route::post('admin/teacher/store', [TeacherController::class, 'store'])->name('teacher.store');
 //Route::put('admin/teacher/{id}', [TeacherController::class, 'updateTeacher'])->name('teacher.updateTeacher');

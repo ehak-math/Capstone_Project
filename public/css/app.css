@@ -457,3 +457,12 @@
     justify-content: space-around;
     
 }
+
+#att-present {
+    color: green;
+    font-weight: bold;
+}
+#att-absent {
+    color: red;
+    font-weight: bold;
+}
