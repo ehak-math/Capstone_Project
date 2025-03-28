@@ -18,7 +18,7 @@
                                 @if($cou->sub_image)
                                 <img src="{{ asset('images/math.jpg') }}" class="card-img-top"  alt="Mathematics">
                                 @else
-                                    <div class="imageNull" style="width: 100%; border: solid 0.5px black; background: aqua " >
+                                    <div class="imageNull" style="width: 100%; height: 175px; border: solid 0.5px black; background: aqua " >
                                     <p>{{$cou->sub_name}}</p>
                                       </div>
                                 @endif
