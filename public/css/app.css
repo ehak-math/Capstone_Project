@@ -1,4 +1,8 @@
 /* Sidebar Styles */
+
+* {
+    font-family: sans-serif;
+}
 .sidebar {
     top: 70px;
     width: 250px;
@@ -465,4 +469,89 @@
 #att-absent {
     color: red;
     font-weight: bold;
+}
+
+/* login */
+
+
+.container-login {
+    display: flex;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.login-form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 500px;
+    background: #ffff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.login-form h1 {
+    text-align: center;
+    color: #11117E;
+
+}
+
+.input-box .input-field {
+    width: 100%;
+    height: 60px;
+    font-size: 17px;
+    padding: 0 25px;
+    margin-bottom: 15px;
+    border-radius: 30px;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    outline: none;
+    transition: .3s;
+    box-sizing: border-box;
+
+}
+
+::placeholder {
+    color: black;
+    font-weight: 500;
+}
+
+.input-field:focus {
+    width: 101%;
+    height: 65px;
+}
+
+.btn-submit {
+    margin-top: 20px;
+    width: 100%;
+    height: 60px;
+    background: #11117E;
+    border-radius: 30px;
+    border: none;
+    padding: 0 25px;
+    color: #ffff;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.btn-login {
+    text-decoration: none;
+    color: #ffff;
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    background: #11117E;
+    border-radius: 30px;
+    border: none;
+    padding: 0 25px;
+    color: #ffff;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
