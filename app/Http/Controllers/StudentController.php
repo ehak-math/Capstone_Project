@@ -133,7 +133,6 @@ class StudentController extends Controller
         if (!session('student')) {
             return redirect()->route('student.login');
         }
-        
         try {
             $request->validate([
                 'code_sub' => 'required',            
@@ -147,6 +146,12 @@ class StudentController extends Controller
             $existingSubmission = Attendancesubmit::where('att_sub_stu_id', $student->stu_id)
                 ->where('att_sub_att_id', $request->att_id)
                 ->first();
+            $startTime = $existingSubmission->att_startime;
+            $endTime = $existingSubmission->att_endtime;
+            $currentTime = Carbon::now('Asia/Phnom_Penh');
+
+            $status = checkAttendanceStatus($startTime, $endTime, $currentTime);
+            
                 
             if ($existingSubmission) {
                 throw new \Exception('You have already submitted attendance for this session');
@@ -165,8 +170,8 @@ class StudentController extends Controller
             // Create attendance submission
             $attendances = new Attendancesubmit();
             $attendances->att_sub_code = $request->code_sub;
-            $attendances->att_sub_time = Carbon::now('Asia/Phnom_Penh');
-            $attendances->att_sub_status = 'Prsent';  // Fixed typo
+            $attendances->att_sub_time = $currentTime;
+            $attendances->att_sub_status = $status;  // Fixed typo
             $attendances->att_sub_stu_id = $student->stu_id;
             $attendances->att_sub_att_id = $request->att_id;
             $attendances->save();
@@ -176,4 +181,15 @@ class StudentController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
+    private function checkAttendanceStatus($startTime, $endTime, $currentTime) 
+            {
+                
+                if ($currentTime->between($startTime, $endTime)) {
+                    return "Present";
+                } else if ($currentTime->greaterThan($endTime)) {
+                    return "Late";
+                } else {
+                    return "Absent";
+                }
+            }
 }
