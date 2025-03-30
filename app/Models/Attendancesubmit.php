@@ -18,6 +18,5 @@ class Attendancesubmit extends Model
     'att_sub_status',
     'att_sub_stu_id',
     'att_sub_att_id'
-
 ];
 }

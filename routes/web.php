@@ -47,7 +47,14 @@ Route::prefix('student')->group(function () {
     Route::get('/login', [StudentController::class, 'showLoginForm'])->name('student.login');
     Route::post('/login', [StudentController::class, 'studentLogin'])->name('student.login.submit');
     Route::get('/dashboard', [StudentController::class, 'dashboard'])->name('student.dashboard');
-    Route::get('/courses/subject/', [StudentController::class, 'displayCourseStudent']);
+    Route::get('/courses/subject', [StudentController::class, 'displayCourseStudent']);
+    Route::get('/courses/subject/{id}', [StudentController::class, 'submitAtt'])->name('student.course.submit.show');
+    Route::post('/courses/subject/submit-attendance', [StudentController::class, 'subAttendance'])->name('student.course.submit');
+    
+    // Route::get('/attendance', function () {
+    //     return view('student.courses.attendance');
+    // });
+
     Route::post('/logout', [StudentController::class, 'logout'])->name('student.logout');
     Route::get('/score',  [StudentController::class, 'displayStudentSocre'])->name('student.score');
 });

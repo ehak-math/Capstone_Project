@@ -29,7 +29,6 @@ class Students extends Model
     public static function displayStudent()
     {
         $students = self::join('grade', 'students.stu_gra_id','=','grade.gra_id')
-
                 ->get();
         return $students;
     }

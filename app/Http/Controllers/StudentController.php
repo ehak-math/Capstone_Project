@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Scores;
 use Illuminate\Http\Request;
+use App\Models\Attendances;
+use App\Models\Attendancesubmit;
 use App\Models\Students;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class StudentController extends Controller
 {
@@ -78,5 +81,99 @@ class StudentController extends Controller
         $score =  Scores::getAllScoresByStudent($student->stu_id);
 
         return view('student.score', ['score' => $score, 'student' => $student]);
+    }
+    public function submitAtt($id)
+    {
+        if (!session('student')) {
+            return redirect()->route('student.login');
+        }
+        
+        $student = session('student');
+        $currentTime = Carbon::now('Asia/Phnom_Penh');
+        
+        // Get active attendance for the course
+        $attendance = Attendances::join('courses', 'attendances.att_cou_id', '=', 'courses.cou_id')
+            ->where('courses.cou_id', $id)
+            ->where('attendances.att_status', 'Open')
+            ->whereDate('attendances.att_startime', $currentTime->toDateString())
+            ->select([
+                'attendances.att_id',
+                'attendances.att_code',
+                'attendances.att_status',
+                'attendances.att_startime',
+                'attendances.att_endtime',
+                'courses.cou_id'
+            ])
+            ->get();
+
+        // Check if student already submitted attendance
+        if ($attendance->count() > 0) {
+            foreach ($attendance as $att) {
+                $existingSubmission = Attendancesubmit::where('att_sub_stu_id', $student->stu_id)
+                    ->where('att_sub_att_id', $att->att_id)
+                    ->first();
+
+                if ($existingSubmission) {
+                    $att->already_submitted = true;
+                } else {
+                    $att->already_submitted = false;
+                }
+            }
+        }
+
+        return view('student.courses.submit_attendance', [
+            'getId' => $id,
+            'attendanceSub' => $attendance,
+            'student' => $student
+        ]);
+    }
+
+    public function subAttendance(Request $request)
+    {
+        if (!session('student')) {
+            return redirect()->route('student.login');
+        }
+        
+        try {
+            $request->validate([
+                'code_sub' => 'required',            
+                'cou_id' => 'required',            
+                'att_id' => 'required',            
+            ]);
+
+            $student = session('student');
+            
+            // Check if student already submitted attendance
+            $existingSubmission = Attendancesubmit::where('att_sub_stu_id', $student->stu_id)
+                ->where('att_sub_att_id', $request->att_id)
+                ->first();
+                
+            if ($existingSubmission) {
+                throw new \Exception('You have already submitted attendance for this session');
+            }
+
+            // Verify attendance code and status
+            $attendance = Attendances::where('att_id', $request->att_id)
+                ->where('att_code', $request->code_sub)
+                ->where('att_status', 'Open')
+                ->first();
+
+            if (!$attendance) {
+                throw new \Exception('Invalid attendance code or attendance session is closed');
+            }
+
+            // Create attendance submission
+            $attendances = new Attendancesubmit();
+            $attendances->att_sub_code = $request->code_sub;
+            $attendances->att_sub_time = Carbon::now('Asia/Phnom_Penh');
+            $attendances->att_sub_status = 'Prsent';  // Fixed typo
+            $attendances->att_sub_stu_id = $student->stu_id;
+            $attendances->att_sub_att_id = $request->att_id;
+            $attendances->save();
+
+            return redirect()->back()->with('success', 'Attendance submitted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }

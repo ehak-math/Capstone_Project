@@ -22,8 +22,9 @@
                             <a href="/student/attendance" class="btn btn-primary">Attendance</a>
                             <a href="/student/scheldule" class="btn btn-info">Lecture</a>
                             <a href="/student/scheldule" class="btn btn-info">Homework</a>
-
                         </div>
+
+                    
 
                 </div>
             </div>
