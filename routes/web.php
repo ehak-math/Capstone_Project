@@ -88,6 +88,7 @@ Route::prefix('teacher')->group(function () {
     Route::post('/logout', [TeacherController::class, 'logout'])->name('teacher.logout');
     Route::get('/course', [TeacherController::class, 'teacherCourse'])->name('teacher.course');
     // Route::get('/course/attendance/{id}', [TeacherController::class, 'teacherAttendance'])->name('attendance');
+    Route::post('/attendance/close', [TeacherController::class, 'closeatt'])->name('teacher.attendance.close');
     Route::post('/attendance/open', [TeacherController::class, 'openatt'])->name('teacher.attendance.open');
     Route::get('/course/attendance/{id}', [TeacherController::class, 'teacherAttendance'])->name('teacher.attendance.show');
 

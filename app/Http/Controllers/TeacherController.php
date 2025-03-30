@@ -7,7 +7,7 @@ use App\Models\Teachers;
 use App\Models\Subject;
 use App\Models\Attendances;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\DB;
 use App\Models\Course;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -156,7 +156,6 @@ class TeacherController extends Controller
     }
     function teacherAttendance($id)
     {
-        // Check if teacher is logged in
         if (!session('teacher')) {
             return redirect()->route('teacher.login');
         }
@@ -182,25 +181,9 @@ class TeacherController extends Controller
         $getcourse = Course::where('cou_id', $id)->first();
 
         // Get today's attendance if exists
-        $today = Carbon::now()->format('l');
         $currentAttendance = Attendances::where('att_cou_id', $id)
-            // ->whereDate('att_startime', Carbon::today())
+            ->whereDate('att_startime', Carbon::today('Asia/Phnom_Penh'))
             ->first();
-
-        // Create new attendance if it doesn't exist and if it's the correct day
-        if (!$currentAttendance && $displayschedule && $displayschedule->sch_day === $today) {
-            $code = Str::upper(Str::random(6));
-            $startTime = Carbon::now();
-            $endTime = Carbon::now()->addMinutes(10);
-
-            $currentAttendance = Attendances::create([
-                'att_code' => $code,
-                'att_startime' => $startTime,
-                'att_endtime' => $endTime,
-                'att_cou_id' => $id,
-                'att_status' => "Open"
-            ]);
-        }
 
         return view('teacher.courses.attendance', [
             'att_dis' => $displayschedule,
@@ -208,24 +191,43 @@ class TeacherController extends Controller
             'attendance' => $currentAttendance
         ]);
     }
-    function openatt(Request $request){
-        // Check if teacher is logged in
-        
-        $request->validate([
-            'course_id' => 'required'
-        ]);
-        $code = Str::upper(Str::random(6));
-        $startTime = Carbon::now();
-        $endTime = Carbon::now()->addMinutes(10);
+    public function openatt(Request $request)
+    {
+        try {
+            if (!session('teacher')) {
+                return redirect()->route('teacher.login');
+            }
 
-        $open = Attendaces::create([
-            'att_code' => $code,
-            'att_startime' => $startTime,
-            'att_endtime' => $endTime,
-            'att_cou_id' => $request->course_id,
-            'att_status' => "Open"
-        ]);
-        return redirect()->back()->with('success', 'Attendance marked successfully!');
+            $request->validate([
+                'course_id' => 'required'
+            ]);
+
+            // Check if attendance already exists for today
+            $existingAttendance = Attendances::where('att_cou_id', $request->course_id)
+                ->whereDate('att_startime', Carbon::today('Asia/Phnom_Penh'))
+                ->first();
+
+            if ($existingAttendance) {
+                throw new \Exception('Attendance already exists for today');
+            }
+
+            // Create new attendance
+            $code = Str::upper(Str::random(6));
+            $startTime = Carbon::now('Asia/Phnom_Penh');
+            $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(5);
+
+            Attendances::create([
+                'att_code' => $code,
+                'att_startime' => $startTime,
+                'att_endtime' => $endTime,
+                'att_cou_id' => $request->course_id,
+                'att_status' => "Open"
+            ]);
+
+            return redirect()->back()->with('success', 'Attendance opened successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to open attendance: ' . $e->getMessage());
+        }
     }
     
     function teacherCourse(){
@@ -236,5 +238,40 @@ class TeacherController extends Controller
         $teacher = session('teacher');
         $showTeacher = Course::displayCourseByTeacher($teacher->tea_id);
         return view('teacher.courses.course', ['Teacher' => $showTeacher]);
+    }
+
+    public function closeatt(Request $request)
+    {
+        try {
+            $request->validate([
+                'attendance_id' => 'required'
+            ]);
+
+            $attendance = Attendances::where('att_id', $request->attendance_id)->first();
+
+            if (!$attendance) {
+                throw new \Exception('Attendance record not found');
+            }
+
+            if ($attendance->att_status !== 'Open') {
+                throw new \Exception('Attendance is already closed');
+            }
+
+            // Update attendance status
+            DB::table('attendances')
+            ->where('att_id', $request->attendance_id)
+            ->update([
+                'att_status' => 'None',
+                'att_endtime' => Carbon::now('Asia/Phnom_Penh')
+            ]);
+
+            $message = $request->input('auto_close') ? 
+                'Attendance closed automatically due to time expiration' : 
+                'Attendance closed successfully';
+
+            return redirect()->back()->with('success', $message);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to close attendance: ' . $e->getMessage());
+        }
     }
 }
