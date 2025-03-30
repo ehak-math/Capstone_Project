@@ -78,21 +78,32 @@ Route::get('/student/scheldule', function () {
 //
 // teacher
 //
-Route::get('/teacher/dashboard', function () {
-    return view('teacher.dashboard');
+
+
+
+Route::prefix('teacher')->group(function () {
+    Route::get('/login', [TeacherController::class, 'TeacherLoginForm'])->name('teacherLogin');
+    Route::post('/login', [TeacherController::class, 'TeacherLogin'])->name('teacher.login.submit');
+    Route::get('/dashboard', [TeacherController::class, 'teacherDashbord'])->name('teacher.dashboard');
+    Route::post('/logout', [TeacherController::class, 'logout'])->name('teacher.logout');
+    Route::get('/course', [TeacherController::class, 'teacherCourse'])->name('teacher.course');
+    // Route::get('/course/attendance/{id}', [TeacherController::class, 'teacherAttendance'])->name('attendance');
+    Route::post('/attendance/open', [TeacherController::class, 'openatt'])->name('teacher.attendance.open');
+    Route::get('/course/attendance/{id}', [TeacherController::class, 'teacherAttendance'])->name('teacher.attendance.show');
+
 });
 
 Route::get('/teacher/student', function () {
     return view('teacher.students.student');
 });
 
-Route::get('/teacher/attendance', function () {
-    return view('teacher.attendance');
-});
+// Route::get('/teacher/attendance', function () {
+//     return view('teacher.attendance');
+// });
 
-Route::get('/teacher/course', function () {
-    return view('teacher.courses.course');
-});
+// Route::get('/teacher/course', function () {
+//     return view('teacher.courses.course');
+// });
 
 Route::get('/teacher/scheldule', function () {
     return view('teacher.scheldule');

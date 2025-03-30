@@ -1,16 +1,20 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Teachers;
 use App\Models\Subject;
+use App\Models\Attendances;
+use Carbon\Carbon;
+
+use App\Models\Course;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class TeacherController extends Controller
 {
-
+// test function
     public function showsubject(){
         $subjects = Subject::displaySubject();
         $teachers = Teachers::displayTeacher();
@@ -104,5 +108,133 @@ class TeacherController extends Controller
                 ->with('error', 'Error updating subject: ' . $e->getMessage())
                 ->withInput();
         }
+    }
+
+    // the main function 
+
+
+    public function TeacherLoginForm()
+    {
+        return view('teacher.teacher_login');
+    }
+    public function TeacherLogin(Request $request)
+    {
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required'
+        ]);
+
+        $username = $request->input('username');
+        $password = $request->input('password');
+        
+        $teacher = Teachers::where('tea_username', $username)->first();
+        
+        if (!$teacher || $password !== $teacher->tea_password) {
+            return redirect()->back()
+                ->with('error', 'Username or Password is incorrect');
+        }   
+
+        $request->session()->put('teacher', $teacher);
+        
+        return redirect()->route('teacher.dashboard');  // Fixed route name
+    }
+
+    function teacherDashbord(){
+        // Check if teacher is logged in
+        if (!session('teacher')) {
+            return redirect()->route('teacher.login');
+        }
+        $teacher = session('teacher');
+        $showTeacher = Teachers::displayTeacher($teacher->tea_id);
+        return view('teacher.dashboard', ['teacher' => $teacher , 'Teacher' => $showTeacher]);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->session()->forget('teacher');
+        return redirect()->route('teacher.login');
+    }
+    function teacherAttendance($id)
+    {
+        // Check if teacher is logged in
+        if (!session('teacher')) {
+            return redirect()->route('teacher.login');
+        }
+        
+        $teacher = session('teacher');
+        
+        // Get schedule information
+        $displayschedule = Course::join('schedules', 'courses.cou_id', '=', 'schedules.sch_cou_id')
+            ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+            ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+            ->where('courses.cou_id', $id)
+            ->select([
+                'courses.cou_id',
+                'schedules.sch_start_time',
+                'schedules.sch_end_time',
+                'schedules.sch_day',
+                'teachers.tea_fname',
+                'subjects.sub_name'
+            ])
+            ->first();
+
+        // Get course information
+        $getcourse = Course::where('cou_id', $id)->first();
+
+        // Get today's attendance if exists
+        $today = Carbon::now()->format('l');
+        $currentAttendance = Attendances::where('att_cou_id', $id)
+            // ->whereDate('att_startime', Carbon::today())
+            ->first();
+
+        // Create new attendance if it doesn't exist and if it's the correct day
+        if (!$currentAttendance && $displayschedule && $displayschedule->sch_day === $today) {
+            $code = Str::upper(Str::random(6));
+            $startTime = Carbon::now();
+            $endTime = Carbon::now()->addMinutes(10);
+
+            $currentAttendance = Attendances::create([
+                'att_code' => $code,
+                'att_startime' => $startTime,
+                'att_endtime' => $endTime,
+                'att_cou_id' => $id,
+                'att_status' => "Open"
+            ]);
+        }
+
+        return view('teacher.courses.attendance', [
+            'att_dis' => $displayschedule,
+            'course' => $getcourse,
+            'attendance' => $currentAttendance
+        ]);
+    }
+    function openatt(Request $request){
+        // Check if teacher is logged in
+        
+        $request->validate([
+            'course_id' => 'required'
+        ]);
+        $code = Str::upper(Str::random(6));
+        $startTime = Carbon::now();
+        $endTime = Carbon::now()->addMinutes(10);
+
+        $open = Attendaces::create([
+            'att_code' => $code,
+            'att_startime' => $startTime,
+            'att_endtime' => $endTime,
+            'att_cou_id' => $request->course_id,
+            'att_status' => "Open"
+        ]);
+        return redirect()->back()->with('success', 'Attendance marked successfully!');
+    }
+    
+    function teacherCourse(){
+        // Check if teacher is logged in
+        if (!session('teacher')) {
+            return redirect()->route('teacher.login');
+        }
+        $teacher = session('teacher');
+        $showTeacher = Course::displayCourseByTeacher($teacher->tea_id);
+        return view('teacher.courses.course', ['Teacher' => $showTeacher]);
     }
 }

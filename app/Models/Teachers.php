@@ -23,10 +23,11 @@ class teachers extends Model
         'tea_profile'
     ];
 
-    public static function displayTeacher()
+    public static function displayTeacher($teaID)
     {
         $teachers = self::join('subjects', 'teachers.tea_subject','=','subjects.sub_id')
-            ->get();
+        ->where('tea_id', $teaID)    
+        ->first();
         return $teachers;
     }
 

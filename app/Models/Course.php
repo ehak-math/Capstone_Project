@@ -31,4 +31,14 @@ class Course extends Model
         $course->save();
 
     }
+    public static function displayCourseByTeacher($id)
+    {
+        $course = self::join('teachers', 'courses.cou_tea_id','=','teachers.tea_id')
+            ->join('subjects', 'teachers.tea_subject','=','subjects.sub_id')
+            ->join('grade', 'courses.cou_gra_id','=','grade.gra_id')
+            ->select('courses.*','teachers.tea_fname','grade.gra_class','subjects.sub_name','grade.gra_group')    
+            ->where('cou_tea_id',$id)
+            ->get();
+        return $course;
+    } 
 }
