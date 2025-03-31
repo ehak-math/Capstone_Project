@@ -116,7 +116,7 @@
                 <div class="next-event mt-4 rounded">
                     <div class="event-today mb-2 d-flex justify-content-between">
                         <h3 style="color: #11117E">Event</h3>
-                        <h5 style="color: #11117E">22</h5>
+                        <h5 style="color: #11117E" id="currentDate"></h5>
                     </div>
                     <div class="event">
                         <div class="event1 rounded">
