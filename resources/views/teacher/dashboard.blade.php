@@ -8,7 +8,7 @@
             <div class="col-lg-8 col-md-12">
                 <div class="date_name">
                     <h3>Greatings, Bro!</h3>
-                    <p >Welcome,
+                    <p >Welcome,{{$Teacher->tea_fname}}
                     </p>
                     <p >You is grade,
                     </p>

@@ -1,16 +1,20 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Teachers;
 use App\Models\Subject;
+use App\Models\Attendances;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use App\Models\Course;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class TeacherController extends Controller
 {
-
+// test function
     public function showsubject(){
         $subjects = Subject::displaySubject();
         $teachers = Teachers::displayTeacher();
@@ -103,6 +107,171 @@ class TeacherController extends Controller
             return redirect()->back()
                 ->with('error', 'Error updating subject: ' . $e->getMessage())
                 ->withInput();
+        }
+    }
+
+    // the main function 
+
+
+    public function TeacherLoginForm()
+    {
+        return view('teacher.teacher_login');
+    }
+    public function TeacherLogin(Request $request)
+    {
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required'
+        ]);
+
+        $username = $request->input('username');
+        $password = $request->input('password');
+        
+        $teacher = Teachers::where('tea_username', $username)->first();
+        
+        if (!$teacher || $password !== $teacher->tea_password) {
+            return redirect()->back()
+                ->with('error', 'Username or Password is incorrect');
+        }   
+
+        $request->session()->put('teacher', $teacher);
+        
+        return redirect()->route('teacher.dashboard');  // Fixed route name
+    }
+
+    function teacherDashbord(){
+        // Check if teacher is logged in
+        if (!session('teacher')) {
+            return redirect()->route('teacher.login');
+        }
+        $teacher = session('teacher');
+        $showTeacher = Teachers::displayTeacher($teacher->tea_id);
+        return view('teacher.dashboard', ['teacher' => $teacher , 'Teacher' => $showTeacher]);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->session()->forget('teacher');
+        return redirect()->route('teacher.login');
+    }
+    function teacherAttendance($id)
+    {
+        if (!session('teacher')) {
+            return redirect()->route('teacher.login');
+        }
+        
+        $teacher = session('teacher');
+        
+        // Get schedule information
+        $displayschedule = Course::join('schedules', 'courses.cou_id', '=', 'schedules.sch_cou_id')
+            ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+            ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+            ->where('courses.cou_id', $id)
+            ->select([
+                'courses.cou_id',
+                'schedules.sch_start_time',
+                'schedules.sch_end_time',
+                'schedules.sch_day',
+                'teachers.tea_fname',
+                'subjects.sub_name'
+            ])
+            ->first();
+
+        // Get course information
+        $getcourse = Course::where('cou_id', $id)->first();
+
+        // Get today's attendance if exists
+        $currentAttendance = Attendances::where('att_cou_id', $id)
+            ->whereDate('att_startime', Carbon::today('Asia/Phnom_Penh'))
+            ->first();
+
+        return view('teacher.courses.attendance', [
+            'att_dis' => $displayschedule,
+            'course' => $getcourse,
+            'attendance' => $currentAttendance
+        ]);
+    }
+    public function openatt(Request $request)
+    {
+        try {
+            if (!session('teacher')) {
+                return redirect()->route('teacher.login');
+            }
+
+            $request->validate([
+                'course_id' => 'required'
+            ]);
+
+            // Check if attendance already exists for today
+            $existingAttendance = Attendances::where('att_cou_id', $request->course_id)
+                ->whereDate('att_startime', Carbon::today('Asia/Phnom_Penh'))
+                ->first();
+
+            if ($existingAttendance) {
+                throw new \Exception('Attendance already exists for today');
+            }
+
+            // Create new attendance
+            $code = Str::upper(Str::random(6));
+            $startTime = Carbon::now('Asia/Phnom_Penh');
+            $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(5);
+
+            Attendances::create([
+                'att_code' => $code,
+                'att_startime' => $startTime,
+                'att_endtime' => $endTime,
+                'att_cou_id' => $request->course_id,
+                'att_status' => "Open"
+            ]);
+
+            return redirect()->back()->with('success', 'Attendance opened successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to open attendance: ' . $e->getMessage());
+        }
+    }
+    
+    function teacherCourse(){
+        // Check if teacher is logged in
+        if (!session('teacher')) {
+            return redirect()->route('teacher.login');
+        }
+        $teacher = session('teacher');
+        $showTeacher = Course::displayCourseByTeacher($teacher->tea_id);
+        return view('teacher.courses.course', ['Teacher' => $showTeacher]);
+    }
+
+    public function closeatt(Request $request)
+    {
+        try {
+            $request->validate([
+                'attendance_id' => 'required'
+            ]);
+
+            $attendance = Attendances::where('att_id', $request->attendance_id)->first();
+
+            if (!$attendance) {
+                throw new \Exception('Attendance record not found');
+            }
+
+            if ($attendance->att_status !== 'Open') {
+                throw new \Exception('Attendance is already closed');
+            }
+
+            // Update attendance status
+            DB::table('attendances')
+            ->where('att_id', $request->attendance_id)
+            ->update([
+                'att_status' => 'None',
+                'att_endtime' => Carbon::now('Asia/Phnom_Penh')
+            ]);
+
+            $message = $request->input('auto_close') ? 
+                'Attendance closed automatically due to time expiration' : 
+                'Attendance closed successfully';
+
+            return redirect()->back()->with('success', $message);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to close attendance: ' . $e->getMessage());
         }
     }
 }

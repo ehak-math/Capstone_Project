@@ -25,8 +25,9 @@
                                 <div class="card-body">
                                     <h5 class="card-title"> Subject {{$cou->sub_name}} </h5>
                                     <p class="card-text">Teacher: {{$cou->tea_fname}} </p>
-                                    <p class="card-text">Course: {{$cou->cou_gra_id}} </p>
-                                    <a href="/student/course_detail" class="btn btn-primary">See all</a>
+                                    <p class="card-text">Course: {{$cou->cou_id}} </p>
+                                    <p class="card-text">Grade: {{$cou->gra_class}}{{$cou->gra_group}} </p>
+                                    <a href="{{ route('student.course.submit.show', ['id' => $cou->cou_id]) }}" class="btn btn-primary">See all</a>
                                 </div>
                             </div>
                         </div>
