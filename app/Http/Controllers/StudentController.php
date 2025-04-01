@@ -105,6 +105,12 @@ class StudentController extends Controller
                 'courses.cou_id'
             ])
             ->get();
+        
+        $selectAttSub = Attendancesubmit::join('students', 'attendance_submit.att_sub_stu_id', '=', 'students.stu_id')
+            ->where('students.stu_id', $student->stu_id)
+            ->select('attendance_submit.*')
+            ->first();
+            
 
         // Check if student already submitted attendance
         if ($attendance->count() > 0) {
@@ -124,7 +130,8 @@ class StudentController extends Controller
         return view('student.courses.submit_attendance', [
             'getId' => $id,
             'attendanceSub' => $attendance,
-            'student' => $student
+            'student' => $student,
+            'selectAttSub' => $selectAttSub
         ]);
     }
 
@@ -153,13 +160,13 @@ class StudentController extends Controller
             $currentTime = Carbon::now('Asia/Phnom_Penh');
 
             // $status =  checkAttendanceStatus($startTime, $endTime, $currentTime); // "Present";
-            if ($currentTime->between($startTime, $endTime)) {
+            // if ($currentTime->between($startTime, $endTime)) {
                 $status =  "Present";
-            } else if ($currentTime->greaterThan($endTime)) {
-                $status =  "Late";
-            } else {
-                $status =  "Absent";
-            }
+            // } else if ($currentTime->greaterThan($endTime)) {
+            //     $status =  "Late";
+            // } else {
+            //     $status =  "Absent";
+            // }
                 
             if ($existingSubmission) {
                 throw new \Exception('You have already submitted attendance for this session');
@@ -176,13 +183,14 @@ class StudentController extends Controller
             }
 
             // Create attendance submission
-            $attendances = new Attendancesubmit();
-            $attendances->att_sub_code = $request->code_sub;
-            $attendances->att_sub_time = $currentTime;
-            $attendances->att_sub_status = $status;  // Fixed typo
-            $attendances->att_sub_stu_id = $student->stu_id;
-            $attendances->att_sub_att_id = $request->att_id;
-            $attendances->save();
+                $attendanceSubmit = new Attendancesubmit();
+                $attendanceSubmit->att_sub_stu_id = $student->stu_id;
+                $attendanceSubmit->att_sub_att_id = $request->att_id;
+                $attendanceSubmit->att_sub_code = $request->code_sub;
+                $attendanceSubmit->att_sub_time = $currentTime;
+                $attendanceSubmit->att_sub_status = $status;
+                $attendanceSubmit->save();
+
 
             return redirect()->back()->with('success', 'Attendance submitted successfully!');
         } catch (\Exception $e) {

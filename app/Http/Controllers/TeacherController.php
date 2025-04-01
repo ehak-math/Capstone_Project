@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Teachers;
 use App\Models\Subject;
 use App\Models\Attendances;
+use App\Models\Attendancesubmit;
+use App\Models\Documents;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\Course;
@@ -179,6 +181,8 @@ class TeacherController extends Controller
 
         // Get course information
         $getcourse = Course::where('cou_id', $id)->first();
+        
+        $selectStudentSubmit = Attendancesubmit::get();
 
         // Get today's attendance if exists
         $currentAttendance = Attendances::where('att_cou_id', $id)
@@ -188,7 +192,8 @@ class TeacherController extends Controller
         return view('teacher.courses.attendance', [
             'att_dis' => $displayschedule,
             'course' => $getcourse,
-            'attendance' => $currentAttendance
+            'attendance' => $currentAttendance,
+            'selectStudentSubmit' => $selectStudentSubmit
         ]);
     }
     public function openatt(Request $request)
@@ -215,8 +220,18 @@ class TeacherController extends Controller
             $code = Str::upper(Str::random(6));
             $startTime = Carbon::now('Asia/Phnom_Penh');
             $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(5);
-
-            Attendances::create([
+            
+            // create submit attendance for see student
+            $selectedStudent = Course::join('grade' , 'courses.cou_gra_id', '=', 'grade.gra_id')
+                ->join('students' , 'grade.gra_id', '=', 'students.stu_gra_id')
+                ->where('courses.cou_id', $request->course_id)
+                ->select('students.stu_id') ->get();
+            foreach($selectedStudent as $student){
+                Attendancesubmit::create([
+                    'att_sub_stu_id' => $student->stu_id,
+                ]);
+            }
+                Attendances::create([
                 'att_code' => $code,
                 'att_startime' => $startTime,
                 'att_endtime' => $endTime,
@@ -244,7 +259,7 @@ class TeacherController extends Controller
     {
         try {
             $request->validate([
-                'attendance_id' => 'required'
+                'attendan.e_id' => 'required'
             ]);
 
             $attendance = Attendances::where('att_id', $request->attendance_id)->first();
@@ -274,4 +289,96 @@ class TeacherController extends Controller
             return redirect()->back()->with('error', 'Failed to close attendance: ' . $e->getMessage());
         }
     }
+
+    public function showDocument()
+    {
+        $teacher = session('teacher');
+        if (!$teacher) {
+            return redirect()->route('teacher.login')->with('error', 'Teacher session not found');
+        }
+
+        $select = Course::join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+            ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+            ->where('teachers.tea_id', $teacher->tea_id)
+            ->select([
+                'courses.cou_id',
+                'teachers.tea_fname',
+                'subjects.sub_name'
+            ])
+            ->get();
+        // $select = Course::all();
+
+        $documents = Documents::all();
+
+    return view('teacher.document', compact('select', 'documents'));
+
+
+    }
+    function uploadsfile($data){
+        if ($data) {
+            $file =$data;
+            
+            // Create unique filename
+            $imageName = 'doc_file' . '_' . time() . '.' . $file->getClientOriginalExtension();
+            
+            // Store file in public/images directory
+            $path = $file->storeAs('images', $imageName, 'public');
+        }
+        return $path;
+        }
+    public function uploadDocument(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:pdf|max:2048',
+            'description'=> 'required',
+            'tittle'=> 'required',
+            'course'=> 'required',
+            'typeOfdoc'=> 'required',
+        ]);
+
+        $path = $this->uploadsfile($request->file('file'));
+        
+        if (!$path) {
+            return redirect()->back()
+                ->with('error', 'Failed to upload file')
+                ->withInput();
+        }
+
+        $doc = new Documents();
+        $doc->doc_type = $request->typeOfdoc;
+        $doc->doc_name = $request->tittle;
+        $doc->doc_deatial = $request->description;
+        $doc->doc_cou_id = $request->course;
+        $doc->doc_date = Carbon::now('Asia/Phnom_Penh');
+        $doc->doc_file = $path; // Assuming you have a column for the file path
+        $doc->save();
+
+        
+        return redirect()->back()->with('success', 'File uploaded successfully!');
+    }
+    // function to download document
+    public function downloadDocument($id)
+    {
+        $document = Documents::findOrFail($id);
+        $path = storage_path('app/public/' . $document->doc_file);
+        
+        if (file_exists($path)) {
+            return response()->download($path, $document->doc_title);
+        }
+        
+        return redirect()->back()->with('error', 'File not found.');
+    }
+
+public function deleteDocument($id)
+{
+    $document = Documents::findOrFail($id);
+    
+    // Delete file from storage
+    Storage::disk('public')->delete($document->doc_file);
+    
+    // Delete record from database
+    $document->delete();
+    
+    return redirect()->back()->with('success', 'Document deleted successfully.');
+}
 }

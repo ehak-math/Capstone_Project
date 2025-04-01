@@ -18,7 +18,8 @@ class Documents extends Model
             'doc_name',
             'doc_deatial',
             'doc_cou_id',
-            'doc_date'
+            'doc_date',
+            'doc_file'
         ];
     public static function displayDocument()
     {
