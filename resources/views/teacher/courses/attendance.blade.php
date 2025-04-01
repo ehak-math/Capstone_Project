@@ -4,7 +4,7 @@
 
 @php
     use Carbon\Carbon;
-    $currentDay = now('Asia/Phnom_Penh')->format('l');
+    $currentDay = strtolower(now('Asia/Phnom_Penh')->format('l'));
     $currentTime = now('Asia/Phnom_Penh');
     
     // Parse schedule times

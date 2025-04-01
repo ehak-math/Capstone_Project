@@ -31,7 +31,7 @@ Route::post('student.addStudent',[AdminController::class,'addStudent'])->name('a
 Route::get('details/{id}', [AdminController::class, 'selectbyId'])->name('showDetails');
 
 
-Route::get('scheldule',[AdminController::class,'getschedule']);
+Route::get('/admin/scheldule',[AdminController::class,'getschedule']);
 Route::post('scheldule.crategrade',[AdminController::class,'createGrade'])->name('crategrade');
 Route::post('scheldule.createcourse',[AdminController::class,'createCourse'])->name('createcourse');
 Route::post('scheldule.createschedule',[AdminController::class,'createSchedule'])->name('createschedule');

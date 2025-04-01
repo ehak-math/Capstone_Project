@@ -95,7 +95,7 @@ class StudentController extends Controller
         $attendance = Attendances::join('courses', 'attendances.att_cou_id', '=', 'courses.cou_id')
             ->where('courses.cou_id', $id)
             ->where('attendances.att_status', 'Open')
-            ->whereDate('attendances.att_startime', $currentTime->toDateString())
+            // ->whereDate('attendances.att_startime', $currentTime->toDateString())
             ->select([
                 'attendances.att_id',
                 'attendances.att_code',
@@ -137,7 +137,9 @@ class StudentController extends Controller
             $request->validate([
                 'code_sub' => 'required',            
                 'cou_id' => 'required',            
-                'att_id' => 'required',            
+                'att_id' => 'required', 
+                'att_start' => 'required',
+                'att_end' => 'required'           
             ]);
 
             $student = session('student');
@@ -146,12 +148,18 @@ class StudentController extends Controller
             $existingSubmission = Attendancesubmit::where('att_sub_stu_id', $student->stu_id)
                 ->where('att_sub_att_id', $request->att_id)
                 ->first();
-            $startTime = $existingSubmission->att_startime;
-            $endTime = $existingSubmission->att_endtime;
+            $startTime = $request->att_start;
+            $endTime = $request->att_end;
             $currentTime = Carbon::now('Asia/Phnom_Penh');
 
-            $status = checkAttendanceStatus($startTime, $endTime, $currentTime);
-            
+            // $status =  checkAttendanceStatus($startTime, $endTime, $currentTime); // "Present";
+            if ($currentTime->between($startTime, $endTime)) {
+                $status =  "Present";
+            } else if ($currentTime->greaterThan($endTime)) {
+                $status =  "Late";
+            } else {
+                $status =  "Absent";
+            }
                 
             if ($existingSubmission) {
                 throw new \Exception('You have already submitted attendance for this session');
@@ -181,15 +189,11 @@ class StudentController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
-    private function checkAttendanceStatus($startTime, $endTime, $currentTime) 
+    function checkAttendanceStatus($startTime, $endTime, $currentTime) 
             {
                 
-                if ($currentTime->between($startTime, $endTime)) {
-                    return "Present";
-                } else if ($currentTime->greaterThan($endTime)) {
-                    return "Late";
-                } else {
-                    return "Absent";
-                }
+               
             }
+
+            
 }
