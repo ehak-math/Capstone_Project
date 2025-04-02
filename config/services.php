@@ -27,6 +27,10 @@ return [
     'resend' => [
         'key' => env('RESEND_KEY'),
     ],
+    'telegram' => [
+    'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+    ],
+
 
     'slack' => [
         'notifications' => [

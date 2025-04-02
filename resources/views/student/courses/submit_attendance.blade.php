@@ -1,8 +1,34 @@
-@extends('layout.navbar_student')
+{{-- @extends('layout.navbar_student')
 @section('title', 'Submit Attendance')
-@section('mainContent')
+@section('mainContent') --}}
 
-<div class="container mt-4">
+<h1>hello</h1>
+<p>{{$selectAttSub->att_sub_id}}</p>
+<p>{{$selectAttSub->att_sub_status}}</p>
+<p>{{$selectAttSub->stu_fname}}</p>
+{{-- @foreach($attendanceSub as $attsub) --}}
+    <p>{{$attendanceSub->att_id}}</p>
+    <p>{{$getId}}</p>
+    {{-- <p>{{$attsub->att_status}}</p>
+    <p>{{$attsub->att_startime}}</p>
+    <p>{{$attsub->att_endtime}}</p> --}}
+{{-- @endforeach   --}}
+  <hr><hr>
+    <form action="{{ route('student.course.submit') }}" method="POST" class="needs-validation" novalidate>
+        @csrf
+        <label for="">Code</label>
+        <input type="text" name = "code_sub" value="">
+        <input type="hidden" name="cou_id" value="{{$getId}}" required>
+        <input type="hidden" name="att_id" value="{{$attendanceSub->att_id}}" required>
+        <input type="hidden" name="att_sub_id" value="{{$selectAttSub->att_sub_id}}" required>
+        <input type="hidden" name="att_start" value="{{$attendanceSub->att_startime}}" required>
+        <input type="hidden" name="att_end" value="{{$attendanceSub->att_endtime}}" required>
+        <button type="submit" class="btn btn-primary btn-lg w-100" 
+                onclick="return confirm('Are you sure you want to submit attendance?')">
+            <i class="fas fa-check-circle me-2"></i>Submit Attendance
+        </button>
+    </form>
+{{-- <div class="container mt-4">
 
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -97,15 +123,10 @@
                 <p class="text-muted mb-0">There are no open attendance sessions at this time.</p>
             </div>
         </div>
-    @endif
+    @endif  
+</div> --}}
 
-
-
-
-    
-</div>
-
-<style>
+{{-- <style>
 .attendance-card {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     border: none;
@@ -164,4 +185,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 @endpush
 
-@endsection
+@endsection --}}

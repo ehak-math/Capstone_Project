@@ -5,8 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Controller;
 
-
+use App\Http\Controllers\TelegramController;
+use Telegram\Bot\Laravel\Facades\Telegram;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -145,3 +147,6 @@ Route::get('/teacher/scheldule', function () {
 //Route::get('/message', function () {
 //    return view('admin.message');
 //});
+
+
+        

@@ -93,39 +93,32 @@ class StudentController extends Controller
         
         // Get active attendance for the course
         $attendance = Attendances::join('courses', 'attendances.att_cou_id', '=', 'courses.cou_id')
-            ->where('courses.cou_id', $id)
-            ->where('attendances.att_status', 'Open')
+            ->where('attendances.att_cou_id', $id)
+            // ->where('attendances.att_status', 'Open')
             // ->whereDate('attendances.att_startime', $currentTime->toDateString())
-            ->select([
-                'attendances.att_id',
-                'attendances.att_code',
-                'attendances.att_status',
-                'attendances.att_startime',
-                'attendances.att_endtime',
-                'courses.cou_id'
-            ])
-            ->get();
+            
+            ->first();
         
         $selectAttSub = Attendancesubmit::join('students', 'attendance_submit.att_sub_stu_id', '=', 'students.stu_id')
             ->where('students.stu_id', $student->stu_id)
-            ->select('attendance_submit.*')
+            ->orderBy('attendance_submit.att_sub_id', 'desc')
+            ->select('attendance_submit.*', 'students.*')
             ->first();
             
-
         // Check if student already submitted attendance
-        if ($attendance->count() > 0) {
-            foreach ($attendance as $att) {
-                $existingSubmission = Attendancesubmit::where('att_sub_stu_id', $student->stu_id)
-                    ->where('att_sub_att_id', $att->att_id)
-                    ->first();
+        // if ($attendance->count() > 0) {
+        //     foreach ($attendance as $att) {
+        //         $existingSubmission = Attendancesubmit::where('att_sub_stu_id', $student->stu_id)
+        //             ->where('att_sub_att_id', $att->att_id)
+        //             ->first();
 
-                if ($existingSubmission) {
-                    $att->already_submitted = true;
-                } else {
-                    $att->already_submitted = false;
-                }
-            }
-        }
+        //         if ($existingSubmission) {
+        //             $att->already_submitted = true;
+        //         } else {
+        //             $att->already_submitted = false;
+        //         }
+        //     }
+        // }
 
         return view('student.courses.submit_attendance', [
             'getId' => $id,
@@ -141,12 +134,14 @@ class StudentController extends Controller
             return redirect()->route('student.login');
         }
         try {
+
             $request->validate([
                 'code_sub' => 'required',            
                 'cou_id' => 'required',            
                 'att_id' => 'required', 
                 'att_start' => 'required',
-                'att_end' => 'required'           
+                'att_end' => 'required',
+                'att_sub_id' => 'required',          
             ]);
 
             $student = session('student');
@@ -162,34 +157,45 @@ class StudentController extends Controller
             // $status =  checkAttendanceStatus($startTime, $endTime, $currentTime); // "Present";
             // if ($currentTime->between($startTime, $endTime)) {
                 $status =  "Present";
+                DB::table('attendance_submit')
+                ->where('att_sub_id', $request->att_sub_id)
+                ->update([
+                    'att_sub_code' => $request->code_sub,
+                    'att_sub_time' =>$currentTime ,
+                    'att_sub_status' => $status,
+                    'att_sub_stu_id' => $student->stu_id,
+                    'att_sub_att_id' => $request->att_id,
+                ]);
             // } else if ($currentTime->greaterThan($endTime)) {
             //     $status =  "Late";
             // } else {
             //     $status =  "Absent";
             // }
                 
-            if ($existingSubmission) {
-                throw new \Exception('You have already submitted attendance for this session');
-            }
+            // if ($existingSubmission) {
+            //     throw new \Exception('You have already submitted attendance for this session');
+            // }
 
             // Verify attendance code and status
-            $attendance = Attendances::where('att_id', $request->att_id)
-                ->where('att_code', $request->code_sub)
-                ->where('att_status', 'Open')
-                ->first();
+            // $attendance = Attendances::where('att_id', $request->att_id)
+            //     ->where('att_code', $request->code_sub)
+            //     ->where('att_status', 'Open')
+            //     ->first();
 
-            if (!$attendance) {
-                throw new \Exception('Invalid attendance code or attendance session is closed');
-            }
+            // if (!$attendance) {
+            //     throw new \Exception('Invalid attendance code or attendance session is closed');
+            // }
 
             // Create attendance submission
-                $attendanceSubmit = new Attendancesubmit();
-                $attendanceSubmit->att_sub_stu_id = $student->stu_id;
-                $attendanceSubmit->att_sub_att_id = $request->att_id;
-                $attendanceSubmit->att_sub_code = $request->code_sub;
-                $attendanceSubmit->att_sub_time = $currentTime;
-                $attendanceSubmit->att_sub_status = $status;
-                $attendanceSubmit->save();
+                // $attendanceSubmit = new Attendancesubmit();
+                // $attendanceSubmit->att_sub_stu_id = $student->stu_id;
+                // $attendanceSubmit->att_sub_att_id = $request->att_id;
+                // $attendanceSubmit->att_sub_code = $request->code_sub;
+                // $attendanceSubmit->att_sub_time = $currentTime;
+                // $attendanceSubmit->att_sub_status = $status;
+                // $attendanceSubmit->save();
+                
+
 
 
             return redirect()->back()->with('success', 'Attendance submitted successfully!');
