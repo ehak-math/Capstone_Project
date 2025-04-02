@@ -518,8 +518,10 @@
 }
 
 input:focus ~ label,
-input:focus ~ :valid {
+input:valid ~ label {
     top: -5px;
+    color: #11117E;
+    font-size: 0.9em;
 }
 
 .input-box input {
@@ -534,10 +536,10 @@ input:focus ~ :valid {
 
 .input-box i {
     position: absolute;
-    right: 8px;
+    right: 25px;
     color: #11117E;
     font-size: 1.2em;
-    top: 20px;
+    top: 15px;
 }
 
 
