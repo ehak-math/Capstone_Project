@@ -113,14 +113,14 @@ Route::get('/teacher/student', function () {
 //     return view('teacher.courses.course');
 // });
 
-Route::get('/teacher/scheldule', function () {
-    return view('teacher.scheldule');
-});
+// Route::get('/teacher/scheldule', function () {
+//     return view('teacher.scheldule');
+// });
 
-//Route::get('admin/teacher', [TeacherController::class, 'displayTeacher'])->name('admin.teacher');
-//Route::post('admin/teacher/store', [TeacherController::class, 'store'])->name('teacher.store');
-//Route::put('admin/teacher/{id}', [TeacherController::class, 'updateTeacher'])->name('teacher.updateTeacher');
-//
+// Route::get('admin/teacher', [TeacherController::class, 'displayTeacher'])->name('admin.teacher');
+// Route::post('admin/teacher/store', [TeacherController::class, 'store'])->name('teacher.store');
+// Route::put('admin/teacher/{id}', [TeacherController::class, 'updateTeacher'])->name('teacher.updateTeacher');
+
 // Route::get('/dashboard', function () {
 //    return view('admin.dashboard');
 // });
@@ -128,17 +128,19 @@ Route::get('/teacher/scheldule', function () {
 // Route::get('teacher', function () {
 //    return view('admin.teacher');
 // });
-////student
-//Route::get('admin/student', [StudentController::class, 'displayStudent'])->name('admin.student');
-//Route::post('admin/student/storeStudent', [StudentController::class, 'storeStudent'])->name('student.storeStudent');
-//Route::put('/student/{id}', [StudentController::class, 'update'])->name('student.update');
-//
+// //student
+// Route::get('admin/student', [StudentController::class, 'displayStudent'])->name('admin.student');
+// Route::post('admin/student/storeStudent', [StudentController::class, 'storeStudent'])->name('student.storeStudent');
+// Route::put('/student/{id}', [StudentController::class, 'update'])->name('student.update');
 
-//
-//Route::get('/users', function () {
+
+
+// Route::get('/users', function () {
 //    return view('admin.users');
-//});
-//
-//Route::get('/message', function () {
+// });
+
+// Route::get('/message', function () {
 //    return view('admin.message');
-//});
+// });
+
+Route::resource('/admin/students', App\Http\Controllers\StudentsController::class);
