@@ -65,30 +65,102 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Grade created successfully!');
 
     }
-    function showDetails($id){
-
-         $stuById = Students::join('grade', 'students.stu_gra_id','=','grade.gra_id')
-//             ->join('teams', 'teams.team_id','=','grade.gra_id')
-             ->where('students.stu_id',$id)
-             ->first();
-//        $stuById = Students::findOrFail($id);
-         return $stuById;
-    }
-    function selectbyId($id)
-    {
-        $stubyId = $this->showDetails($id);
-
-        return view('admin.student_detial', compact('stubyId'));
-    }
 
 
     function displayOnStu()
     {
         $students = Students::displayStudent();
         $grades = Grade::displayGrade();
-        return view('admin.student', ['students' => $students, 'grades' => $grades]);
+        return view('admin.students.index', ['students' => $students, 'grades' => $grades]);
 
     }
+
+    public function deleteStudent($id)
+    {
+        $student = Students::findOrFail($id);
+        $student->delete();
+
+        return redirect()->route('admin.students.index')->with('success', 'Student deleted successfully.');
+    }
+
+    public function updateStudent(Request $request, $id)
+    {
+        // Validate the incoming request data
+        $request->validate([
+            'stu_fname' => 'required|string|max:255',
+            'stu_username' => 'required|string|max:255',
+            'stu_gender' => 'required|string',
+            'stu_grade' => 'required|integer',
+            'stu_ph_number' => 'required|string|max:15',
+            'stu_parent_number' => 'required|string|max:15',
+            'stu_dob' => 'required|date',
+            'stu_profile' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
+        ]);
+
+        // Find the student by ID
+        $student = Students::findOrFail($id);
+
+        // Handle profile image upload if provided
+        if ($request->hasFile('stu_profile')) {
+            // Delete the old profile image if it exists
+            if ($student->stu_profile && Storage::disk('public')->exists($student->stu_profile)) {
+                Storage::disk('public')->delete($student->stu_profile);
+            }
+
+            // Upload the new profile image
+            $path = $request->file('stu_profile')->store('profile-images', 'public');
+            $student->stu_profile = $path;
+        }
+
+        // Update other fields
+        $student->stu_fname = $request->stu_fname;
+        $student->stu_username = $request->stu_username;
+        $student->stu_gender = $request->stu_gender;
+        $student->stu_gra_id = $request->stu_grade;
+        $student->stu_ph_number = $request->stu_ph_number;
+        $student->stu_parent_number = $request->stu_parent_number;
+        $student->stu_dob = $request->stu_dob;
+
+        // Save the updated student
+        $student->save();
+
+        // Redirect back with a success message
+        return redirect()->route('admin.students.index')->with('success', 'Student updated successfully.');
+    }
+
+
+    //search
+    public function searchStudents(Request $request)
+    {
+        $query = Students::query();
+    
+        // Search by username, full name, or phone number
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('stu_username', 'LIKE', '%' . $search . '%')
+                  ->orWhere('stu_fname', 'LIKE', '%' . $search . '%')
+                  ->orWhere('stu_ph_number', 'LIKE', '%' . $search . '%');
+            });
+        }
+    
+        // Filter by gender
+        if ($request->has('gender') && !empty($request->gender)) {
+            $query->where('stu_gender', $request->gender);
+        }
+    
+        // Filter by grade
+        if ($request->has('grade') && !empty($request->grade)) {
+            $query->where('stu_gra_id', $request->grade);
+        }
+    
+        // Include related grade data
+        $students = $query->with('grade')->get();
+    
+        // Return the filtered students as JSON
+        return response()->json($students);
+    }
+    
 //admin.schedule
 
     function disGrade()
