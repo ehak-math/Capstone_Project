@@ -31,9 +31,9 @@
                             <tr>
                                 <td>${student.stu_id}</td>
                                 <td>
-                                    ${student.stu_profile && student.stu_profile !== '' ? 
-                                        `<img class="profile_stu" src="/storage/${student.stu_profile}" alt="Student Profile">` : 
-                                        `<img class="profile_stu" src="/images/placeholder.png" alt="Placeholder Image">`}
+                                    ${student.stu_profile && student.stu_profile !== '' ?
+                                `<img class="profile_stu" src="/storage/${student.stu_profile}" alt="Student Profile">` :
+                                `<img class="profile_stu" src="/images/placeholder.png" alt="Placeholder Image">`}
                                 </td>
                                 <td>${student.stu_fname}</td>
                                 <td>${student.stu_username}</td>
@@ -57,9 +57,9 @@
                                                 <div class="modal-body">
                                                     <div class="d-flex flex-column gap-2">
                                                         <div class="text-center mt-3">
-                                                            ${student.stu_profile && student.stu_profile !== '' ? 
-                                                                `<img src="/storage/${student.stu_profile}" alt="Student Profile" style="max-width: 200px; border-radius: 5px;">` : 
-                                                                `<img src="/images/placeholder.png" alt="Placeholder Image" style="max-width: 200px; border-radius: 5px;">`}
+                                                            ${student.stu_profile && student.stu_profile !== '' ?
+                                `<img src="/storage/${student.stu_profile}" alt="Student Profile" style="max-width: 200px; border-radius: 5px;">` :
+                                `<img src="/images/placeholder_student.png" alt="Placeholder Image" style="max-width: 200px; border-radius: 5px;">`}
                                                         </div>
                                                         <div class="d-flex justify-content-between">
                                                             <span>REF ID:</span>
@@ -142,9 +142,9 @@
                                                                 <label for="stu_grade" class="form-label">Grade</label>
                                                                 <select name="stu_grade" class="form-select">
                                                                     @foreach($grades as $gra)
-                                                                    <option value="{{ $gra->gra_id }}" {{ $stu->stu_gra_id == $gra->gra_id ? 'selected' : '' }}>
-                                                                        {{ $gra->gra_class }} {{$stu->gra_group}}
-                                                                    </option>
+                                                                        <option value="{{ $gra->gra_id }}" {{ $stu->stu_gra_id == $gra->gra_id ? 'selected' : '' }}>
+                                                                            {{ $gra->gra_class }} {{$stu->gra_group}}
+                                                                        </option>
                                                                     @endforeach
                                                                 </select>
                                                             </div>
