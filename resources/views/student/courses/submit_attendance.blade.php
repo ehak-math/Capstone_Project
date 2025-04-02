@@ -3,6 +3,7 @@
 @section('mainContent')
 
 <div class="container mt-4">
+
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
@@ -35,9 +36,13 @@
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
                             <strong>Time Window:</strong> 
+                            @if($attsub->att_startime && $attsub->att_endtime)
                             {{ Carbon\Carbon::parse($attsub->att_startime)->format('H:i') }} - 
                             {{ Carbon\Carbon::parse($attsub->att_endtime)->format('H:i') }}
-                        </div>
+                        @else
+                            <span class="text-warning">Time not set</span>
+                        @endif
+                    </div>
                         
                         @if(!$attsub->already_submitted)
                             <form action="{{ route('student.course.submit') }}" method="POST" class="needs-validation" novalidate>
@@ -65,6 +70,8 @@
 
                                 <input type="hidden" name="cou_id" value="{{$attsub->cou_id}}" required>
                                 <input type="hidden" name="att_id" value="{{$attsub->att_id}}" required>
+                                <input type="hidden" name="att_start" value="{{$attsub->att_startime}}" required>
+                                <input type="hidden" name="att_end" value="{{$attsub->att_endtime}}" required>
 
                                 <button type="submit" class="btn btn-primary btn-lg w-100" 
                                         onclick="return confirm('Are you sure you want to submit attendance?')">
@@ -91,6 +98,11 @@
             </div>
         </div>
     @endif
+
+
+
+
+    
 </div>
 
 <style>

@@ -53,6 +53,7 @@
         <a href="/student/scheldule" class="nav-link {{ Request::is('student/scheldule') ? 'active' : '' }}" id="scheldule-link">
             <i class="fa-solid fa-calendar-days"></i><span>Schedule</span>
         </a>
+       
     </div>
 
     <!-- main content -->

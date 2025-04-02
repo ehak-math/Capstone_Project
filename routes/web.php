@@ -31,7 +31,7 @@ Route::post('student.addStudent',[AdminController::class,'addStudent'])->name('a
 Route::get('details/{id}', [AdminController::class, 'selectbyId'])->name('showDetails');
 
 
-Route::get('scheldule',[AdminController::class,'getschedule']);
+Route::get('/admin/scheldule',[AdminController::class,'getschedule']);
 Route::post('scheldule.crategrade',[AdminController::class,'createGrade'])->name('crategrade');
 Route::post('scheldule.createcourse',[AdminController::class,'createCourse'])->name('createcourse');
 Route::post('scheldule.createschedule',[AdminController::class,'createSchedule'])->name('createschedule');
@@ -98,7 +98,10 @@ Route::prefix('teacher')->group(function () {
     Route::post('/attendance/close', [TeacherController::class, 'closeatt'])->name('teacher.attendance.close');
     Route::post('/attendance/open', [TeacherController::class, 'openatt'])->name('teacher.attendance.open');
     Route::get('/course/attendance/{id}', [TeacherController::class, 'teacherAttendance'])->name('teacher.attendance.show');
-
+    Route::get('/document', [TeacherController::class, 'showDocument'])->name('teacher.show.document');
+    Route::post('/document/upload', [TeacherController::class, 'uploadDocument'])->name('teacher.document');
+    Route::get('/teacher/document/download/{id}', [TeacherController::class, 'downloadDocument'])->name('teacher.document.download');
+    Route::delete('/teacher/document/delete/{id}', [TeacherController::class, 'deleteDocument'])->name('teacher.document.delete');
 });
 
 Route::get('/teacher/student', function () {

@@ -4,7 +4,7 @@
 
 @php
     use Carbon\Carbon;
-    $currentDay = now('Asia/Phnom_Penh')->format('l');
+    $currentDay = strtolower(now('Asia/Phnom_Penh')->format('l'));
     $currentTime = now('Asia/Phnom_Penh');
     
     // Parse schedule times
@@ -94,9 +94,25 @@
                         @endif
                     @endif
                 </div>
+
+                
             </div>
         </div>
     </div>
+ {{-- @if($selectStudentSubmit->count() > 0) --}}
+ 
+        @foreach($selectStudentSubmit as $history)
+            <div class="alert alert-info mb-3">
+                <strong>Course:</strong> {{$history->att_sub_id}}<br>
+                <strong>Status:</strong> {{$history->att_sub_status }}<br>
+                
+            </div>
+        @endforeach
+   
+{{-- @else
+<p>You need to create </p>
+@endif --}}
+
 </div>
 
 <style>
