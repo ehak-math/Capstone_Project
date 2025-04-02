@@ -259,7 +259,7 @@ class TeacherController extends Controller
     {
         try {
             $request->validate([
-                'attendan.e_id' => 'required'
+                'attendance_id' => 'required'
             ]);
 
             $attendance = Attendances::where('att_id', $request->attendance_id)->first();
@@ -369,16 +369,16 @@ class TeacherController extends Controller
         return redirect()->back()->with('error', 'File not found.');
     }
 
-public function deleteDocument($id)
-{
-    $document = Documents::findOrFail($id);
-    
-    // Delete file from storage
-    Storage::disk('public')->delete($document->doc_file);
-    
-    // Delete record from database
-    $document->delete();
-    
-    return redirect()->back()->with('success', 'Document deleted successfully.');
-}
+    public function deleteDocument($id)
+    {
+        $document = Documents::findOrFail($id);
+        
+        // Delete file from storage
+        Storage::disk('public')->delete($document->doc_file);
+        
+        // Delete record from database
+        $document->delete();
+        
+        return redirect()->back()->with('success', 'Document deleted successfully.');
+    }
 }
