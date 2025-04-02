@@ -120,21 +120,24 @@ Route::get('/teacher/student', function () {
 //     return view('teacher.scheldule');
 // });
 
-// Route::get('admin/teacher', [TeacherController::class, 'displayTeacher'])->name('admin.teacher');
-// Route::post('admin/teacher/store', [TeacherController::class, 'store'])->name('teacher.store');
-// Route::put('admin/teacher/{id}', [TeacherController::class, 'updateTeacher'])->name('teacher.updateTeacher');
+Route::get('admin/teacher', [TeacherController::class, 'displayTeacher'])->name('admin.teacher');
+Route::post('admin/teacher/store', [TeacherController::class, 'store'])->name('teacher.store');
+Route::put('admin/teacher/{id}', [TeacherController::class, 'updateTeacher'])->name('teacher.updateTeacher');
 
-// Route::get('/dashboard', function () {
-//    return view('admin.dashboard');
-// });
+Route::get('/dashboard', function () {
+   return view('admin.dashboard');
+});
 
-// Route::get('teacher', function () {
-//    return view('admin.teacher');
-// });
-// //student
-// Route::get('admin/student', [StudentController::class, 'displayStudent'])->name('admin.student');
-// Route::post('admin/student/storeStudent', [StudentController::class, 'storeStudent'])->name('student.storeStudent');
-// Route::put('/student/{id}', [StudentController::class, 'update'])->name('student.update');
+Route::get('teacher', function () {
+   return view('admin.teacher');
+});
+
+//student
+Route::get('admin/students/index', [AdminController::class, 'displayOnStu'])->name('admin.students.index');
+Route::delete('admin/students/index/{id}', [AdminController::class, 'deleteStudent'])->name('deleteStudent');
+Route::put('admin/students/{id}', [AdminController::class, 'updateStudent'])->name('updateStudent');
+
+Route::get('admin/students/search', [AdminController::class, 'searchStudents'])->name('searchStudents');
 
 
 
@@ -146,4 +149,3 @@ Route::get('/teacher/student', function () {
 //    return view('admin.message');
 // });
 
-Route::resource('/admin/students', App\Http\Controllers\StudentsController::class);

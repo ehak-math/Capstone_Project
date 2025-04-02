@@ -32,7 +32,7 @@
                 <input type="password" name="password" id="password" class="input-field" required>
                 <label for="">Password</label>
             </div>
-            <a href="/teacher/dashboard" class="btn-login">Login</a>
+            <a href="/admin/dashboard" class="btn-login">Login</a>
         </form>
     </div>
     </div>
