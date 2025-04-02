@@ -149,16 +149,3 @@ Route::get('admin/students/search', [AdminController::class, 'searchStudents'])-
 
 // Route::get('/message', function () {
 //    return view('admin.message');
-<<<<<<< HEAD
-//});
-
-
-        
-=======
-// });
-
-<<<<<<< HEAD
-=======
-Route::resource('/admin/students', App\Http\Controllers\StudentsController::class);
->>>>>>> beb7f014996e2b11e75a9964ce4076e3a006604f
->>>>>>> f23235ee314c7214562023857ccf863c24af4874

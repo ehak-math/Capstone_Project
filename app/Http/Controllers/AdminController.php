@@ -133,29 +133,34 @@ class AdminController extends Controller
     public function searchStudents(Request $request)
     {
         $query = Students::query();
-
-        // Filter by name
-        if ($request->has('name') && $request->name != '') {
-            $query->where('stu_fname', 'LIKE', '%' . $request->name . '%');
+    
+        // Search by username, full name, or phone number
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('stu_username', 'LIKE', '%' . $search . '%')
+                  ->orWhere('stu_fname', 'LIKE', '%' . $search . '%')
+                  ->orWhere('stu_ph_number', 'LIKE', '%' . $search . '%');
+            });
         }
-
+    
         // Filter by gender
-        if ($request->has('gender') && $request->gender != '') {
+        if ($request->has('gender') && !empty($request->gender)) {
             $query->where('stu_gender', $request->gender);
         }
-
+    
         // Filter by grade
-        if ($request->has('grade') && $request->grade != '') {
+        if ($request->has('grade') && !empty($request->grade)) {
             $query->where('stu_gra_id', $request->grade);
         }
-
+    
         // Include related grade data
         $students = $query->with('grade')->get();
-
+    
         // Return the filtered students as JSON
         return response()->json($students);
     }
-
+    
 //admin.schedule
 
     function disGrade()
