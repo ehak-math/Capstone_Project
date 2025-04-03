@@ -32,6 +32,7 @@ class Students extends Model
         return $students;
     }
 
+
     public static function displayStudentById($id)
     {
         $course = self::join('grade', 'students.stu_gra_id', '=', 'grade.gra_id')
