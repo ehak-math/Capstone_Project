@@ -169,6 +169,9 @@ class TeacherController extends Controller
             ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
             ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
             ->where('courses.cou_id', $id)
+            // ->groupBy('courses.cou_id')
+            // ->orderBy('schedules.sch_day', 'asc')
+            // ->orderBy('schedules.sch_start_time', 'desc')
             ->select([
                 'courses.cou_id',
                 'schedules.sch_start_time',
@@ -177,7 +180,8 @@ class TeacherController extends Controller
                 'teachers.tea_fname',
                 'subjects.sub_name'
             ])
-            ->first();
+            ->get();
+            
 
         // Get course information
         $getcourse = Course::where('cou_id', $id)->first();
@@ -185,15 +189,24 @@ class TeacherController extends Controller
         $selectStudentSubmit = Attendancesubmit::get();
 
         // Get today's attendance if exists
-        $currentAttendance = Attendances::where('att_cou_id', $id)
+        $currentAttendance = Attendances::join('schedules' , 'attendances.att_cou_id','=', 'schedules.sch_cou_id')
+            // ->where('att_startime' > 'sch_end_time')
+            ->where('att_cou_id', $id)
             ->whereDate('att_startime', Carbon::today('Asia/Phnom_Penh'))
+            ->orderBy('att_id' , 'desc')
             ->first();
+
+        // $getCodeAtt =  Attendances::where('att_cou_id', $id)
+        // ->whereDate('att_startime', Carbon::today('Asia/Phnom_Penh'))
+        // ->select('att_code')
+        // ->first();
 
         return view('teacher.courses.attendance', [
             'att_dis' => $displayschedule,
             'course' => $getcourse,
             'attendance' => $currentAttendance,
-            'selectStudentSubmit' => $selectStudentSubmit
+            'selectStudentSubmit' => $selectStudentSubmit,
+             
         ]);
     }
     public function openatt(Request $request)
@@ -208,19 +221,28 @@ class TeacherController extends Controller
             ]);
 
             // Check if attendance already exists for today
-            $existingAttendance = Attendances::where('att_cou_id', $request->course_id)
-                ->whereDate('att_startime', Carbon::today('Asia/Phnom_Penh'))
-                ->first();
+            // $existingAttendance = Attendances::where('att_cou_id', $request->course_id)
+            //     ->whereDate('att_startime', Carbon::today('Asia/Phnom_Penh'))
+            //     ->first();
 
-            if ($existingAttendance) {
-                throw new \Exception('Attendance already exists for today');
-            }
+            // if ($existingAttendance) {
+            //     throw new \Exception('Attendance already exists for today');
+            // }
 
             // Create new attendance
             $code = Str::upper(Str::random(6));
             $startTime = Carbon::now('Asia/Phnom_Penh');
-            $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(5);
+            $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(1);
             
+            
+                Attendances::create([
+                'att_code' => $code,
+                'att_startime' => $startTime,
+                'att_endtime' => $endTime,
+                'att_cou_id' => $request->course_id,
+                'att_status' => "Open"
+            ]);
+
             // create submit attendance for see student
             $selectedStudent = Course::join('grade' , 'courses.cou_gra_id', '=', 'grade.gra_id')
                 ->join('students' , 'grade.gra_id', '=', 'students.stu_gra_id')
@@ -231,13 +253,6 @@ class TeacherController extends Controller
                     'att_sub_stu_id' => $student->stu_id,
                 ]);
             }
-                Attendances::create([
-                'att_code' => $code,
-                'att_startime' => $startTime,
-                'att_endtime' => $endTime,
-                'att_cou_id' => $request->course_id,
-                'att_status' => "Open"
-            ]);
 
             return redirect()->back()->with('success', 'Attendance opened successfully!');
         } catch (\Exception $e) {
