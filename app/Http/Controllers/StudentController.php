@@ -105,20 +105,7 @@ class StudentController extends Controller
             ->select('attendance_submit.*', 'students.*')
             ->first();
             
-        // Check if student already submitted attendance
-        // if ($attendance->count() > 0) {
-        //     foreach ($attendance as $att) {
-        //         $existingSubmission = Attendancesubmit::where('att_sub_stu_id', $student->stu_id)
-        //             ->where('att_sub_att_id', $att->att_id)
-        //             ->first();
-
-        //         if ($existingSubmission) {
-        //             $att->already_submitted = true;
-        //         } else {
-        //             $att->already_submitted = false;
-        //         }
-        //     }
-        // }
+       
 
         return view('student.courses.submit_attendance', [
             'getId' => $id,
