@@ -17,7 +17,7 @@
             <div class="modal-body">
                 <!-- form for add user-->
 
-                <form action="{{ route('addStudent') }}" method="POST" class="form-horizontal"
+                <form action="{{ route('admin.students.add') }}" method="POST" class="form-horizontal"
                     role="form" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group mb-3">

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Subject extends Model
+class Subjects extends Model
 {
     //
     use HasFactory;
@@ -23,12 +23,20 @@ class Subject extends Model
         return $subjects;
     }
 
+    public function teachers()
+    {
+        return $this->hasMany(Teachers::class, 'sub_id', 'id');
+    }
+
+
     public static function insertSubject($data){
-        $subject = new Subject();
+        $subject = new Subjects();
         $subject->sub_name = $data['sub_name'];
         $subject->sub_image = $data['sub_image'];
         $subject->save();
     }
+
+    
 
     public static function updateSubject($id, $data)
     {

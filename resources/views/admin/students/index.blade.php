@@ -17,7 +17,8 @@
                         <div class="d-flex gap-2">
                             <button class="btn border">Export</button>
                             <button class="btn border">Import</button>
-                            @include('admin.students.modal_add')
+                            <!-- add student -->
+                            @include('admin.students.create')
                         </div>
                     </div>
                     <hr>
@@ -63,18 +64,18 @@
                                     @foreach($students as $stu)
 
                                         <tr>
-                                            <td>{{$stu->stu_id}}</td>
+                                            <td>STU{{$stu->stu_id}}</td>
                                             <td>
                                                 @if($stu->stu_profile && file_exists(public_path('storage/' . $stu->stu_profile)))
                                                     <img class="profile_stu" src="{{ asset('storage/' . $stu->stu_profile) }}"
                                                         alt="Student Profile">
                                                 @else
-                                                    <img class="profile_stu" src="{{ asset('images/placeholder.png') }}"
+                                                    <img class="profile_stu" src="{{ asset('images/placeholder_student.png') }}"
                                                         alt="Placeholder Image">
                                                 @endif
                                             </td>
-                                            <td>{{$stu->stu_fname}}</td>
                                             <td>{{$stu->stu_username}}</td>
+                                            <td>{{$stu->stu_fname}}</td>
                                             <td>{{$stu->stu_gender}}</td>
                                             <td>0{{$stu->stu_ph_number}}</td>
                                             <td>{{$stu->gra_class}} {{$stu->gra_group}}</td>

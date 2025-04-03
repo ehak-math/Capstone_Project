@@ -42,7 +42,7 @@
         <a href="/admin/dashboard" class="nav-link {{ Request::is('admin/dashboard') ? 'active' : '' }}" id="dashboard-link">
             <i class="fa-solid fa-gauge"></i><span>Dashboard</span>
         </a>
-        <a href="/admin/teacher" class="nav-link {{ Request::is('admin/teacher') ? 'active' : '' }}" id="teacher-link">
+        <a href="/admin/teachers/index" class="nav-link {{ Request::is('admin/teachers/index') ? 'active' : '' }}" id="teacher-link">
             <i class="fa-solid fa-chalkboard-user"></i><span>Teacher</span>
         </a>
         <a href="/admin/students/index" class="nav-link {{ Request::is('admin/students/index') ? 'active' : '' }}" id="student-link">
