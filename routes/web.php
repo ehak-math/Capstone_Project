@@ -145,14 +145,14 @@ Route::get('/teacher/student', function () {
 // });
 
 // Route::get('/message', function () {
-//    return view('admin.message');
-<<<<<<< HEAD
-//});
+// //    return view('admin.message');
+// <<<<<<< HEAD
+// //});
 
 
         
-=======
-// });
+// =======
+// // });
 
-Route::resource('/admin/students', App\Http\Controllers\StudentsController::class);
->>>>>>> beb7f014996e2b11e75a9964ce4076e3a006604f
+// Route::resource('/admin/students', App\Http\Controllers\StudentsController::class);
+// >>>>>>> beb7f014996e2b11e75a9964ce4076e3a006604f
