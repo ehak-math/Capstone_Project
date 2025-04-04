@@ -7,19 +7,21 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Controller;
 use App\Exports\TeachersExport;
+use App\Exports\StudentsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\TeachersImport;
+use App\Imports\StudentsImport;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\TelegramController;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
-// export
+// export teacher
 Route::get('/teachers/export', function () {
     return Excel::download(new TeachersExport, 'teachers.xlsx');
 })->name('teachers.export');
 
-// import
+// import teacher 
 Route::post('/teachers/import', function (Request $request) {
     $request->validate([
         'file' => 'required|mimes:xlsx',
@@ -29,6 +31,22 @@ Route::post('/teachers/import', function (Request $request) {
 
     return redirect()->back()->with('success', 'Teachers imported successfully!');
 })->name('teachers.import');
+
+// export student
+Route::get('/students/export', function () {
+    return Excel::download(new StudentsExport, 'students.xlsx');
+})->name('students.export');
+
+// import student
+Route::post('/students/import', function (Request $request) {
+    $request->validate([
+        'file' => 'required|mimes:xlsx',
+    ]);
+
+    Excel::import(new StudentsImport, $request->file('file'));
+
+    return redirect()->back()->with('success', 'Students imported successfully!');
+})->name('students.import');
 
 
 Route::get('/', function () {
@@ -54,7 +72,7 @@ Route::get('student',[AdminController::class,'displayOnStu']);
 Route::get('details/{id}', [AdminController::class, 'selectbyId'])->name('showDetails');
 
 
-Route::get('/admin/scheldule',[AdminController::class,'getschedule']);
+Route::get('/admin/Schedule',[AdminController::class,'getschedule']);
 Route::post('scheldule.crategrade',[AdminController::class,'createGrade'])->name('crategrade');
 Route::post('scheldule.createcourse',[AdminController::class,'createCourse'])->name('createcourse');
 Route::post('scheldule.createschedule',[AdminController::class,'createSchedule'])->name('createschedule');
@@ -136,7 +154,7 @@ Route::get('admin/teachers/search', [AdminController::class, 'searchTeachers'])-
 //admin student///
 /////////////////
 Route::get('admin/students/index', [AdminController::class, 'displayOnStu'])->name('admin.students.index');
-Route::delete('admin/students/index/{id}', [AdminController::class, 'deleteStudent'])->name('deleteStudent');
+Route::delete('admin/students/{id}', [AdminController::class, 'deleteStudent'])->name('deleteStudent');
 Route::put('admin/students/{id}', [AdminController::class, 'updateStudent'])->name('updateStudent');
 Route::post('admin/students/add', [AdminController::class, 'addStudent'])->name('admin.students.add');
 Route::get('admin/students/search', [AdminController::class, 'searchStudents'])->name('searchStudents');

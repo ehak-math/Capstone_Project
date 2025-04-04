@@ -58,8 +58,8 @@
                                                     <div class="d-flex flex-column gap-2">
                                                         <div class="text-center mt-3">
                                                             ${teacher.tea_profile && teacher.tea_profile !== '' ?
-                                                            `<img src="/storage/${teacher.tea_profile}" alt="Teacher Profile" style="max-width: 200px; border-radius: 5px;">` :
-                                                            `<img src="/images/placeholder_teacher.jpg" alt="Placeholder Image" style="max-width: 200px; border-radius: 5px;">`}
+                                `<img src="/storage/${teacher.tea_profile}" alt="Teacher Profile" style="max-width: 200px; border-radius: 5px;">` :
+                                `<img src="/images/placeholder_teacher.jpg" alt="Placeholder Image" style="max-width: 200px; border-radius: 5px;">`}
                                                         </div>
                                                         <div class="d-flex justify-content-between">
                                                             <span>REF ID:</span>
@@ -98,8 +98,108 @@
                                         </div>
                                     </div>
 
-                                    @include('admin.teachers.edit')
-                                    @include('admin.teachers.delete')
+                                    <!-- Edit Button -->
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal${teacher.tea_id}">
+                                        Edit
+                                    </button>
+
+                                    <!-- Edit Modal -->
+                                    <div class="modal fade" id="editModal${teacher.tea_id}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editModalLabel">Edit Teacher</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                <form action="/admin/teachers/${teacher.tea_id}" method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    @method('PUT')
+
+                                                    <div class="form-group mb-3">
+                                                        <label for="tea_fname" class="form-label">Full Name</label>
+                                                        <input type="text" name="tea_fname" class="form-control" value="${teacher.tea_fname }">
+                                                    </div>
+
+                                                    <div class="form-group mb-3">
+                                                        <label for="tea_username" class="form-label">Username</label>
+                                                        <input type="text" name="tea_username" class="form-control" value="${teacher.tea_username }">
+                                                    </div>
+
+                                                    <div class="form-group mb-3 d-flex justify-content-between">
+                                                        <div class="col-sm-5">
+                                                            <label for="tea_gender" class="form-label">Gender</label>
+                                                            <select name="tea_gender" class="form-select">
+                                                                <option value="Male" ${teacher.tea_gender == 'Male' ? 'selected' : '' }>Male</option>
+                                                                <option value="Female" ${teacher.tea_gender == 'Female' ? 'selected' : '' }>Female</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <div class="col-sm-5">
+                                                            <label for="tea_subject" class="form-label">Subject</label>
+                                                            <select name="tea_subject" class="form-select">
+                                                                ${subjects.map(subject => `
+                                                                    <option value="${subject.sub_id}" ${teacher.tea_subject == subject.sub_id ? 'selected' : ''}>
+                                                                        ${subject.sub_name}
+                                                                    </option>
+                                                                `).join('')}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group mb-3">
+                                                        <label for="tea_ph_number" class="form-label">Phone Number</label>
+                                                        <input type="text" name="tea_ph_number" class="form-control" value="${teacher.tea_ph_number }">
+                                                    </div>
+
+                                                    <div class="form-group mb-3">
+                                                        <label for="tea_dob" class="form-label">Date of Birth</label>
+                                                        <input type="date" name="tea_dob" class="form-control" value="${teacher.tea_dob }">
+                                                    </div>
+
+                                                    <div class="form-group mb-3">
+                                                        <label for="tea_profile" class="form-label">Profile</label>
+                                                        <input type="file" name="tea_profile" class="form-control">
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary">Edit</button>
+                                                    </div>
+                                                </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Delete Button -->
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal${teacher.tea_id}">
+                                        Delete
+                                    </button>
+
+                                    <!-- Delete Confirmation Modal -->
+                                    <div class="modal fade" id="deleteModal${teacher.tea_id}" tabindex="-1" aria-labelledby="deleteModalLabel${teacher.tea_id}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteModalLabel${teacher.tea_id}">Confirm Deletion</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete this teacher with ID <strong>TEA${teacher.tea_id}</strong>?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form action="/admin/teachers/${teacher.tea_id}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </td>
                             </tr>
                         `;
@@ -114,4 +214,7 @@
             })
             .catch(error => console.error('Error:', error));
     }
+</script>
+<script>
+    const subjects = @json($subjects); // Convert Laravel data to a JavaScript array
 </script>

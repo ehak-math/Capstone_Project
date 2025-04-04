@@ -54,8 +54,8 @@
         <a href="/admin/course" class="nav-link {{ Request::is('admin/course') ? 'active' : '' }}" id="course-link">
             <i class="fa-solid fa-book-open-reader"></i><span>Course</span>
         </a>
-        <a href="/admin/users" class="nav-link {{ Request::is('admin/users') ? 'active' : '' }}" id="users-link">
-            <i class="fa-solid fa-users"></i><span>Users</span>
+        <a href="/admin/class" class="nav-link {{ Request::is('admin/class') ? 'active' : '' }}" id="class-link">
+            <i class="fa-solid fa-chalkboard"></i><span>Class</span>
         </a>
         <a href="/admin/message" class="nav-link {{ Request::is('admin/message') ? 'active' : '' }}" id="message-link">
             <i class="fa-solid fa-message"></i><span>Message</span>

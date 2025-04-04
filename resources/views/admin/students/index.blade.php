@@ -15,8 +15,42 @@
                     <div class="d-flex justify-content-between">
                         <h3>Student List</h3>
                         <div class="d-flex gap-2">
-                            <button class="btn border">Export</button>
-                            <button class="btn border">Import</button>
+                            <a href="{{ route('students.export') }}" class="btn border d-flex align-items-center">Export</a>
+                            <!-- Import Button -->
+                            <button type="button" class="btn border" data-bs-toggle="modal"
+                                data-bs-target="#importModal">
+                                Import
+                            </button>
+
+                            <!-- Import Modal -->
+                            <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="importModalLabel">Import Students</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ route('students.import') }}" method="POST"
+                                                enctype="multipart/form-data">
+                                                @csrf
+                                                <div class="mb-3">
+                                                    <label for="importFile" class="form-label">Select Excel File</label>
+                                                    <input type="file" name="file" id="importFile" class="form-control"
+                                                        required>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Import</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <!-- add student -->
                             @include('admin.students.create')
                         </div>
@@ -70,7 +104,7 @@
                                                     <img class="profile_stu" src="{{ asset('storage/' . $stu->stu_profile) }}"
                                                         alt="Student Profile">
                                                 @else
-                                                    <img class="profile_stu" src="{{ asset('images/placeholder_student.png') }}"
+                                                    <img class="profile_stu" src="{{ asset('images/placeholder_student.jpg') }}"
                                                         alt="Placeholder Image">
                                                 @endif
                                             </td>

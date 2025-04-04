@@ -70,7 +70,6 @@
                                     <option value="{{ $subject->sub_name }}">{{ $subject->sub_name }}</option>
                                 @endforeach
                             </select>
-                            <button class="btn btn-primary">Filter</button>
                         </div>
                     </div>
                     <!-- list teacher -->

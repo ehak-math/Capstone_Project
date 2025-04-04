@@ -57,13 +57,13 @@
 
                     <div class="form-group mb-3">
                         <label for="stu_ph_number" class="form-label">Phone Number</label>
-                        <input type="text" name="stu_ph_number" class="form-control">
+                        <input type="text" name="stu_ph_number" pattern="\d{7,15}" class="form-control">
                     </div>
 
                     <div class="form-group mb-3">
                         <label for="stu_parent_number" class="form-label">Parant Phone
                             Number</label>
-                        <input type="text" name="stu_parent_number" class="form-control">
+                        <input type="text" name="stu_parent_number" pattern="\d{7,15}" class="form-control">
                     </div>
 
                     <div class="form-group mb-3">

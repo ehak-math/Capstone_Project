@@ -40,12 +40,12 @@ class AdminController extends Controller
     {
         $request->validate([
             'stu_fname' => 'required',
-            'stu_username' => 'required',
-            'stu_password' => 'required',
-            'stu_gender' => 'required',
+            'stu_username' => 'required|string|max:255|unique:students,stu_username',
+            'stu_password' => 'required|string|min:6',
+            'stu_gender' => 'required|in:Male,Female',
             'stu_grade' => 'required',
-            'stu_ph_number' => 'required',
-            'stu_parent_number' => 'required',
+            'stu_ph_number' => 'required|numeric|digits_between:7,15',
+            'stu_parent_number' => 'required|numeric|digits_between:7,15',
             'stu_dob' => 'required',
             'stu_profile' => 'required|image|mimes:jpg,png,jpeg|max:2048',
         ]);
@@ -56,13 +56,17 @@ class AdminController extends Controller
         $student->stu_fname = $request->stu_fname;
         $student->stu_gra_id = $request->stu_grade;
         $student->stu_username = $request->stu_username;
-        $student->stu_password = $request->stu_password;
+        $student->stu_password = bcrypt($request->stu_password);
         $student->stu_gender = $request->stu_gender;
         $student->stu_dob = $request->stu_dob;
         $student->stu_ph_number = $request->stu_ph_number;
         $student->stu_parent_number = $request->stu_parent_number;
         $student->stu_profile = $path;
         $student->save();
+        
+        if ($request->hasFile('stu_profile')) {
+            $student->stu_profile = $request->file('stu_profile')->store('images', 'public');
+        }
 
         return redirect()->back()->with('success', 'Grade created successfully!');
 
@@ -180,7 +184,7 @@ class AdminController extends Controller
             'tea_password' => 'required',
             'tea_gender' => 'required',
             'tea_subject' => 'required',
-            'tea_ph_number' => 'required',
+            'tea_ph_number' => 'required|numeric|digits_between:7,15',
             'tea_dob' => 'required',
             'tea_profile' => 'required|image|mimes:jpg,png,jpeg|max:2048',
         ]);
@@ -197,6 +201,10 @@ class AdminController extends Controller
         $teacher->tea_dob = $request->tea_dob;
         $teacher->tea_profile = $path;
         $teacher->save();
+
+        if ($request->hasFile('tea_profile')) {
+            $teacher->tea_profile = $request->file('tea_profile')->store('images', 'public');
+        }
 
         return redirect()->back()->with('success', 'Teacher created successfully!');
     }
@@ -272,179 +280,7 @@ class AdminController extends Controller
     
         return response()->json($teachers);
     }
-
-
-    //admin.schedule
-
-    function disGrade()
-    {
-        $listgrade = Grade::all();
-        return $listgrade;
-    }
-    function createGrade(Request $request)
-    {
-        $request->validate([
-            'grade' => 'required',
-            'group' => 'required',
-        ]);
-        $grade = new Grade();
-        $grade->gra_class = $request->grade;
-        $grade->gra_group = $request->group;
-        $grade->save();
-
-        return redirect()->back()->with('success', 'Grade created successfully!');
-    }
-
-    function disTeacher()
-    {
-        $listTeacher = Teachers::join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
-            ->get();
-        return $listTeacher;
-    }
-    function createCourse(Request $request)
-    {
-        $request->validate([
-            'teacher' => 'required',
-            'grade' => 'required',
-        ]);
-        $course = new Course();
-        $course->cou_tea_id = $request->teacher;
-        $course->cou_gra_id = $request->grade;
-        $course->save();
-
-        return redirect()->back()->with('success', 'Course created successfully!');
-    }
-
-    function displayCourse()
-    {
-        $listCourse = Course::join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
-            ->join('grade', 'grade.gra_id', '=', 'courses.cou_gra_id')
-            ->join('subjects', 'subjects.sub_id', '=', 'teachers.tea_id')
-            ->get();
-        return $listCourse;
-    }
-    function disSchedule()
-    {
-        $listSchedule = Schedules::join('courses', 'courses.cou_id', '=', 'schedules.sch_cou_id')
-            ->join('teachers', 'teachers.tea_id', '=', 'courses.cou_tea_id')
-            ->join('subjects', 'subjects.sub_id', '=', 'teachers.tea_id')
-            ->get();
-        return $listSchedule;
-    }
-    function createSchedule(Request $request)
-    {
-        $request->validate([
-            'sch_start_time' => 'required',
-            'schedule_day' => 'required',
-            'schedule_course_id' => 'required',
-        ]);
-        // Convert start time to Carbon instance
-        $startTime = Carbon::parse($request->sch_start_time);
-
-        // Set end time to 45 minutes after the start time
-        $endTime = (clone $startTime)->addMinutes(45);
-        $schedule = new Schedules;
-        $schedule->sch_start_time = $startTime;
-        $schedule->sch_end_time = $endTime;
-        $schedule->sch_day = $request->schedule_day;
-        $schedule->sch_cou_id = $request->schedule_course_id;
-        $schedule->save();
-
-        return redirect()->back()->with('success', 'Schedule created successfully!');
-    }
-
-
-    function getschedule()
-    {
-        $listSchedule = Schedules::displaySchedule();
-        $gradelist = Grade::displayGrade();
-        $listteacher = $this->disTeacher();
-        $listcourse = Course::displayCourse();
-        return view('admin.scheldule', [
-            'gradelist' => $gradelist,
-            'listteacher' => $listteacher,
-            'listcourse' => $listcourse,
-            'schedule' => $listSchedule
-        ]);
-    }
-
-    public function displayAdmin()
-    {
-        $admin = Admins::disAdmin();
-        $images = Storage::disk('public')->files('images');
-
-        return view('listadmin', [
-            'admin' => $admin,
-            'images' => $images ?? []
-        ]);
-    }
-
-    public function creatAdmin(Request $request)
-    {
-        try {
-            // Validate request
-            $validated = $request->validate([
-                'username' => 'required|unique:admins,adm_username',
-                'password' => 'required|min:6',
-                'profile' => 'required|image|mimes:jpg,png,jpeg|max:2048'
-            ]);
-
-            if ($request->hasFile('profile')) {
-                $file = $request->file('profile');
-
-                // Create unique filename
-                $imageName = $request->username . '_' . time() . '.' . $file->getClientOriginalExtension();
-
-                // Store file in public/images directory
-                $path = $file->storeAs('images', $imageName, 'public');
-
-                // Create new admin
-                $admin = Admins::create([
-                    'adm_username' => $request->username,
-                    'adm_password' => $request->password, // Hash password
-                    'adm_profile' => $path
-                ]);
-
-                return redirect()->back()->with('success', 'Admin created successfully!');
-            }
-
-            return redirect()->back()->with('error', 'Profile image is required.');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Error creating admin: ' . $e->getMessage())
-                ->withInput();
-        }
-    }
-
-    public function createSubject(Request $request)
-    {
-
-        // Validate request
-        $validated = $request->validate([
-            'sub_name' => 'required',
-            'sub_image' => 'required|image|mimes:jpg,png,jpeg|max:2048'
-        ]);
-
-        if ($request->hasFile('sub_image')) {
-            $file = $request->file('sub_image');
-
-            // Create unique filename
-            $imageName = $request->sub_name . '_' . time() . '.' . $file->getClientOriginalExtension();
-
-            // Store file in public/images directory
-            $path = $file->storeAs('images', $imageName, 'public');
-            $data = [
-                'sub_name' => $request->sub_name,
-                'sub_image' => $path
-            ];
-            // Create new subject
-            $subject = Subjects::insertSubject($data);
-
-            return redirect()->back()->with('success', 'Subject created successfully!');
-        }
-
-
-    }
+    
 
 
 }
