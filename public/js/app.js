@@ -84,3 +84,8 @@ const options = {year: 'numeric', month: 'short', day: 'numeric' };
 const today = new Date().toLocaleDateString('en-US', options);
 currentDateElement.textContent = today;
 
+
+function setDeleteAction(action) {
+    const deleteForm = document.getElementById('deleteForm');
+    deleteForm.action = action;
+}

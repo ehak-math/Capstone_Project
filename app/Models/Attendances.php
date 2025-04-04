@@ -17,8 +17,9 @@ class Attendances extends Model
     'att_code',
     'att_startime',
     'att_endtime',
-    'att_cou_id',
-    'att_status'
+    'att_sch_id',
+    'att_status',
+    'att_date'
     ];
     // public static function displayAttendance()
     // {

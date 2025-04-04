@@ -6,9 +6,49 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Controller;
+use App\Exports\TeachersExport;
+use App\Exports\StudentsExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\TeachersImport;
+use App\Imports\StudentsImport;
+use Illuminate\Http\Request;
 
 use App\Http\Controllers\TelegramController;
 use Telegram\Bot\Laravel\Facades\Telegram;
+
+// export teacher
+Route::get('/teachers/export', function () {
+    return Excel::download(new TeachersExport, 'teachers.xlsx');
+})->name('teachers.export');
+
+// import teacher 
+Route::post('/teachers/import', function (Request $request) {
+    $request->validate([
+        'file' => 'required|mimes:xlsx',
+    ]);
+
+    Excel::import(new TeachersImport, $request->file('file'));
+
+    return redirect()->back()->with('success', 'Teachers imported successfully!');
+})->name('teachers.import');
+
+// export student
+Route::get('/students/export', function () {
+    return Excel::download(new StudentsExport, 'students.xlsx');
+})->name('students.export');
+
+// import student
+Route::post('/students/import', function (Request $request) {
+    $request->validate([
+        'file' => 'required|mimes:xlsx',
+    ]);
+
+    Excel::import(new StudentsImport, $request->file('file'));
+
+    return redirect()->back()->with('success', 'Students imported successfully!');
+})->name('students.import');
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -29,11 +69,10 @@ Route::get('admin',[TeacherController::class,'showsubject']);
 Route::post('admin.store', [TeacherController::class, 'store'])->name('addsub');
 
 Route::get('student',[AdminController::class,'displayOnStu']);
-Route::post('student.addStudent',[AdminController::class,'addStudent'])->name('addStudent');
 Route::get('details/{id}', [AdminController::class, 'selectbyId'])->name('showDetails');
 
 
-Route::get('/admin/scheldule',[AdminController::class,'getschedule']);
+Route::get('/admin/Schedule',[AdminController::class,'getschedule']);
 Route::post('scheldule.crategrade',[AdminController::class,'createGrade'])->name('crategrade');
 Route::post('scheldule.createcourse',[AdminController::class,'createCourse'])->name('createcourse');
 Route::post('scheldule.createschedule',[AdminController::class,'createSchedule'])->name('createschedule');
@@ -59,29 +98,6 @@ Route::prefix('student')->group(function () {
 
     Route::post('/logout', [StudentController::class, 'logout'])->name('student.logout');
     Route::get('/score',  [StudentController::class, 'displayStudentSocre'])->name('student.score');
-});
-// Route::get('/student/dashboard', function () {
-//     return view('student.dashboard');
-// });
-
-//Route::get('/student/subject', function () {
-//    return view('student.courses.subject');
-//});
-
-Route::get('student/course_detail', function () {
-    return view('student.courses.course_detail');
-});
-
-Route::get('/student/attendance', function () {
-    return view('student.attendance');
-});
-
-//Route::get('/student/score', function () {
-//    return view('student.score');
-//});
-
-Route::get('/student/scheldule', function () {
-    return view('student.scheldule');
 });
 
 //
@@ -122,21 +138,26 @@ Route::get('/teacher/student', function () {
 //     return view('teacher.scheldule');
 // });
 
-// Route::get('admin/teacher', [TeacherController::class, 'displayTeacher'])->name('admin.teacher');
-// Route::post('admin/teacher/store', [TeacherController::class, 'store'])->name('teacher.store');
-// Route::put('admin/teacher/{id}', [TeacherController::class, 'updateTeacher'])->name('teacher.updateTeacher');
+//////////////////
+//admin teahcer///
+//////////////////
+Route::get('admin/teachers/index', [AdminController::class, 'displayTeacher'])->name('admin.teachers.index');
+Route::post('admin/teachers/add', [AdminController::class, 'addTeacher'])->name('admin.teachers.add');
+Route::delete('admin/teachers/{id}', [AdminController::class, 'deleteTeacher'])->name('deleteTeacher');
+Route::put('admin/teachers/{id}', [AdminController::class, 'updateTeacher'])->name('updateTeacher');
+Route::get('admin/teachers/search', [AdminController::class, 'searchTeachers'])->name('searchTeachers');
 
-// Route::get('/dashboard', function () {
-//    return view('admin.dashboard');
-// });
 
-// Route::get('teacher', function () {
-//    return view('admin.teacher');
-// });
-// //student
-// Route::get('admin/student', [StudentController::class, 'displayStudent'])->name('admin.student');
-// Route::post('admin/student/storeStudent', [StudentController::class, 'storeStudent'])->name('student.storeStudent');
-// Route::put('/student/{id}', [StudentController::class, 'update'])->name('student.update');
+
+
+//////////////////
+//admin student///
+/////////////////
+Route::get('admin/students/index', [AdminController::class, 'displayOnStu'])->name('admin.students.index');
+Route::delete('admin/students/{id}', [AdminController::class, 'deleteStudent'])->name('deleteStudent');
+Route::put('admin/students/{id}', [AdminController::class, 'updateStudent'])->name('updateStudent');
+Route::post('admin/students/add', [AdminController::class, 'addStudent'])->name('admin.students.add');
+Route::get('admin/students/search', [AdminController::class, 'searchStudents'])->name('searchStudents');
 
 
 
@@ -144,6 +165,7 @@ Route::get('/teacher/student', function () {
 //    return view('admin.users');
 // });
 
+<<<<<<< HEAD
 // Route::get('/message', function () {
 // //    return view('admin.message');
 // <<<<<<< HEAD
@@ -156,3 +178,5 @@ Route::get('/teacher/student', function () {
 
 // Route::resource('/admin/students', App\Http\Controllers\StudentsController::class);
 // >>>>>>> beb7f014996e2b11e75a9964ce4076e3a006604f
+=======
+>>>>>>> d6241557cedc774e1b81a888d83ca5744acd0a87

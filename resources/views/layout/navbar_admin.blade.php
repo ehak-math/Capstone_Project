@@ -39,25 +39,28 @@
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar" style="z-index: 1000; ">
-        <a href="/admin/dashboard" class="nav-link {{ Request::is('/admin/dashboard') ? 'active' : '' }}" id="dashboard-link">
+        <a href="/admin/dashboard" class="nav-link {{ Request::is('admin/dashboard') ? 'active' : '' }}" id="dashboard-link">
             <i class="fa-solid fa-gauge"></i><span>Dashboard</span>
         </a>
-        <a href="/admin/teacher" class="nav-link {{ Request::is('/admin/teacher') ? 'active' : '' }}" id="teacher-link">
+        <a href="/admin/teachers/index" class="nav-link {{ Request::is('admin/teachers/index') ? 'active' : '' }}" id="teacher-link">
             <i class="fa-solid fa-chalkboard-user"></i><span>Teacher</span>
         </a>
-        <a href="/admin/student" class="nav-link {{ Request::is('/admin/student') ? 'active' : '' }}" id="student-link">
+        <a href="/admin/students/index" class="nav-link {{ Request::is('admin/students/index') ? 'active' : '' }}" id="student-link">
             <i class="fa-solid fa-graduation-cap"></i><span>Students</span>
         </a>
-        <a href="/admin/scheldule" class="nav-link {{ Request::is('/admin/scheldule') ? 'active' : '' }}" id="scheldule-link">
+        <a href="/admin/scheldule" class="nav-link {{ Request::is('admin/scheldule') ? 'active' : '' }}" id="scheldule-link">
             <i class="fa-solid fa-calendar-days"></i><span>Scheldule</span>
         </a>
-        <a href="/admin/users" class="nav-link {{ Request::is('/admin/users') ? 'active' : '' }}" id="users-link">
-            <i class="fa-solid fa-users"></i><span>Users</span>
+        <a href="/admin/course" class="nav-link {{ Request::is('admin/course') ? 'active' : '' }}" id="course-link">
+            <i class="fa-solid fa-book-open-reader"></i><span>Course</span>
         </a>
-        <a href="/admin/message" class="nav-link {{ Request::is('/admin/message') ? 'active' : '' }}" id="message-link">
+        <a href="/admin/class" class="nav-link {{ Request::is('admin/class') ? 'active' : '' }}" id="class-link">
+            <i class="fa-solid fa-chalkboard"></i><span>Class</span>
+        </a>
+        <a href="/admin/message" class="nav-link {{ Request::is('admin/message') ? 'active' : '' }}" id="message-link">
             <i class="fa-solid fa-message"></i><span>Message</span>
         </a>
-        <a href="/admin/notice" class="nav-link {{ Request::is('/admin/notice') ? 'active' : '' }}" id="notice-link">
+        <a href="/admin/notice" class="nav-link {{ Request::is('admin/notice') ? 'active' : '' }}" id="notice-link">
             <i class="fa-solid fa-circle-exclamation"></i><span>Notice</span>
         </a>
     </div>

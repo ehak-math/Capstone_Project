@@ -23,13 +23,15 @@ class teachers extends Model
         'tea_profile'
     ];
 
-    public static function displayTeacher($teaID)
+    public function subject()
     {
-        $teachers = self::join('subjects', 'teachers.tea_subject','=','subjects.sub_id')
-        ->where('tea_id', $teaID)    
-        ->first();
-        return $teachers;
+        return $this->belongsTo(Subjects::class, 'tea_subject', 'sub_id');
     }
+
+    public static function displayTeacher(){
+        $teachers = self::all();
+    }
+    
 
     public static function insertTeacher($data){
         $teacher = new teachers();
