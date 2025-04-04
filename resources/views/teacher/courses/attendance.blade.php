@@ -12,7 +12,7 @@
         $currentDay = strtolower(now('Asia/Phnom_Penh')->format('l'));
         // $currentDay = "friday";
         $currentTime = now('Asia/Phnom_Penh');
-        $currentdmy = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
+        $currentdmy = $carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
 
         
         // Parse schedule times
@@ -42,27 +42,37 @@
                     </div>
                     @if($att->sch_day == $currentDay && $isTimeValid  )
                             {{-- @if($att->sch_id == $getatt->att_sch_id) --}}
-                                <div class="text-center">
+                            @if(!isset($getatt))    
+                            <div class="text-center">
                                 <form action="{{ route('teacher.attendance.open') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="sch_id" value="{{ $att->sch_id}}">
+                                    <input type="hidden" name="course_id" value="{{ $course->cou_id}}">
                                     <button type="submit" class="btn btn-primary btn-lg">
                                         <i class="fas fa-door-open me-2"></i>Open Attendance
                                     </button>
                                 </form>
                             </div>
+                            @elseif($getatt->att_status == 'Open')
+                            <p>{{$getatt->att_code}}</p> 
+                            <p>{{$getatt->att_status}}</p> 
                             <div class="text-center">
                                 <form id="closeAttendanceForm" action="{{ route('teacher.attendance.close') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="att_sch_id" value="{{$att->sch_id}}">
-                                    <input type="hidden" name="att_day" value="{{$currentdmy}}">
-                                    <input type="hidden" name="att_time" value="{{$att->scheduleEnd}}">
+                                    <input type="hidden" name="attendance_id" value="{{$getatt->att_id}}">
+                                    {{-- <input type="hidden" name="att_day" value="{{$currentdmy}}">
+                                    <input type="hidden" name="att_time" value="{{$att->scheduleEnd}}"> --}}
                                     <input type="hidden" name="auto_close" value="false">
                                     <button type="submit" class="btn btn-danger btn-lg" >
                                         <i class="fas fa-door-closed me-2"></i>Close Attendance
                                     </button>
                                 </form>
                             </div>
+                            @else
+                            <p>{{$getatt->att_code}}</p> 
+                            <p>{{$getatt->att_status}}</p> 
+                            @endif     
                     @else
                     <div>
                         <p>{{$att->sch_day}} at time {{$att->sch_start_time}}to{{$att->sch_end_time}}</p>

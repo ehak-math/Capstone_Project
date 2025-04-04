@@ -12,11 +12,11 @@ class Attendancesubmit extends Model
     protected $table = 'attendance_submit';
     public $timestamps = false;
     protected $pramary = 'att_sub_id';
-    protected $fillable =
-    ['att_sub_code',
+    protected $fillable =['att_sub_code',
     'att_sub_time',
     'att_sub_status',
     'att_sub_stu_id',
-    'att_sub_att_id'
-];
+    'att_sub_att_id',
+    'att_sub_sch_id'
+    ];
 }

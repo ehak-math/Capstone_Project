@@ -175,6 +175,7 @@ class TeacherController extends Controller
             // $currentday = '2025-04-04'; // Format as date string
 
         $getatt = Attendances::join('schedules', 'schedules.sch_id','=', 'attendances.att_sch_id')
+        ->where('schedules.sch_cou_id' , $id)
         ->where('att_date' , $currentday)->first();
         
 
@@ -231,7 +232,8 @@ class TeacherController extends Controller
             }
 
             $request->validate([
-                'sch_id' => 'required'
+                'sch_id' => 'required',
+                'course_id' => 'required'
             ]);
             $currentday = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d'); // Format as date string
             // $status = "Open";
@@ -243,12 +245,13 @@ class TeacherController extends Controller
 
             if ($existingAttendance) {
                 throw new \Exception('Attendance already exists for today');
-            }
-           
+            }else{
+
             // Create new attendance
             $code = Str::upper(Str::random(6));
             $startTime = Carbon::now('Asia/Phnom_Penh');
             $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(1);
+            
             Attendances::create([
                 'att_code' => $code,
                 'att_startime' => $startTime,
@@ -257,17 +260,21 @@ class TeacherController extends Controller
                 'att_date' => $currentday, 
                 'att_status'=> 'Open' 
             ]);
+            }
 
             // create submit attendance for see student
-            // $selectedStudent = Course::join('grade' , 'courses.cou_gra_id', '=', 'grade.gra_id')
-            //     ->join('students' , 'grade.gra_id', '=', 'students.stu_gra_id')
-            //     ->where('courses.cou_id', $request->course_id)
-            //     ->select('students.stu_id') ->get();
-            // foreach($selectedStudent as $student){
-            //     Attendancesubmit::create([
-            //         'att_sub_stu_id' => $student->stu_id,
-            //     ]);
-            // }
+            $selectedStudent = Course::join('grade' , 'courses.cou_gra_id', '=', 'grade.gra_id')
+            ->join('students' , 'grade.gra_id', '=', 'students.stu_gra_id')
+            ->where('courses.cou_id', $request->course_id)
+            ->select('students.stu_id')->get();
+            
+            foreach($selectedStudent as $student){
+                Attendancesubmit::create([
+                    'att_sub_stu_id' => $student->stu_id,
+                    'att_sub_sch_id' => $request->sch_id,
+                ]);
+            }
+    
 
             return redirect()->back()->with('success', 'Attendance opened successfully!');
         } catch (\Exception $e) {
@@ -290,19 +297,22 @@ class TeacherController extends Controller
         try {
             $request->validate([
                 'att_sch_id' => 'required',
-                'att_day' => 'required',
-                'att_time' => 'required'
+                'attendance_id' => 'required',
+                // 'att_day' => 'required',
+                // 'att_time' => 'required'
             ]);
 
-            $attendance = Attendances::
-            where('att_sch_id', $request->att_sch_id)->first();
-            if (!$attendance) {
-                throw new \Exception('Attendance record not found');
-            }
+            $attendance = Attendances::where('att_sch_id', $request->att_sch_id)
+            ->where('att_id', $request->attendance_id)
+            // ->whereDate('attendances.att_date',$currentday)
+            ->first();
+            // if (!$attendance) {
+            //     throw new \Exception('Attendance record not found');
+            // }
 
-            if ($attendance->att_status !== 'Open') {
-                throw new \Exception('Attendance is already closed');
-            }
+            // if ($attendance->att_status !== 'Open') {
+            //     throw new \Exception('Attendance is already closed');
+            // }
 
             // Update attendance status
             DB::table('attendances')
