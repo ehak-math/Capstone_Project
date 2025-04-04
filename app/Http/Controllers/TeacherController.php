@@ -8,12 +8,14 @@ use App\Models\Subject;
 use App\Models\Attendances;
 use App\Models\Attendancesubmit;
 use App\Models\Documents;
+use App\Models\Student;
+use App\Models\Schedules;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\Course;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-
+ 
 class TeacherController extends Controller
 {
 // test function
@@ -163,38 +165,49 @@ class TeacherController extends Controller
         }
         
         $teacher = session('teacher');
-        
-        // Get schedule information
-        $displayschedule = Course::join('schedules', 'courses.cou_id', '=', 'schedules.sch_cou_id')
-            ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
-            ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
-            ->where('courses.cou_id', $id)
-            // ->groupBy('courses.cou_id')
-            // ->orderBy('schedules.sch_day', 'asc')
-            // ->orderBy('schedules.sch_start_time', 'desc')
-            ->select([
-                'courses.cou_id',
-                'schedules.sch_start_time',
-                'schedules.sch_end_time',
-                'schedules.sch_day',
-                'teachers.tea_fname',
-                'subjects.sub_name'
-            ])
+
+        // cheack if sch_cou_id = cou_id
+
+        $selectatt = Schedules::join('courses' ,'courses.cou_id','=','schedules.sch_cou_id')
+            ->where('courses.cou_id' , $id)
             ->get();
+            $currentday = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d'); // Format as date string
+            // $currentday = '2025-04-04'; // Format as date string
+
+        $getatt = Attendances::join('schedules', 'schedules.sch_id','=', 'attendances.att_sch_id')
+        ->where('att_date' , $currentday)->first();
+        
+
+        // Get schedule information
+        // $displayschedule = Course::join('schedules', 'courses.cou_id', '=', 'schedules.sch_cou_id')
+        //     ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+        //     ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+        //     ->where('courses.cou_id', $id)
+        //     // ->groupBy('courses.cou_id')
+        //     // ->orderBy('schedules.sch_day', 'asc')
+        //     // ->orderBy('schedules.sch_start_time', 'desc')
+        //     ->select([
+        //         'courses.cou_id',
+        //         'schedules.sch_start_time',
+        //         'schedules.sch_end_time',
+        //         'schedules.sch_day',
+        //         'teachers.tea_fname',
+        //         'subjects.sub_name'
+        //     ])
+        //     ->get();
             
 
         // Get course information
         $getcourse = Course::where('cou_id', $id)->first();
         
-        $selectStudentSubmit = Attendancesubmit::get();
+        // $selectStudentSubmit = Attendancesubmit::get();
 
         // Get today's attendance if exists
-        $currentAttendance = Attendances::join('schedules' , 'attendances.att_cou_id','=', 'schedules.sch_cou_id')
-            // ->where('att_startime' > 'sch_end_time')
-            ->where('att_cou_id', $id)
-            ->whereDate('att_startime', Carbon::today('Asia/Phnom_Penh'))
-            ->orderBy('att_id' , 'desc')
-            ->first();
+        // $currentAttendance = Attendances::join('schedules' , 'attendances.att_cou_id','=', 'schedules.sch_cou_id')
+        //     ->where('att_cou_id', $id)
+        //     ->whereDate('att_startime', Carbon::today('Asia/Phnom_Penh'))
+        //     ->orderBy('att_id' , 'desc')
+        //     ->first();
 
         // $getCodeAtt =  Attendances::where('att_cou_id', $id)
         // ->whereDate('att_startime', Carbon::today('Asia/Phnom_Penh'))
@@ -202,10 +215,11 @@ class TeacherController extends Controller
         // ->first();
 
         return view('teacher.courses.attendance', [
-            'att_dis' => $displayschedule,
+            'att_dis' => $selectatt,
             'course' => $getcourse,
-            'attendance' => $currentAttendance,
-            'selectStudentSubmit' => $selectStudentSubmit,
+            'getatt' => $getatt
+            // 'attendance' => $currentAttendance,
+            // 'selectStudentSubmit' => $selectStudentSubmit,
              
         ]);
     }
@@ -217,42 +231,43 @@ class TeacherController extends Controller
             }
 
             $request->validate([
-                'course_id' => 'required'
+                'sch_id' => 'required'
             ]);
+            $currentday = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d'); // Format as date string
+            // $status = "Open";
+                        // Check if attendance already exists for today
+            $existingAttendance = Attendances::join('schedules' , 'attendances.att_sch_id','=', 'schedules.sch_id')
+            ->where('schedules.sch_id', $request->sch_id)
+            ->whereDate('attendances.att_date',$currentday)
+            ->first();
 
-            // Check if attendance already exists for today
-            // $existingAttendance = Attendances::where('att_cou_id', $request->course_id)
-            //     ->whereDate('att_startime', Carbon::today('Asia/Phnom_Penh'))
-            //     ->first();
-
-            // if ($existingAttendance) {
-            //     throw new \Exception('Attendance already exists for today');
-            // }
-
+            if ($existingAttendance) {
+                throw new \Exception('Attendance already exists for today');
+            }
+           
             // Create new attendance
             $code = Str::upper(Str::random(6));
             $startTime = Carbon::now('Asia/Phnom_Penh');
             $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(1);
-            
-            
-                Attendances::create([
+            Attendances::create([
                 'att_code' => $code,
                 'att_startime' => $startTime,
                 'att_endtime' => $endTime,
-                'att_cou_id' => $request->course_id,
-                'att_status' => "Open"
+                'att_sch_id' => $request->sch_id,
+                'att_date' => $currentday, 
+                'att_status'=> 'Open' 
             ]);
 
             // create submit attendance for see student
-            $selectedStudent = Course::join('grade' , 'courses.cou_gra_id', '=', 'grade.gra_id')
-                ->join('students' , 'grade.gra_id', '=', 'students.stu_gra_id')
-                ->where('courses.cou_id', $request->course_id)
-                ->select('students.stu_id') ->get();
-            foreach($selectedStudent as $student){
-                Attendancesubmit::create([
-                    'att_sub_stu_id' => $student->stu_id,
-                ]);
-            }
+            // $selectedStudent = Course::join('grade' , 'courses.cou_gra_id', '=', 'grade.gra_id')
+            //     ->join('students' , 'grade.gra_id', '=', 'students.stu_gra_id')
+            //     ->where('courses.cou_id', $request->course_id)
+            //     ->select('students.stu_id') ->get();
+            // foreach($selectedStudent as $student){
+            //     Attendancesubmit::create([
+            //         'att_sub_stu_id' => $student->stu_id,
+            //     ]);
+            // }
 
             return redirect()->back()->with('success', 'Attendance opened successfully!');
         } catch (\Exception $e) {
@@ -274,11 +289,13 @@ class TeacherController extends Controller
     {
         try {
             $request->validate([
-                'attendance_id' => 'required'
+                'att_sch_id' => 'required',
+                'att_day' => 'required',
+                'att_time' => 'required'
             ]);
 
-            $attendance = Attendances::where('att_id', $request->attendance_id)->first();
-
+            $attendance = Attendances::
+            where('att_sch_id', $request->att_sch_id)->first();
             if (!$attendance) {
                 throw new \Exception('Attendance record not found');
             }

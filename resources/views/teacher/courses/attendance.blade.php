@@ -4,6 +4,95 @@
 
 
 
+
+
+
+    @php
+        $carbon = app('Carbon\Carbon');
+        $currentDay = strtolower(now('Asia/Phnom_Penh')->format('l'));
+        // $currentDay = "friday";
+        $currentTime = now('Asia/Phnom_Penh');
+        $currentdmy = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
+
+        
+        // Parse schedule times
+        // $scheduleStart = $carbon::parse($att_dis_item->sch_start_time)->timezone('Asia/Phnom_Penh');
+        // $scheduleEnd = $carbon::parse($att_dis_item->sch_end_time)->timezone('Asia/Phnom_Penh');
+        // // Check if current time is within schedule window
+        // $isTimeValid = $currentTime->greaterThanOrEqualTo($scheduleStart) && 
+        //               $currentTime->lessThanOrEqualTo($scheduleEnd);
+    @endphp
+
+<div class="content">
+    <div class="row">
+        <!-- Main content area -->
+        <div class="col-lg-8 col-md-12">
+            <div class="row g-2 mt-5">
+                <h1 class="mt-5 mx-2">Courses: {{$course->cou_id}}</h1>
+                @if($att_dis->count() > 0)
+                    @foreach($att_dis as $att)
+                    <div class="card">
+                       @php
+                        $scheduleStart = \Carbon\Carbon::parse($att->sch_start_time);
+                        $scheduleEnd = \Carbon\Carbon::parse($att->sch_end_time);
+                        $isTimeValid = $currentTime->between($scheduleStart, $scheduleEnd);
+                       @endphp
+                        <h1>{{$att->sch_id}}</h1>
+                        
+                    </div>
+                    @if($att->sch_day == $currentDay && $isTimeValid  )
+                            {{-- @if($att->sch_id == $getatt->att_sch_id) --}}
+                                <div class="text-center">
+                                <form action="{{ route('teacher.attendance.open') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="sch_id" value="{{ $att->sch_id}}">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-door-open me-2"></i>Open Attendance
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="text-center">
+                                <form id="closeAttendanceForm" action="{{ route('teacher.attendance.close') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="att_sch_id" value="{{$att->sch_id}}">
+                                    <input type="hidden" name="att_day" value="{{$currentdmy}}">
+                                    <input type="hidden" name="att_time" value="{{$att->scheduleEnd}}">
+                                    <input type="hidden" name="auto_close" value="false">
+                                    <button type="submit" class="btn btn-danger btn-lg" >
+                                        <i class="fas fa-door-closed me-2"></i>Close Attendance
+                                    </button>
+                                </form>
+                            </div>
+                    @else
+                    <div>
+                        <p>{{$att->sch_day}} at time {{$att->sch_start_time}}to{{$att->sch_end_time}}</p>
+                        <p>{{$currentDay}}</p>
+                    </div>
+                    @endif
+
+                    @endforeach
+                @endif
+        </div>
+    </div>
+
+                                {{-- <h5>{{$getatt->att_code}}</h5>
+                                <p>{{$getatt->att_id}}||{{$getatt->att_startime}}||{{$getatt->att_endtime}}||{{$getatt->att_date}}||{{$getatt->att_status}}</p> --}}
+                                
+</div>
+</div>
+
+@endsection
+
+
+
+
+
+
+
+
+
+
+{{-- 
     <div class="content">
         <div class="row">
 
@@ -14,9 +103,8 @@
                     $carbon = app('Carbon\Carbon');
                     $currentDay = strtolower(now('Asia/Phnom_Penh')->format('l'));
                     // $currentDay = "friday";
-
+                
                     $currentTime = now('Asia/Phnom_Penh');
-                    
                     // Parse schedule times
                     $scheduleStart = $carbon::parse($att_dis_item->sch_start_time)->timezone('Asia/Phnom_Penh');
                     $scheduleEnd = $carbon::parse($att_dis_item->sch_end_time)->timezone('Asia/Phnom_Penh');
@@ -38,7 +126,7 @@
                                 <p><strong>Teacher:</strong> {{ $att_dis_item->tea_fname }}</p>
                             </div>
 
-                            {{-- @if(session('success'))
+                            @if(session('success'))
                                 <div class="alert alert-success">
                                     {{ session('success') }}
                                 </div>
@@ -48,8 +136,8 @@
                                 <div class="alert alert-danger">
                                     {{ session('error') }}
                                 </div>
-                            @endif --}}
-                            {{-- @if(trim($att_dis_item->sch_day) === trim($currentDay) && $isTimeValid)
+                            @endif
+                            @if(trim($att_dis_item->sch_day) === trim($currentDay) && $isTimeValid)
                             @if(isset($attendance))
                                 @if($attendance->sch_start_time < $currentTime)
                                 <div class="alert {{ $attendance->att_status === 'Open' ? 'alert-info' : 'alert-secondary' }}">
@@ -91,12 +179,12 @@
                                 </form>
                             </div>
 
-                            @endif --}}
+                            @endif
                             @if(trim($att_dis_item->sch_day) === trim($currentDay) && $isTimeValid)
                             <div class="text-center">
                                 <form action="{{ route('teacher.attendance.open') }}" method="POST">
                                     @csrf
-                                    {{-- <input type="hidden" name="random" value="{{ $code }}"> --}}
+                                    <input type="hidden" name="random" value="{{ $code }}">
                                     <input type="hidden" name="course_id" value="{{ $att_dis_item->cou_id }}">
                                     <button type="submit" class="btn btn-primary btn-lg">
                                         <i class="fas fa-door-open me-2"></i>Open Attendance
@@ -117,7 +205,7 @@
                                 @endif 
 
                             
-                            {{-- @elseif(trim($att_dis_item->sch_day) === trim($currentDay) && $isTimeValid)
+                            @elseif(trim($att_dis_item->sch_day) === trim($currentDay) && $isTimeValid)
                                  <div class="text-center">
                                 <form action="{{ route('teacher.attendance.open') }}" method="POST">
                                     @csrf
@@ -136,7 +224,7 @@
                                         Class time is from {{ $scheduleStart->format('H:i') }} to {{ $scheduleEnd->format('H:i') }}.
                                         <br>Current time is: {{ $currentTime->format('H:i') }}
                                     @endif
-                                </div> --}}
+                                </div>
                         @endif
                        
                     </div>     
@@ -178,22 +266,22 @@
         </div>
     </div>
 
-{{-- @if($selectStudentSubmit->count() > 0) --}}
+@if($selectStudentSubmit->count() > 0)
  
-        {{-- @foreach($selectStudentSubmit as $history) --}}
-            {{-- <div class="alert alert-info mb-3">
+        @foreach($selectStudentSubmit as $history)
+            <div class="alert alert-info mb-3">
 
 
                 <strong>Course:</strong> {{$history->att_sub_id}}<br>
                 <strong>Status:</strong> {{$history->att_sub_status }}<br>
                 
-            </div> --}}
-        {{-- @endforeach --}}
+            </div>
+        @endforeach
    
-{{-- @else
+@else
 <p>You need to create </p>
 @endif --}}
-<style>
+{{-- <style>
 .card {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     margin-top: 20px;
@@ -253,6 +341,5 @@ document.addEventListener('DOMContentLoaded', function() {
     @endif
 });
 </script>
-@endpush
+@endpush --}}
 
-@endsection
