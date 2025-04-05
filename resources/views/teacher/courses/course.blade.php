@@ -18,7 +18,8 @@
                                     <h5 class="card-title">Grade: {{$tea->gra_class}}{{$tea->gra_group}} </h5>
                                     <p class="card-text">Teacher: {{$tea->tea_fname}}</p>
                                     <p>{{$tea->sub_name}}</p>
-                                    <a href="{{ route('teacher.attendance.show', ['id' => $tea->cou_id]) }}" class="btn btn-primary">See all</a>                                </div>
+                                    <a href="{{ route('teacher.attendance.show', ['id' => $tea->cou_id]) }}" class="btn btn-primary">Open Attendace</a>                                </div>
+                                    <a href="{{ route('teacher.score.show', ['id' => $tea->cou_id]) }}" class="btn btn-primary">Uploads Score</a>                                </div>
                             </div>
                         </div>
                     </div>
