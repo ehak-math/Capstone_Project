@@ -250,7 +250,7 @@ class TeacherController extends Controller
             // Create new attendance
             $code = Str::upper(Str::random(6));
             $startTime = Carbon::now('Asia/Phnom_Penh');
-            $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(1);
+            $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(5);
             
             Attendances::create([
                 'att_code' => $code,
@@ -271,6 +271,7 @@ class TeacherController extends Controller
             foreach($selectedStudent as $student){
                 Attendancesubmit::create([
                     'att_sub_stu_id' => $student->stu_id,
+                    'att_sub_date' => $currentday,
                     'att_sub_sch_id' => $request->sch_id,
                 ]);
             }
@@ -281,6 +282,84 @@ class TeacherController extends Controller
             return redirect()->back()->with('error', 'Failed to open attendance: ' . $e->getMessage());
         }
     }
+
+//     public function openatt(Request $request)
+// {
+//     try {
+//         if (!session('teacher')) {
+//             return redirect()->route('teacher.login');
+//         }
+
+//         $request->validate([
+//             'sch_id' => 'required',
+//             'course_id' => 'required'
+//         ]);
+
+//         $currentday = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
+
+//         // Check if attendance already exists for today
+//         $existingAttendance = Attendances::join('schedules', 'attendances.att_sch_id', '=', 'schedules.sch_id')
+//             ->where('schedules.sch_id', $request->sch_id)
+//             ->whereDate('attendances.att_date', $currentday)
+//             ->first();
+
+//         if ($existingAttendance) {
+//             throw new \Exception('Attendance already exists for today');
+//         }
+
+//         // Begin database transaction
+//         DB::beginTransaction();
+//         try {
+//             // Create new attendance
+//             $code = Str::upper(Str::random(6));
+//             $startTime = Carbon::now('Asia/Phnom_Penh');
+//             $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(1);
+            
+//             $attendance = Attendances::create([
+//                 'att_code' => $code,
+//                 'att_startime' => $startTime,
+//                 'att_endtime' => $endTime,
+//                 'att_sch_id' => $request->sch_id,
+//                 'att_date' => $currentday,
+//                 'att_status' => 'Open'
+//             ]);
+
+//             // Get all students in the course
+//             $students = Course::join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+//                 ->join('students', 'grade.gra_id', '=', 'students.stu_gra_id')
+//                 ->where('courses.cou_id', $request->course_id)
+//                 ->select('students.stu_id')
+//                 ->get();
+
+//             // Create attendance submissions for each student
+//             $attendanceSubmissions = [];
+//             foreach ($students as $student) {
+//                 $attendanceSubmissions[] = [
+//                     'att_sub_stu_id' => $student->stu_id,
+//                     'att_sub_sch_id' => $request->sch_id,
+//                     'att_sub_att_id' => $attendance->att_id, // Link to the created attendance
+//                     // 'created_at' => now(),
+//                     // 'updated_at' => now()
+//                 ];
+//             }
+
+//             // Bulk insert attendance submissions
+//             if (!empty($attendanceSubmissions)) {
+//                 Attendancesubmit::insert($attendanceSubmissions);
+//             }
+
+//             DB::commit();
+//             return redirect()->back()->with('success', 'Attendance opened successfully!');
+
+//         } catch (\Exception $e) {
+//             DB::rollback();
+//             throw $e;
+//         }
+
+//     } catch (\Exception $e) {
+//         return redirect()->back()->with('error', 'Failed to open attendance: ' . $e->getMessage());
+//     }
+// }
     
     function teacherCourse(){
         // Check if teacher is logged in

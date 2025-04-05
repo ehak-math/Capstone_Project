@@ -1,19 +1,62 @@
-{{-- @extends('layout.navbar_student')
+@extends('layout.navbar_student')
 @section('title', 'Submit Attendance')
-@section('mainContent') --}}
-
-<h1>hello</h1>
-<p>{{$selectAttSub->att_sub_id}}</p>
+@section('mainContent')
+<div class="content">
+    <div class="row">
+        <!-- Main content area -->
+        <div class="col-lg-8 col-md-12">
+            <div class="row g-2 mt-5">          
+                <h1>hello{{$getId}}</h1>
+                <h1>{{$student->stu_id}}</h1>
+                <div>
+                    @if($subAttendance->att_status == 'Open')
+                    <p>{{$subAttendance->att_id}}</p>
+                    <p>{{$getId}}</p>
+                    <p>{{$subAttendance->att_startime}} <==>{{$subAttendance->att_endtime}}</p>
+                    <p>{{$selectAttSub->att_sub_id}}</p>
+                    @if($selectAttSub->att_sub_status == 'Present')
+                        <p>Your Already Submit{{$selectAttSub->att_sub_status}}</p>
+                    @else
+                    <form action="{{ route('student.course.submit') }}" method="POST" class="needs-validation" novalidate>
+                        @csrf
+                        <label for="">Code</label>
+                        <input type="text" name = "code_sub" value="">
+                        <input type="hidden" name="cou_id" value="{{$getId}}" required>
+                        <input type="hidden" name="att_id" value="{{$subAttendance->att_id}}" required>
+                        <input type="hidden" name="att_sub_id" value="{{$selectAttSub->att_sub_id}}" required>
+                        <input type="hidden" name="att_start" value="{{$subAttendance->att_startime}}" required>
+                        <input type="hidden" name="att_end" value="{{$subAttendance->att_endtime}}" required>
+                        <button type="submit" class="btn btn-primary btn-lg w-100" 
+                                onclick="return confirm('Are you sure you want to submit attendance?')">
+                            <i class="fas fa-check-circle me-2"></i>Submit Attendance
+                        </button>
+                    </form>
+                    @endif
+                        @else
+                        <p>{{$subAttendance->att_id}}</p>
+                        <p>{{$getId}}</p>
+                        <p>{{$subAttendance->att_startime}} <==>{{$subAttendance->att_endtime}}</p>
+                        <p>{{$selectAttSub->att_sub_id}}</p>
+                        <p>Your Attendance is already close  and your status is{{$selectAttSub->att_sub_status}}</p>
+                        @endif
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection 
+{{-- <p>{{$selectAttSub->att_sub_id}}</p>
 <p>{{$selectAttSub->att_sub_status}}</p>
-<p>{{$selectAttSub->stu_fname}}</p>
+<p>{{$selectAttSub->stu_fname}}</p> --}}
 {{-- @foreach($attendanceSub as $attsub) --}}
-    <p>{{$attendanceSub->att_id}}</p>
-    <p>{{$getId}}</p>
+    {{-- <p>{{$attendanceSub->att_id}}</p> --}}
+    {{-- <p>{{$getId}}</p> --}}
     {{-- <p>{{$attsub->att_status}}</p>
     <p>{{$attsub->att_startime}}</p>
     <p>{{$attsub->att_endtime}}</p> --}}
 {{-- @endforeach   --}}
-  <hr><hr>
+  {{-- <hr><hr>
     <form action="{{ route('student.course.submit') }}" method="POST" class="needs-validation" novalidate>
         @csrf
         <label for="">Code</label>
@@ -27,7 +70,7 @@
                 onclick="return confirm('Are you sure you want to submit attendance?')">
             <i class="fas fa-check-circle me-2"></i>Submit Attendance
         </button>
-    </form>
+    </form> --}}
 {{-- <div class="container mt-4">
 
     @if(session('success'))
@@ -184,5 +227,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
-
-@endsection --}}
+--}}
