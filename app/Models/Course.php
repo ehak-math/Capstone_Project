@@ -11,8 +11,8 @@ class Course extends Model
     use HasFactory;
     protected $table = 'courses';
     public $timestamps = false;
-    protected $pramary = 'cou_id';
-    protected $fillable = ['cou_tea_id','cou_gra_id'];
+    protected $primaryKey = 'cou_id';
+    protected $fillable = ['cou_gra_id'];
 
     public static function displayCourse()
     {
@@ -21,6 +21,11 @@ class Course extends Model
             ->select('courses.*','teachers.tea_fname','grade.gra_class')
             ->get();
         return $listcourses;
+    }
+
+    public function grade()
+    {
+        return $this->hasMany(Grade::class, 'cou_gra_id', 'gra_id');
     }
 
 

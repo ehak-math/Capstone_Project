@@ -28,7 +28,7 @@
     </div>
 
     <!-- Mobile Header with Notifications and Profile -->
-    <div class="mobile-header d-flex d-md-none position-fixed top-0">
+    <div class="mobile-header d-flex d-md-none position-fixed top-0 ">
         <button class="btn btn-color" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
         <div class="header-icons">
             <i class="fa-solid fa-bell"></i> <!-- Notification Icon -->
@@ -48,21 +48,21 @@
         <a href="/admin/students/index" class="nav-link {{ Request::is('admin/students/index') ? 'active' : '' }}" id="student-link">
             <i class="fa-solid fa-graduation-cap"></i><span>Students</span>
         </a>
-        <a href="/admin/scheldule" class="nav-link {{ Request::is('admin/scheldule') ? 'active' : '' }}" id="scheldule-link">
-            <i class="fa-solid fa-calendar-days"></i><span>Scheldule</span>
+        <a href="/admin/schedule/index" class="nav-link {{ Request::is('admin/schedule/index') ? 'active' : '' }}" id="schedule-link">
+            <i class="fa-solid fa-calendar-days"></i><span>Schedule</span>
         </a>
-        <a href="/admin/course" class="nav-link {{ Request::is('admin/course') ? 'active' : '' }}" id="course-link">
+        <a href="/admin/courses/index" class="nav-link {{ Request::is('admin/courses/index') ? 'active' : '' }}" id="course-link">
             <i class="fa-solid fa-book-open-reader"></i><span>Course</span>
         </a>
-        <a href="/admin/class" class="nav-link {{ Request::is('admin/class') ? 'active' : '' }}" id="class-link">
-            <i class="fa-solid fa-chalkboard"></i><span>Class</span>
+        <a href="/admin/grade_subject/index" class="nav-link {{ Request::is('admin/grade_subject/index') ? 'active' : '' }}" id="grade_subject-link">
+            <i class="fa-solid fa-chalkboard"></i><span>Grade/Subject</span>
         </a>
-        <a href="/admin/message" class="nav-link {{ Request::is('admin/message') ? 'active' : '' }}" id="message-link">
+        <!-- <a href="/admin/message" class="nav-link {{ Request::is('admin/message') ? 'active' : '' }}" id="message-link">
             <i class="fa-solid fa-message"></i><span>Message</span>
         </a>
         <a href="/admin/notice" class="nav-link {{ Request::is('admin/notice') ? 'active' : '' }}" id="notice-link">
             <i class="fa-solid fa-circle-exclamation"></i><span>Notice</span>
-        </a>
+        </a> -->
     </div>
 
 

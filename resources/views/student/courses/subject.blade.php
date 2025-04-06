@@ -62,18 +62,7 @@
                     </div> --}}
 
                     <!-- subject -->
-                    {{-- <div class="col-6 col-md-6">
-                        <div class="subject">
-                            <div class="card" style="z-index: 1;">
-                                <img src="{{ asset('images/math.jpg') }}" class="card-img-top"  alt="Mathematics">
-                                <div class="card-body">
-                                    <h5 class="card-title">Math</h5>
-                                    <p class="card-text">Teacher: kong visa</p>
-                                    <a href="#" class="btn btn-primary">See all</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
+                    
 
                 </div>
             </div>

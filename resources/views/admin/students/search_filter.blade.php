@@ -33,7 +33,7 @@
                 data.forEach(student => {
                     tableBody.innerHTML += `
                         <tr>
-                            <td>${student.stu_id}</td>
+                            <td>STU${student.stu_id}</td>
                             <td>
                                 ${student.stu_profile && student.stu_profile !== '' ? 
                                     `<img class="profile_stu" src="/storage/${student.stu_profile}" alt="Student Profile">` : 
@@ -44,6 +44,11 @@
                             <td>${student.stu_gender}</td>
                             <td>0${student.stu_ph_number}</td>
                             <td>${student.grade ? student.grade.gra_class + ' ' + student.grade.gra_group : 'N/A'}</td>
+                            <td>
+                                ${student.stu_status == 1 
+                                    ? '<span class="badge bg-success">Active</span>' 
+                                    : '<span class="badge bg-danger">Inactive</span>'}
+                            </td>
                             <td>
                                 <!-- View Details Button -->
                                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#viewModal${student.stu_id}">
@@ -97,6 +102,17 @@
                                                         <span>Date of Birth:</span>
                                                         <p>${student.stu_dob}</p>
                                                     </div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>Age:</span>
+                                                        <p>${new Date().getFullYear() - new Date(student.stu_dob).getFullYear()}</p>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>Status:</span>
+                                                        <p>${student.stu_status == 1
+                                                            ? '<span class="badge bg-success">Active</span>'
+                                                            : '<span class="badge bg-danger">Inactive</span>'}</p>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -171,6 +187,14 @@
                                                     </div>
 
                                                     <div class="form-group mb-3">
+                                                        <label for="stu_status" class="form-label">Status</label>
+                                                        <select name="stu_status" class="form-select">
+                                                            <option value="1" ${student.stu_status == 1 ? 'selected' : '' }}>Active</option>
+                                                            <option value="0" ${student.stu_status == 0 ? 'selected' : '' }}>Inactive</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="form-group mb-3">
                                                         <label for="stu_profile" class="form-label">Profile</label>
                                                         <input type="file" name="stu_profile" class="form-control">
                                                     </div>
@@ -202,12 +226,12 @@
                                                 Are you sure you want to delete this student?
                                             </div>
                                             <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                                 <form action="/admin/students/${student.stu_id}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger">Delete</button>
                                                 </form>
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                             </div>
                                         </div>
                                     </div>

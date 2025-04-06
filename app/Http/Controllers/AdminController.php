@@ -9,6 +9,7 @@ use App\Models\Teachers;
 use App\Models\Team;
 use App\Models\Grade;
 use App\Models\Course;
+use App\Models\Scores;
 use App\Models\Schedules;
 use App\Models\Attendances;
 use App\Models\Attendancesubmit;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
 
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
+use phpDocumentor\Reflection\Types\Nullable;
 
 class AdminController extends Controller
 {
@@ -47,10 +49,14 @@ class AdminController extends Controller
             'stu_ph_number' => 'required|numeric|digits_between:7,15',
             'stu_parent_number' => 'required|numeric|digits_between:7,15',
             'stu_dob' => 'required',
-            'stu_profile' => 'required|image|mimes:jpg,png,jpeg|max:2048',
+            'stu_profile' => 'nullable|image|mimes:jpg,png,jpeg|max:2048', // Made stu_profile nullable
         ]);
 
-        $path = $this->uploadsIamge($request->file('stu_profile'), $request->stu_fname);
+        $path = null; // Default to null if no profile image is uploaded
+
+        if ($request->hasFile('stu_profile')) {
+            $path = $this->uploadsIamge($request->file('stu_profile'), $request->stu_fname);
+        }
 
         $student = new Students();
         $student->stu_fname = $request->stu_fname;
@@ -61,15 +67,10 @@ class AdminController extends Controller
         $student->stu_dob = $request->stu_dob;
         $student->stu_ph_number = $request->stu_ph_number;
         $student->stu_parent_number = $request->stu_parent_number;
-        $student->stu_profile = $path;
+        $student->stu_profile = $path; // Assign the path (or null if no file uploaded)
         $student->save();
-        
-        if ($request->hasFile('stu_profile')) {
-            $student->stu_profile = $request->file('stu_profile')->store('images', 'public');
-        }
 
-        return redirect()->back()->with('success', 'Grade created successfully!');
-
+        return redirect()->back()->with('success', 'Student created successfully!');
     }
 
 
@@ -101,6 +102,7 @@ class AdminController extends Controller
             'stu_parent_number' => 'required|string|max:15',
             'stu_dob' => 'required|date',
             'stu_profile' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
+            'stu_status' => 'required|in:1,0',
         ]);
 
         // Find the student by ID
@@ -126,6 +128,7 @@ class AdminController extends Controller
         $student->stu_ph_number = $request->stu_ph_number;
         $student->stu_parent_number = $request->stu_parent_number;
         $student->stu_dob = $request->stu_dob;
+        $student->stu_status = $request->stu_status;
 
         // Save the updated student
         $student->save();
@@ -254,33 +257,201 @@ class AdminController extends Controller
     public function searchTeachers(Request $request)
     {
         $query = Teachers::query();
-    
+
         // Filter by name or username
         if ($request->has('search') && $request->search !== '') {
             $query->where(function ($q) use ($request) {
                 $q->where('tea_fname', 'like', '%' . $request->search . '%')
-                  ->orWhere('tea_username', 'like', '%' . $request->search . '%');
+                    ->orWhere('tea_username', 'like', '%' . $request->search . '%');
             });
         }
-    
+
         // Filter by gender
         if ($request->has('gender') && !empty($request->gender)) {
             $query->where('tea_gender', $request->gender);
         }
-    
+
         // Filter by subject (Ensure it matches exactly)
         if ($request->has('subject') && !empty($request->subject)) {
             $query->whereHas('subject', function ($q) use ($request) {
                 $q->where('sub_name', $request->subject);
             });
         }
-    
+
         // Fetch the filtered teachers with their related subject
         $teachers = $query->with('subject')->get();
-    
+
         return response()->json($teachers);
     }
+
+    // admin courses
+    public function displayCourses()
+    {
+        // Fetch subjects, courses, and grades
+        $subjects = Subjects::all();
+        $grades = Grade::all();
+        $teachers = Teachers::all();
+        $courses = Course::join('subjects', 'courses.cou_sub_id', '=', 'subjects.sub_id')
+            ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+            ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+            ->select('courses.*', 'subjects.sub_name', 'teachers.tea_fname', 'grade.gra_group', 'grade.gra_class')
+            ->get();
+
+        return view('admin.courses.index', compact('subjects', 'grades', 'teachers', 'courses'));
+    }
+
+    public function addCourse(Request $request)
+    {
+        $request->validate([
+            'cou_sub_id' => 'required',
+            'cou_tea_id' => 'required',
+            'cou_gra_id' => 'required',
+        ]);
+
+        $course = new Course();
+        $course->cou_sub_id = $request->cou_sub_id;
+        $course->cou_tea_id = $request->cou_tea_id;
+        $course->cou_gra_id = $request->cou_gra_id;
+        $course->save();
+
+        return redirect()->back()->with('success', 'Course created successfully!');
+    }
+
+    public function deleteCourse($id)
+    {
+        $course = Course::findOrFail($id);
+        $course->delete();
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Course deleted successfully!');
+    }
+
+    public function viewCourseDetail($id)
+    {
+        $course = Course::findOrFail($id);
+        $subject = Subjects::findOrFail($course->cou_sub_id);
+        $teacher = Teachers::findOrFail($course->cou_tea_id);
+        $grade = Grade::where('gra_id', $course->cou_gra_id)->firstOrFail();
+
+        $students = Students::where('stu_gra_id', $grade->gra_id)->get();
+
+        $scores = Scores::where('sco_cou_id', $id)->get();
+
+        return view('admin.courses.view_details', compact('course', 'subject', 'teacher', 'grade', 'students', 'scores'));
+    }
+
+    public function updateCourse(Request $request, $id)
+    {
+        // Validate the incoming request data
+        $request->validate([
+            'cou_sub_id' => 'required',
+            'cou_tea_id' => 'required',
+            'cou_gra_id' => 'required',
+        ]);
     
+        // Find the course by ID
+        $course = Course::findOrFail($id);
+    
+        // Update the course fields
+        $course->cou_sub_id = $request->cou_sub_id;
+        $course->cou_tea_id = $request->cou_tea_id;
+        $course->cou_gra_id = $request->cou_gra_id;
+    
+        // Save the updated course
+        $course->save();
+    
+        // Redirect back with a success message
+        return redirect()->route('admin.courses.index')->with('success', 'Course updated successfully!');
+    }
+
+    // grade and subject
+    public function displayGradeSubject()
+    {
+        $grades = Grade::all()->sortByDesc('gra_class');
+        $subjects = Subjects::all();
+        return view('admin.grade_subject.index', compact('grades', 'subjects'));
+    }
+    public function addGrade(Request $request)
+    {
+        $request->validate([
+            'gra_group' => 'required',
+            'gra_class' => 'required',
+        ]);
+
+        $grade = new Grade();
+        $grade->gra_group = strtoupper($request->gra_group);
+        $grade->gra_class = $request->gra_class;
+        $grade->save();
+
+        return redirect()->back()->with('success', 'Grade created successfully!');
+    }
+
+    public function deleteGrade($id)
+    {
+        $grade = Grade::findOrFail($id);
+        $grade->delete();
+    
+        return redirect()->back()->with('success', 'Grade deleted successfully!');
+    }
+
+    public function updateGrade(Request $request, $id)
+    {
+        $request->validate([
+            'gra_group' => 'required',
+            'gra_class' => 'required',
+        ]);
+
+        $grade = Grade::findOrFail($id);
+        $grade->gra_group = strtoupper($request->gra_group);
+        $grade->gra_class = $request->gra_class;
+        $grade->save();
+
+        return redirect()->back()->with('success', 'Grade updated successfully!');
+    }
+
+    public function addSubject(Request $request)
+    {
+        $request->validate([
+            'sub_name' => 'required',
+        ]);
+
+        $subject = new Subjects();
+        $subject->sub_name = $request->sub_name;
+        $subject->save();
+
+        return redirect()->back()->with('success', 'Subject created successfully!');
+    }
+
+    public function deleteSubject($id)
+    {
+        $subject = Subjects::findOrFail($id);
+        $subject->delete();
+
+        return redirect()->back()->with('success', 'Subject deleted successfully!');
+    }
+    public function updateSubject(Request $request, $id)
+    {
+        $request->validate([
+            'sub_name' => 'required',
+        ]);
+
+        $subject = Subjects::findOrFail($id);
+        $subject->sub_name = $request->sub_name;
+        $subject->save();
+
+        return redirect()->back()->with('success', 'Subject updated successfully!');
+    }
+
+
+    // admin.schedule
+
+    // public function displaySchedule()
+    // {
+    //     $schedules = Schedule::with('course', 'course.subject', 'course.teacher', 'course.grade')
+    //         ->get();
+
+    //     return view('admin.schedule.index', compact('schedules'));
+    // }
 
 
 }

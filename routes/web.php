@@ -54,15 +54,19 @@ Route::get('/', function () {
 });
 //
 //
+
+
+
 ///////////////
 //// admin
 //////////////
-///
+
 Route::post('admin.uploadImage', [AdminController::class, 'creatAdmin'])->name('uploadfile');
 // Route::get('/subjects/{id}/edit', [TeacherController::class, 'edit'])->name('subject.edit');
 Route::get('/subjects/{id}', [TeacherController::class, 'editsubject']);
 Route::get('/subjects/{id}/edit', [TeacherController::class, 'editsubject'])->name('subject.edit');
 Route::put('/subjects/{id}', [TeacherController::class, 'update'])->name('updatesub');
+
 
 
 Route::get('admin',[TeacherController::class,'showsubject']);
@@ -122,21 +126,14 @@ Route::prefix('teacher')->group(function () {
     Route::delete('/teacher/document/delete/{id}', [TeacherController::class, 'deleteDocument'])->name('teacher.document.delete');
 });
 
-Route::get('/teacher/student', function () {
-    return view('teacher.students.student');
-});
-
-// Route::get('/teacher/attendance', function () {
-//     return view('teacher.attendance');
-// });
-
-// Route::get('/teacher/course', function () {
-//     return view('teacher.courses.course');
-// });
-
-// Route::get('/teacher/scheldule', function () {
-//     return view('teacher.scheldule');
-// });
+////////////////////
+// admin course///
+///////////////////
+Route::get('admin/courses/index', [AdminController::class, 'displayCourses'])->name('admin.courses.index');
+Route::post('admin/courses/add', [AdminController::class, 'addCourse'])->name('admin.courses.add');
+Route::put('admin/courses/{id}', [AdminController::class, 'updateCourse'])->name('updateCourse');
+Route::delete('admin/courses/{id}', [AdminController::class, 'deleteCourse'])->name('admin.courses.delete');
+Route::get('admin/courses/view_detail/{id}', [AdminController::class, 'viewCourseDetail'])->name('admin.courses.view_detail');
 
 //////////////////
 //admin teahcer///
@@ -146,8 +143,6 @@ Route::post('admin/teachers/add', [AdminController::class, 'addTeacher'])->name(
 Route::delete('admin/teachers/{id}', [AdminController::class, 'deleteTeacher'])->name('deleteTeacher');
 Route::put('admin/teachers/{id}', [AdminController::class, 'updateTeacher'])->name('updateTeacher');
 Route::get('admin/teachers/search', [AdminController::class, 'searchTeachers'])->name('searchTeachers');
-
-
 
 
 //////////////////
@@ -160,13 +155,26 @@ Route::post('admin/students/add', [AdminController::class, 'addStudent'])->name(
 Route::get('admin/students/search', [AdminController::class, 'searchStudents'])->name('searchStudents');
 
 
+///////////////////
+// grade/subject///
+//////////////////
 
-// Route::get('/users', function () {
-//    return view('admin.users');
-// });
+Route::get('admin/grade_subject/index', [AdminController::class, 'displayGradeSubject'])->name('admin.grade_subject.index');
+Route::post('admin/grade_subject/addGrade', [AdminController::class,'addGrade'])->name('addGrade');
+Route::post('admin/grade_subject/addSubject', [AdminController::class, 'addSubject'])->name('addSubject');
+Route::delete('admin/grade_subject/grade/{id}', [AdminController::class, 'deleteGrade'])->name('deleteGrade');
+Route::put('admin/grade_subject/subject/{id}', [AdminController::class, 'updateSubject'])->name('updateSubject');
+Route::put('admin/grade_subject/grade/{id}', [AdminController::class, 'updateGrade'])->name('updateGrade');
+Route::delete('admin/grade_subject/subject/{id}', [AdminController::class, 'deleteSubject'])->name('deleteSubject');
 
-<<<<<<< HEAD
-// Route::get('/message', function () {
-=======
-// Route::get('/message', function () {
->>>>>>> bb821f098d8736f9cb3af4edf50e9296dfd6e881
+/////////////
+// schedule//
+/////////////
+
+Route::get('admin/schedule/index', function () {
+    return view('admin.schedule.index');
+});
+
+Route::get('admin/dashboard', function () {
+    return view('admin.dashboard');
+});
