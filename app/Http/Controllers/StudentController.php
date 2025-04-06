@@ -90,17 +90,26 @@ class StudentController extends Controller
         
         $student = session('student');
         $currentTime = Carbon::now('Asia/Phnom_Penh');
-        
-        // Get active attendance for the course
-        $attendance = Attendances::join('courses', 'attendances.att_cou_id', '=', 'courses.cou_id')
-            ->where('attendances.att_cou_id', $id)
-            // ->where('attendances.att_status', 'Open')
-            // ->whereDate('attendances.att_startime', $currentTime->toDateString())
-            
+        $currentday = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d'); // Format as date string
+
+        $subAttendance = Attendances::join('schedules' , 'attendances.att_sch_id' , '=', 'schedules.sch_id')
+            // ->where('attendances.att_status' , 'Open')
+            ->where('attendances.att_date' , $currentTime->toDateString())
+            ->where('schedules.sch_cou_id' , $id)
             ->first();
         
+        // Get active attendance for the course
+        // $attendance = Attendances::join('courses', 'attendances.att_cou_id', '=', 'courses.cou_id')
+        //     ->where('attendances.att_cou_id', $id)
+        //     ->where('attendances.att_status', 'Open')
+        //     ->whereDate('attendances.att_startime', $currentTime->toDateString())  
+        //     ->first();
+        
         $selectAttSub = Attendancesubmit::join('students', 'attendance_submit.att_sub_stu_id', '=', 'students.stu_id')
+            ->join('schedules', 'attendance_submit.att_sub_sch_id', '=', 'schedules.sch_id')
             ->where('students.stu_id', $student->stu_id)
+            // ->where('attendance_submit.att_sub_att_id', $subAttendance->att_id)
+            ->where('attendance_submit.att_sub_date', $currentday)
             ->orderBy('attendance_submit.att_sub_id', 'desc')
             ->select('attendance_submit.*', 'students.*')
             ->first();
@@ -109,8 +118,9 @@ class StudentController extends Controller
 
         return view('student.courses.submit_attendance', [
             'getId' => $id,
-            'attendanceSub' => $attendance,
+            // 'attendanceSub' => $attendance,
             'student' => $student,
+            'subAttendance' => $subAttendance,
             'selectAttSub' => $selectAttSub
         ]);
     }
@@ -140,19 +150,30 @@ class StudentController extends Controller
             $startTime = $request->att_start;
             $endTime = $request->att_end;
             $currentTime = Carbon::now('Asia/Phnom_Penh');
+// verify attendance code and status
+            $attendance = Attendances::where('att_id', $request->att_id)
+                ->where('att_code', $request->code_sub)
+                ->where('att_status', 'Open')
+                ->first();
+
 
             // $status =  checkAttendanceStatus($startTime, $endTime, $currentTime); // "Present";
-            // if ($currentTime->between($startTime, $endTime)) {
-                $status =  "Present";
-                DB::table('attendance_submit')
-                ->where('att_sub_id', $request->att_sub_id)
-                ->update([
-                    'att_sub_code' => $request->code_sub,
-                    'att_sub_time' =>$currentTime ,
-                    'att_sub_status' => $status,
-                    'att_sub_stu_id' => $student->stu_id,
-                    'att_sub_att_id' => $request->att_id,
-                ]);
+            if ($currentTime->between($startTime, $endTime)) {
+                if ($attendance) {
+                    $status =  "Present";
+                    DB::table('attendance_submit')
+                    ->where('att_sub_id', $request->att_sub_id)
+                    ->update([
+                        'att_sub_code' => $request->code_sub,
+                        'att_sub_time' =>$currentTime ,
+                        'att_sub_status' => $status,
+                        // 'att_sub_stu_id' => $student->stu_id,
+                        'att_sub_att_id' => $request->att_id,
+                    ]);
+                }else {
+                    throw new \Exception('Invalid attendance code or attendance session is closed');
+                }
+            }
             // } else if ($currentTime->greaterThan($endTime)) {
             //     $status =  "Late";
             // } else {

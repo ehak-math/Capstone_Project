@@ -10,6 +10,7 @@ use App\Models\Attendancesubmit;
 use App\Models\Documents;
 use App\Models\Student;
 use App\Models\Schedules;
+use App\Models\Scores;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\Course;
@@ -250,7 +251,7 @@ class TeacherController extends Controller
             // Create new attendance
             $code = Str::upper(Str::random(6));
             $startTime = Carbon::now('Asia/Phnom_Penh');
-            $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(1);
+            $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(5);
             
             Attendances::create([
                 'att_code' => $code,
@@ -271,6 +272,7 @@ class TeacherController extends Controller
             foreach($selectedStudent as $student){
                 Attendancesubmit::create([
                     'att_sub_stu_id' => $student->stu_id,
+                    'att_sub_date' => $currentday,
                     'att_sub_sch_id' => $request->sch_id,
                 ]);
             }
@@ -281,6 +283,84 @@ class TeacherController extends Controller
             return redirect()->back()->with('error', 'Failed to open attendance: ' . $e->getMessage());
         }
     }
+
+//     public function openatt(Request $request)
+// {
+//     try {
+//         if (!session('teacher')) {
+//             return redirect()->route('teacher.login');
+//         }
+
+//         $request->validate([
+//             'sch_id' => 'required',
+//             'course_id' => 'required'
+//         ]);
+
+//         $currentday = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
+
+//         // Check if attendance already exists for today
+//         $existingAttendance = Attendances::join('schedules', 'attendances.att_sch_id', '=', 'schedules.sch_id')
+//             ->where('schedules.sch_id', $request->sch_id)
+//             ->whereDate('attendances.att_date', $currentday)
+//             ->first();
+
+//         if ($existingAttendance) {
+//             throw new \Exception('Attendance already exists for today');
+//         }
+
+//         // Begin database transaction
+//         DB::beginTransaction();
+//         try {
+//             // Create new attendance
+//             $code = Str::upper(Str::random(6));
+//             $startTime = Carbon::now('Asia/Phnom_Penh');
+//             $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(1);
+            
+//             $attendance = Attendances::create([
+//                 'att_code' => $code,
+//                 'att_startime' => $startTime,
+//                 'att_endtime' => $endTime,
+//                 'att_sch_id' => $request->sch_id,
+//                 'att_date' => $currentday,
+//                 'att_status' => 'Open'
+//             ]);
+
+//             // Get all students in the course
+//             $students = Course::join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+//                 ->join('students', 'grade.gra_id', '=', 'students.stu_gra_id')
+//                 ->where('courses.cou_id', $request->course_id)
+//                 ->select('students.stu_id')
+//                 ->get();
+
+//             // Create attendance submissions for each student
+//             $attendanceSubmissions = [];
+//             foreach ($students as $student) {
+//                 $attendanceSubmissions[] = [
+//                     'att_sub_stu_id' => $student->stu_id,
+//                     'att_sub_sch_id' => $request->sch_id,
+//                     'att_sub_att_id' => $attendance->att_id, // Link to the created attendance
+//                     // 'created_at' => now(),
+//                     // 'updated_at' => now()
+//                 ];
+//             }
+
+//             // Bulk insert attendance submissions
+//             if (!empty($attendanceSubmissions)) {
+//                 Attendancesubmit::insert($attendanceSubmissions);
+//             }
+
+//             DB::commit();
+//             return redirect()->back()->with('success', 'Attendance opened successfully!');
+
+//         } catch (\Exception $e) {
+//             DB::rollback();
+//             throw $e;
+//         }
+
+//     } catch (\Exception $e) {
+//         return redirect()->back()->with('error', 'Failed to open attendance: ' . $e->getMessage());
+//     }
+// }
     
     function teacherCourse(){
         // Check if teacher is logged in
@@ -352,9 +432,7 @@ class TeacherController extends Controller
 
         $documents = Documents::all();
 
-    return view('teacher.document', compact('select', 'documents'));
-
-
+        return view('teacher.document', compact('select', 'documents'));
     }
     function uploadsfile($data){
         if ($data) {
@@ -422,5 +500,106 @@ class TeacherController extends Controller
         $document->delete();
         
         return redirect()->back()->with('success', 'Document deleted successfully.');
+    }
+
+    function teacherScore($id)
+    {
+        if (!session('teacher')) {
+            return redirect()->route('teacher.login');
+        }
+        $getcourse = Course::where('cou_id', $id)->first();
+        $teacher = session('teacher');
+        $getScoreBymonth = Scores::join('courses','scores.sco_cou_id' ,'=', 'courses.cou_id')
+        ->join('students' ,'students.stu_id' , '=' , 'scores.sco_stu_id')
+        ->join('teachers' , 'teachers.tea_id' ,'=', 'courses.cou_tea_id')
+        ->where('scores.sco_cou_id', $id)->get();
+
+        $selectallStudent = Course::join('grade' , 'courses.cou_gra_id', '=', 'grade.gra_id')
+        ->join('students' , 'grade.gra_id', '=', 'students.stu_gra_id')
+        // ->join('scores' , 'scores.sco_stu_id', '=', 'students.stu_id')
+        ->where('courses.cou_id', $id)
+        ->get();
+
+        $selectallpoint = Course::join('grade' , 'courses.cou_gra_id', '=', 'grade.gra_id')
+        ->join('students' , 'grade.gra_id', '=', 'students.stu_gra_id')
+        ->join('scores' , 'scores.sco_stu_id', '=', 'students.stu_id')
+        ->where('courses.cou_id', $id)
+        ->get();
+
+        return view('teacher.courses.score', [
+            'teacher' => $teacher,
+            'course' => $getcourse,
+            'score' => $getScoreBymonth,
+            'selectallStudent' => $selectallStudent,
+            'selectallpoint' => $selectallpoint,
+        ] );
+    }
+
+    public function addscore(Request $request)
+    {
+        $request->validate([
+            'sco_id' => 'required',
+            'cou_id' => 'required',
+            'stu_id' => 'required',
+            'sco_point' => 'required'
+        ]);
+
+        // Check if the score already exists for the student in the course
+        // $existingScore = Scores::where('sco_cou_id', $request->sco_cou_id)
+        //     ->where('sco_stu_id', $request->sco_stu_id)
+        //     ->where('sco_month', $request->sco_month)
+        //     ->first();
+        // if ($existingScore) {
+        //     return redirect()->back()->with('error', 'Score already exists for this student in this course and month.');
+        // }
+        DB::table('scores')
+            ->where('sco_id', $request->sco_id)
+            ->update([
+                'sco_point' => $request->sco_point,  
+            ]);
+
+
+        return redirect()->back()->with('success', 'Score added successfully!');
+    }
+
+    public function createscore(Request $request)
+    {
+        $request->validate([
+            'sco_month' => 'required',
+            'cou_id' => 'required',
+        ]);
+
+        // Check if the score already exists for the student in the course
+        $existingScore = Scores::where('sco_cou_id', $request->cou_id)
+            ->where('sco_month', $request->sco_month)
+            ->first();
+        if ($existingScore) {
+            return redirect()->back()->with('error', 'Score already exists for this student in this course and month.');
+        }
+
+        $selectedStudent = Course::join('grade' , 'courses.cou_gra_id', '=', 'grade.gra_id')
+            ->join('students' , 'grade.gra_id', '=', 'students.stu_gra_id')
+            ->where('courses.cou_id', $request->cou_id)
+            ->select('students.stu_id')->get();
+
+            foreach($selectedStudent as $student){
+                Scores::create([
+                    'sco_month' => $request->sco_month,
+                    'sco_cou_id' => $request->cou_id,
+                    'sco_stu_id' => $student->stu_id
+                ]);
+                
+                
+            }
+    
+        // $data = [
+        //     'sco_point' => $request->sco_point,
+        //     'sco_month' => $request->sco_month,
+        //     'sco_cou_id' => $request->sco_cou_id,
+        //     'sco_stu_id' => $request->sco_stu_id
+        // ];
+
+        // Scores::create($data);
+        return redirect()->back()->with('success', 'Score created successfully!');
     }
 }

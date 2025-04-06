@@ -116,6 +116,9 @@ Route::prefix('teacher')->group(function () {
     Route::post('/attendance/close', [TeacherController::class, 'closeatt'])->name('teacher.attendance.close');
     Route::post('/attendance/open', [TeacherController::class, 'openatt'])->name('teacher.attendance.open');
     Route::get('/course/attendance/{id}', [TeacherController::class, 'teacherAttendance'])->name('teacher.attendance.show');
+    Route::get('/course/score/{id}', [TeacherController::class, 'teacherScore'])->name('teacher.score.show');
+    Route::post('/score/create', [TeacherController::class, 'createscore'])->name('teacher.score.create');
+    Route::post('/score/add', [TeacherController::class, 'addscore'])->name('teacher.score.addscore');
     Route::get('/document', [TeacherController::class, 'showDocument'])->name('teacher.show.document');
     Route::post('/document/upload', [TeacherController::class, 'uploadDocument'])->name('teacher.document');
     Route::get('/teacher/document/download/{id}', [TeacherController::class, 'downloadDocument'])->name('teacher.document.download');
