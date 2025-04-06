@@ -27,8 +27,10 @@
                                     <p class="card-text">Teacher: {{$cou->tea_fname}} </p>
                                     <p class="card-text">Course: {{$cou->cou_id}} </p>
                                     <p class="card-text">Grade: {{$cou->gra_class}}{{$cou->gra_group}} </p>
-                                    <a href="{{ route('student.course.submit.show', ['id' => $cou->cou_id]) }}" class="btn btn-primary">See all</a>
-                                </div>
+                                    <a href="{{ route('student.course.submit.show', ['id' => $cou->cou_id]) }}" class="btn btn-primary">Submit Attendance</a>
+                                    <a href="{{ route('student.course.document', ['id' => $cou->cou_id]) }}" class="btn btn-primary">
+                                        View Documents
+                                    </a>                                </div>
                             </div>
                         </div>
                     </div>

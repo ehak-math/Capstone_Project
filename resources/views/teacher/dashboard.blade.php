@@ -8,7 +8,7 @@
             <div class="col-lg-8 col-md-12">
                 <div class="date_name">
                     <h3>Greatings, Bro!</h3>
-                    <p >Welcome,{{$Teacher->tea_fname}}
+                    <p >Welcome,{{$teacher->tea_fname}}
                     </p>
                     <p >You is grade,
                     </p>
@@ -65,7 +65,7 @@
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
                                             <li><a class="dropdown-item" href="#" onclick="updateAttendanceCategory('students')">Students</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="updateAttendanceCategory('teachers')">Teachers</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="updateAttendanceCategory('teas')">Teachers</a></li>
                                         </ul>
                                     </div>
                                 </div>

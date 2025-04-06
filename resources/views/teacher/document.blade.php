@@ -9,6 +9,17 @@
                 <div class="row g-2 mt-5">
                     
                     <h1 class="mt-5 mx-2">Uplods document</h1>
+                    @if(session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    @if(session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
                    
                     <form action="{{ route('teacher.document') }}" method="post" enctype="multipart/form-data">
                         @csrf
@@ -62,16 +73,15 @@
                                             <th>Type</th>
                                             <th>Description</th>
                                             <th>Upload Date</th>
-                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($documents as $document)
                                             <tr>
-                                                <td>{{ $document->doc_title }}</td>
+                                                <td>{{ $document->doc_name }}</td>
                                                 <td>{{ $document->course->sub_name ?? 'N/A' }}</td>
                                                 <td>{{ $document->doc_type }}</td>
-                                                <td>{{ Str::limit($document->doc_description, 50) }}</td>
+                                                <td>{{ Str::limit($document->doc_deatial, 50) }}</td>
                                                 {{-- <td>{{ $document->created_at->format('Y-m-d H:i') }}</td> --}}
                                                 <td>
                                                     <a href="{{ route('teacher.document.download', $document->doc_id) }}" 

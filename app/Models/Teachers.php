@@ -27,6 +27,10 @@ class teachers extends Model
     {
         return $this->belongsTo(Subjects::class, 'tea_subject', 'sub_id');
     }
+
+    public static function displayTeacher(){
+        $teachers = self::all();
+    }
     
 
     public static function insertTeacher($data){
