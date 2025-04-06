@@ -2,49 +2,96 @@
 @section('title', 'Submit Attendance')
 @section('mainContent')
 <div class="content">
-    <div class="row">
+    <div class="row justify-content-center">
         <!-- Main content area -->
         <div class="col-lg-8 col-md-12">
-            <div class="row g-2 mt-5">          
-                <h1>hello{{$getId}}</h1>
-                <h1>{{$student->stu_id}}</h1>
-                <div>
+            <div class="card shadow mt-5">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-check me-2"></i>Submit Attendance
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="text-muted">Hello, {{$student->stu_id}}</h5>
+                    <p><strong>Course ID:</strong> {{$getId}}</p>
+                    <p><strong>Attendance ID:</strong> {{$subAttendance->att_id}}</p>
+                    <p><strong>Time:</strong> {{$subAttendance->att_startime}} <span class="text-muted">to</span> {{$subAttendance->att_endtime}}</p>
+
                     @if($subAttendance->att_status == 'Open')
-                    <p>{{$subAttendance->att_id}}</p>
-                    <p>{{$getId}}</p>
-                    <p>{{$subAttendance->att_startime}} <==>{{$subAttendance->att_endtime}}</p>
-                    <p>{{$selectAttSub->att_sub_id}}</p>
-                    @if($selectAttSub->att_sub_status == 'Present')
-                        <p>Your Already Submit{{$selectAttSub->att_sub_status}}</p>
-                    @else
-                    <form action="{{ route('student.course.submit') }}" method="POST" class="needs-validation" novalidate>
-                        @csrf
-                        <label for="">Code</label>
-                        <input type="text" name = "code_sub" value="">
-                        <input type="hidden" name="cou_id" value="{{$getId}}" required>
-                        <input type="hidden" name="att_id" value="{{$subAttendance->att_id}}" required>
-                        <input type="hidden" name="att_sub_id" value="{{$selectAttSub->att_sub_id}}" required>
-                        <input type="hidden" name="att_start" value="{{$subAttendance->att_startime}}" required>
-                        <input type="hidden" name="att_end" value="{{$subAttendance->att_endtime}}" required>
-                        <button type="submit" class="btn btn-primary btn-lg w-100" 
-                                onclick="return confirm('Are you sure you want to submit attendance?')">
-                            <i class="fas fa-check-circle me-2"></i>Submit Attendance
-                        </button>
-                    </form>
-                    @endif
+                        @if($selectAttSub->att_sub_status == 'Present')
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle me-2"></i>
+                                You have already submitted your attendance. Status: <strong>{{$selectAttSub->att_sub_status}}</strong>
+                            </div>
                         @else
-                        <p>{{$subAttendance->att_id}}</p>
-                        <p>{{$getId}}</p>
-                        <p>{{$subAttendance->att_startime}} <==>{{$subAttendance->att_endtime}}</p>
-                        <p>{{$selectAttSub->att_sub_id}}</p>
-                        <p>Your Attendance is already close  and your status is{{$selectAttSub->att_sub_status}}</p>
+                            <form action="{{ route('student.course.submit') }}" method="POST" class="needs-validation" novalidate>
+                                @csrf
+                                <div class="mb-3">
+                                    <label for="code_sub" class="form-label">
+                                        <i class="fas fa-key me-2"></i>Attendance Code
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control form-control-lg @error('code_sub') is-invalid @enderror" 
+                                           name="code_sub" 
+                                           id="code_sub" 
+                                           required 
+                                           placeholder="Enter attendance code">
+                                    @error('code_sub')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <input type="hidden" name="cou_id" value="{{$getId}}" required>
+                                <input type="hidden" name="att_id" value="{{$subAttendance->att_id}}" required>
+                                <input type="hidden" name="att_sub_id" value="{{$selectAttSub->att_sub_id}}" required>
+                                <input type="hidden" name="att_start" value="{{$subAttendance->att_startime}}" required>
+                                <input type="hidden" name="att_end" value="{{$subAttendance->att_endtime}}" required>
+
+                                <button type="submit" class="btn btn-primary btn-lg w-100" 
+                                        onclick="return confirm('Are you sure you want to submit attendance?')">
+                                    <i class="fas fa-check-circle me-2"></i>Submit Attendance
+                                </button>
+                            </form>
                         @endif
-                    
+                    @else
+                        <div class="alert alert-danger">
+                            <i class="fas fa-times-circle me-2"></i>
+                            Attendance is closed. Your status: <strong>{{$selectAttSub->att_sub_status}}</strong>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </div>
+<style>
+    .card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.alert {
+    border-left: 4px solid;
+}
+
+.alert-success {
+    border-left-color: #198754;
+}
+
+.alert-danger {
+    border-left-color: #dc3545;
+}
+
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+}
+</style>
 @endsection 
 {{-- <p>{{$selectAttSub->att_sub_id}}</p>
 <p>{{$selectAttSub->att_sub_status}}</p>

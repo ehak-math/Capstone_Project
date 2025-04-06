@@ -173,7 +173,7 @@ class TeacherController extends Controller
             ->where('courses.cou_id' , $id)
             ->get();
             $currentday = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d'); // Format as date string
-            // $currentday = '2025-04-04'; // Format as date string
+            // $currentday = '2025-04-07'; // Format as date string
 
         $getatt = Attendances::join('schedules', 'schedules.sch_id','=', 'attendances.att_sch_id')
         ->where('schedules.sch_cou_id' , $id)
