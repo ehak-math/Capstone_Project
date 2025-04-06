@@ -9,7 +9,7 @@
                 <div class="list-of-student m-2">
                     <h1 class="mt-5 text-center text-primary">List of Scores</h1>
                     <!-- List of scores -->
-                    @if($score)
+                    @if(!isset($score))
                         @foreach($score as $sco)
                             <div class="attendance d-flex justify-content-between align-items-center shadow-sm">
                                 <div class="image-text d-flex align-items-center">

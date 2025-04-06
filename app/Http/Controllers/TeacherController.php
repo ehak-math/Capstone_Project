@@ -434,15 +434,15 @@ class TeacherController extends Controller
 
         return view('teacher.document', compact('select', 'documents'));
     }
-    function uploadsfile($data){
+    function uploadsfile($data,$name){
         if ($data) {
             $file =$data;
             
             // Create unique filename
-            $imageName = 'doc_file' . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $imageName = $name . '_' . time() . '.' . $file->getClientOriginalExtension();
             
             // Store file in public/images directory
-            $path = $file->storeAs('images', $imageName, 'public');
+            $path = $file->storeAs('documents', $imageName, 'public');
         }
         return $path;
         }
@@ -456,7 +456,7 @@ class TeacherController extends Controller
             'typeOfdoc'=> 'required',
         ]);
 
-        $path = $this->uploadsfile($request->file('file'));
+        $path = $this->uploadsfile($request->file('file'),$request->tittle);
         
         if (!$path) {
             return redirect()->back()

@@ -91,7 +91,7 @@ Route::prefix('student')->group(function () {
     Route::get('/courses/subject', [StudentController::class, 'displayCourseStudent']);
     Route::get('/courses/subject/{id}', [StudentController::class, 'submitAtt'])->name('student.course.submit.show');
     Route::post('/courses/subject/submit-attendance', [StudentController::class, 'subAttendance'])->name('student.course.submit');
-    
+    Route::get('/student/course/document/{id}', [StudentController::class, 'showDoc'])->name('student.course.document');    
     // Route::get('/attendance', function () {
     //     return view('student.courses.attendance');
     // });

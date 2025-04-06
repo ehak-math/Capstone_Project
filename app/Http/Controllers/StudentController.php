@@ -11,6 +11,7 @@ use App\Models\Students;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\Documents;
 
 class StudentController extends Controller
 {
@@ -150,7 +151,7 @@ class StudentController extends Controller
             $startTime = $request->att_start;
             $endTime = $request->att_end;
             $currentTime = Carbon::now('Asia/Phnom_Penh');
-// verify attendance code and status
+            // verify attendance code and status
             $attendance = Attendances::where('att_id', $request->att_id)
                 ->where('att_code', $request->code_sub)
                 ->where('att_status', 'Open')
@@ -207,9 +208,31 @@ class StudentController extends Controller
 
 
             return redirect()->back()->with('success', 'Attendance submitted successfully!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', $e->getMessage());
+            }
+    }
+
+    public function showDoc($id)
+    {
+        if (!session('student')) {
+            return redirect()->route('student.login');
         }
+        $student = session('student');
+        $getcou = Course::where('courses.cou_id', $id)->first();
+
+        $documents = Documents::where('doc_cou_id', $id)
+            ->join('courses', 'documents.doc_cou_id', '=', 'courses.cou_id')
+            ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+            ->select('documents.*', 'courses.*', 'grade.gra_class')
+            ->get();
+        // $select = Course::all();
+
+        return view('student.courses.document', [
+            'student' => $student,
+            'select' => $getcou,
+            'documents' => $documents
+        ]);
     }
     function checkAttendanceStatus($startTime, $endTime, $currentTime) 
             {
