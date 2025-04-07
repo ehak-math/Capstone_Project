@@ -16,7 +16,7 @@
                         @if($stu->stu_profile && file_exists(public_path('storage/' . $stu->stu_profile)))
                         <img src="{{ asset('storage/' . $stu->stu_profile) }}" alt="Student Profile" style="max-width: 200px; border-radius: 5px;">
                         @else
-                        <img src="{{ asset('images/placeholder_student.png') }}" alt="Placeholder Image" style="max-width: 200px; border-radius: 5px;">
+                        <img src="{{ asset('images/placeholder_student.jpg') }}" alt="Placeholder Image" style="max-width: 200px; border-radius: 5px;">
                         @endif
                     </div>
                     <div class="d-flex justify-content-between">
@@ -50,6 +50,21 @@
                     <div class="d-flex justify-content-between">
                         <span>Date of Birth:</span>
                         <p>{{$stu->stu_dob}}</p>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Age:</span>
+                        <p>{{ \Carbon\Carbon::parse($stu->stu_dob)->age }}</p>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <span>Status:</span>
+                        <p>
+                            @if($stu->stu_status == 1)
+                                <span class="badge bg-success">Active</span>
+                            @else
+                                <span class="badge bg-danger">Inactive</span>
+                            @endif
+                        </p>
                     </div>
 
                 </div>

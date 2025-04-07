@@ -4,8 +4,15 @@
     <!-- Main Content -->
     <div class="content">
         <div class="row">
+            
             <!-- Main content area -->
             <div class="col-lg-12 col-md-12">
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
                 <div class="date_name">
                     <h3>Greatings, Bro!</h3>
                     <p id="currentDate"></p>
@@ -17,8 +24,7 @@
                         <div class="d-flex gap-2">
                             <a href="{{ route('students.export') }}" class="btn border d-flex align-items-center">Export</a>
                             <!-- Import Button -->
-                            <button type="button" class="btn border" data-bs-toggle="modal"
-                                data-bs-target="#importModal">
+                            <button type="button" class="btn border" data-bs-toggle="modal" data-bs-target="#importModal">
                                 Import
                             </button>
 
@@ -87,7 +93,8 @@
                                     <th>FULLNAME</th>
                                     <th>GENDER</th>
                                     <th>PHONE NUMBER</th>
-                                    <th>Grade</th>
+                                    <th>GRADE</th>
+                                    <th>STATUS</th>
                                     <th>Action</th>
 
                                 </tr>
@@ -114,6 +121,13 @@
                                             <td>0{{$stu->stu_ph_number}}</td>
                                             <td>{{$stu->gra_class}} {{$stu->gra_group}}</td>
                                             <td>
+                                                @if($stu->stu_status == 1)
+                                                    <span class="badge bg-success">Active</span>
+                                                @else
+                                                    <span class="badge bg-danger">Inactive</span>
+                                                @endif
+                                            </td>
+                                            <td>
                                                 <!-- view details -->
                                                 @include('admin.students.view_details')
 
@@ -135,9 +149,9 @@
 
                         </table>
                     </div>
-                    
 
                 </div>
+
             </div>
         </div>
     </div>

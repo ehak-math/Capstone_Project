@@ -5,6 +5,12 @@
         <div class="row">
             <!-- Main content area -->
             <div class="col-lg-12 col-md-12">
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
                 <div class="date_name">
                     <h3>Greatings, Bro!</h3>
                     <p id="currentDate"></p>

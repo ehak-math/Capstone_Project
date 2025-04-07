@@ -23,6 +23,11 @@ class Subjects extends Model
         return $subjects;
     }
 
+    public function courses()
+    {
+        return $this->hasMany(Course::class, 'cou_sub_id', 'sub_id');
+    }
+
     public function teachers()
     {
         return $this->hasMany(Teachers::class, 'sub_id', 'id');

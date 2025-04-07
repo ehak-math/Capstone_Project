@@ -4,7 +4,7 @@
 
 <!-- Edit Modal -->
 <div class="modal fade" id="editModal{{$stu->stu_id}}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editModalLabel">Edit Student</h5>
@@ -64,6 +64,14 @@
                 <div class="form-group mb-3">
                     <label for="stu_profile" class="form-label">Profile</label>
                     <input type="file" name="stu_profile" class="form-control">
+                </div>
+                <!-- edit status -->
+                <div class="form-group mb-3">
+                    <label for="stu_status" class="form-label">Status</label>
+                    <select name="stu_status" class="form-select">
+                        <option value="1" {{ $stu->stu_status == '1' ? 'selected' : '' }}>Active</option>
+                        <option value="0" {{ $stu->stu_status == '0' ? 'selected' : '' }}>Inactive</option>
+                    </select>
                 </div>
 
                 <div class="modal-footer">

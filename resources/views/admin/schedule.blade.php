@@ -3,11 +3,11 @@
 @section('mainContent')
 <!-- Main Content -->
 
-@if(session('success'))
+<!-- @if(session('success'))
     <script>
         alert("{{ session('success') }}");
     </script>
-@endif
+@endif -->
 <div class="content">
         <div class="row">
             <!-- Main content area -->
@@ -57,10 +57,6 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-
-
-
-
 
                                     <form action="{{ route('createschedule') }}" method="POST">
                                         @csrf
