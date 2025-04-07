@@ -14,7 +14,7 @@
                     </div>
                 @endif
                 <div class="date_name">
-                    <h3>Greatings, Bro!</h3>
+                    <h3>Greatings, {{Auth::user()->name}}!</h3>
                     <p id="currentDate"></p>
                 </div>
                 <!-- teacher list -->

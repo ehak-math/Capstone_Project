@@ -32,8 +32,8 @@
         <div class="d-flex align-items-center">
             <span class="profile"><i class="fa-solid fa-circle-user"></i></span>
             <div class="mx-3 mt-3 name-email">
-                <p class="pro-name">Bro Hong</p>
-                <p class="pro-email">bro.hong@gmail.com</p>
+                <p class="pro-name">{{ Auth::user()->name }}</p>
+                <p class="pro-email">{{ Auth::user()->email }}</p>
             </div>
         </div>
     </div>
@@ -74,12 +74,13 @@
             class="nav-link {{ Request::is('admin/grade_subject/index') ? 'active' : '' }}" id="grade_subject-link">
             <i class="fa-solid fa-chalkboard"></i><span>Grade/Subject</span>
         </a>
-        <!-- <a href="/admin/message" class="nav-link {{ Request::is('admin/message') ? 'active' : '' }}" id="message-link">
-            <i class="fa-solid fa-message"></i><span>Message</span>
-        </a>
-        <a href="/admin/notice" class="nav-link {{ Request::is('admin/notice') ? 'active' : '' }}" id="notice-link">
-            <i class="fa-solid fa-circle-exclamation"></i><span>Notice</span>
-        </a> -->
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button class="nav-link" id="logout-link">
+                <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+            </button>
+        </form>
+
     </div>
 
 

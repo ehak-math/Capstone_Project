@@ -7,9 +7,10 @@
             <!-- Main content area -->
             <div class="col-lg-8 col-md-12">
                 <div class="date_name">
-                    <h3>Greatings, Bro!</h3>
+                    <h3>Greatings, {{ Auth::user()->name }}!</h3>
                     <p id="currentDate"></p>
                 </div>
+                
                 <div class="row g-4 mt-2">
                     <div class="col-md-6">
                         <div class="overview-box1 d-flex">
@@ -18,9 +19,9 @@
                                 <h4>Teachers</h4>
                                 <div class="lh-1">
                                     <p style="font-size: 10px"><span class="color-icon-female"><i
-                                                class="fa-solid fa-droplet"></i></span>Female({{ $femaleTeachers }}%)</p>
+                                                class="fa-solid fa-droplet"></i></span>Female({{ $femaleTeachers }})</p>
                                     <p style="font-size: 10px"><span class="color-icon-male"><i
-                                                class="fa-solid fa-droplet"></i></span>Male({{ $maleTeachers }}%)</p>
+                                                class="fa-solid fa-droplet"></i></span>Male({{ $maleTeachers }})</p>
                                 </div>
                                 <h2>{{ $totalTeachers }}</h2>
                             </div>
@@ -33,9 +34,9 @@
                                 <h4>Students</h4>
                                 <div class="lh-1">
                                     <p style="font-size: 10px"><span class="color-icon-female"><i
-                                                class="fa-solid fa-droplet"></i></span>Female({{ $femaleStudents }}%)</p>
+                                                class="fa-solid fa-droplet"></i></span>Female({{ $femaleStudents }})</p>
                                     <p style="font-size: 10px"><span class="color-icon-male"><i
-                                                class="fa-solid fa-droplet"></i></span>Male({{ $maleStudents }}%)</p>
+                                                class="fa-solid fa-droplet"></i></span>Male({{ $maleStudents }})</p>
                                 </div>
                                 <h2>{{ $totalStudents }}</h2>
                             </div>

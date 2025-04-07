@@ -15,6 +15,7 @@ use App\Models\Attendances;
 use App\Models\Attendancesubmit;
 use App\Models\Subjects;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
@@ -22,6 +23,32 @@ use phpDocumentor\Reflection\Types\Nullable;
 
 class AdminController extends Controller
 {
+    // admin.login
+
+    public function dashboard()
+    {
+        $totalTeachers = Teachers::count();
+        $totalStudents = Students::count();
+        $maleTeachers = Teachers::where('tea_gender', 'Male')->count();
+        $femaleTeachers = Teachers::where('tea_gender', 'Female')->count();
+
+        // Sample: Get student gender count
+        $maleStudents = Students::where('stu_gender', 'Male')->count();
+        $femaleStudents = Students::where('stu_gender', 'Female')->count();
+
+        // Pass data to view
+        return view('admin.dashboard', [
+            'teacherGender' => [$maleTeachers, $femaleTeachers],
+            'studentGender' => [$maleStudents, $femaleStudents],
+            'totalTeachers' => $totalTeachers,
+            'totalStudents' => $totalStudents,
+            'maleTeachers' => $maleTeachers,
+            'femaleTeachers' => $femaleTeachers,
+            'maleStudents' => $maleStudents,
+            'femaleStudents' => $femaleStudents,
+        ]);
+    }
+
 
     //admin.student
     function uploadsIamge($data, $pathname)
@@ -40,6 +67,7 @@ class AdminController extends Controller
     }
     function addStudent(Request $request)
     {
+        
         $request->validate([
             'stu_fname' => 'required',
             'stu_username' => 'required|string|max:255|unique:students,stu_username',
@@ -76,6 +104,7 @@ class AdminController extends Controller
 
     function displayOnStu()
     {
+    
         $students = Students::displayStudent();
         $grades = Grade::displayGrade();
         return view('admin.students.index', ['students' => $students, 'grades' => $grades]);
@@ -372,11 +401,6 @@ class AdminController extends Controller
         $subjects = Subjects::all();
         return view('admin.grade_subject.index', compact('grades', 'subjects'));
     }
-    // public function displayGradeSubject()
-    // {
-    //     $courses = Course::with('teacher.subject')->get(); // <- this is key
-    //     return view('admin.grade_subject.index', compact('courses'));
-    // }
 
     public function addGrade(Request $request)
     {
@@ -521,5 +545,6 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Schedule updated successfully!');
     }
+
 
 }
