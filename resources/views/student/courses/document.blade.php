@@ -17,7 +17,6 @@
                                 <thead>
                                     <tr>
                                         <th>Title</th>
-                                        <th>Course</th>
                                         <th>Type</th>
                                         <th>Description</th>
                                         <th>Upload Date</th>
@@ -27,7 +26,7 @@
                                     @foreach($documents as $document)
                                         <tr>
                                             <td>{{ $document->doc_name }}</td>
-                                            <td>{{ $document->course->sub_name ?? 'N/A' }}</td>
+                                            {{-- <td>{{ $document->course->sub_name ?? 'N/A' }}</td> --}}
                                             <td>{{ $document->doc_type }}</td>
                                             <td>{{ Str::limit($document->doc_deatial, 50) }}</td>
                                             {{-- <td>{{ $document->created_at->format('Y-m-d H:i') }}</td> --}}

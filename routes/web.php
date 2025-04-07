@@ -96,9 +96,10 @@ Route::prefix('student')->group(function () {
     Route::get('/courses/subject/{id}', [StudentController::class, 'submitAtt'])->name('student.course.submit.show');
     Route::post('/courses/subject/submit-attendance', [StudentController::class, 'subAttendance'])->name('student.course.submit');
     Route::get('/student/course/document/{id}', [StudentController::class, 'showDoc'])->name('student.course.document');    
-    // Route::get('/attendance', function () {
-    //     return view('student.courses.attendance');
-    // });
+    // Route::get('/student/scheldule', [StudentController::class, 'showSchedule'])->name('student.scheldule');
+    Route::get('/scheldule', function () {
+        return view('student.scheldule');
+    });
 
     Route::post('/logout', [StudentController::class, 'logout'])->name('student.logout');
     Route::get('/score',  [StudentController::class, 'displayStudentSocre'])->name('student.score');

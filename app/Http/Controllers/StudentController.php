@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\Documents;
+use App\Models\Schedules;
 
 class StudentController extends Controller
 {
@@ -234,11 +235,27 @@ class StudentController extends Controller
             'documents' => $documents
         ]);
     }
-    function checkAttendanceStatus($startTime, $endTime, $currentTime) 
-            {
-                
-               
-            }
+    public function showSchedule(){
+        if (!session('student')) {
+            return redirect()->route('student.login');
+        }
+        $student = session('student');
+        
+        $disSchedule= Schedules::join('courses','courses.cou_id','=','schedules.sch_cou_id')
+            ->join('teachers','teachers.tea_id','=','courses.cou_tea_id')
+            ->join('subjects','subjects.sub_id' ,'=', 'teachers.tea_id')
+            ->join('grade','grade.gra_id','=','courses.cou_gra_id')
+            ->join('students','students.stu_gra_id','=','grade.gra_id')
+            ->where('students.stu_id', $student->stu_id)
+            ->select('schedules.*', 'courses.*', 'teachers.*', 'subjects.*', 'grade.gra_class')
+            ->get();
+       
+        // $schedules = Students::getScheduleByStudent($student->stu_id);
+        return view('student.scheldule', [
+            'schedules' => $schedules,
+            'student' => $student
+        ]);
+    }
 
             
 }
