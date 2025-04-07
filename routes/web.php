@@ -97,9 +97,7 @@ Route::prefix('student')->group(function () {
     Route::post('/courses/subject/submit-attendance', [StudentController::class, 'subAttendance'])->name('student.course.submit');
     Route::get('/student/course/document/{id}', [StudentController::class, 'showDoc'])->name('student.course.document');    
     // Route::get('/student/scheldule', [StudentController::class, 'showSchedule'])->name('student.scheldule');
-    Route::get('/scheldule', function () {
-        return view('student.scheldule');
-    });
+    Route::get('/scheldule', [StudentController::class, 'showSchedule'])->name('student.scheldule');
 
     Route::post('/logout', [StudentController::class, 'logout'])->name('student.logout');
     Route::get('/score',  [StudentController::class, 'displayStudentSocre'])->name('student.score');
@@ -124,6 +122,8 @@ Route::prefix('teacher')->group(function () {
     Route::get('/course/score/{id}', [TeacherController::class, 'teacherScore'])->name('teacher.score.show');
     Route::post('/score/create', [TeacherController::class, 'createscore'])->name('teacher.score.create');
     Route::post('/score/add', [TeacherController::class, 'addscore'])->name('teacher.score.addscore');
+    Route::get('scheldule', [TeacherController::class, 'showSchedule'])->name('teacher.schedule');
+
     Route::get('/document', [TeacherController::class, 'showDocument'])->name('teacher.show.document');
     Route::post('/document/upload', [TeacherController::class, 'uploadDocument'])->name('teacher.document');
     Route::get('/teacher/document/download/{id}', [TeacherController::class, 'downloadDocument'])->name('teacher.document.download');

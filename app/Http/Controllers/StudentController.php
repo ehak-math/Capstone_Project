@@ -241,15 +241,23 @@ class StudentController extends Controller
         }
         $student = session('student');
         
-        $disSchedule= Schedules::join('courses','courses.cou_id','=','schedules.sch_cou_id')
-            ->join('teachers','teachers.tea_id','=','courses.cou_tea_id')
-            ->join('subjects','subjects.sub_id' ,'=', 'teachers.tea_id')
-            ->join('grade','grade.gra_id','=','courses.cou_gra_id')
-            ->join('students','students.stu_gra_id','=','grade.gra_id')
-            ->where('students.stu_id', $student->stu_id)
-            ->select('schedules.*', 'courses.*', 'teachers.*', 'subjects.*', 'grade.gra_class')
-            ->get();
-       
+        // $disSchedule= Schedules::join('courses','courses.cou_id','=','schedules.sch_cou_id')
+        //     ->join('teachers','teachers.tea_id','=','courses.cou_tea_id')
+        //     ->join('subjects','subjects.sub_id' ,'=', 'teachers.tea_id')
+        //     ->join('grade','grade.gra_id','=','courses.cou_gra_id')
+        //     ->join('students','students.stu_gra_id','=','grade.gra_id')
+        //     ->where('students.stu_id', $student->stu_id)
+        //     ->select('schedules.*', 'courses.*', 'teachers.*', 'subjects.*', 'grade.gra_class')
+        //     ->get();
+        $schedules = Schedules::join('courses', 'schedules.sch_cou_id', '=', 'courses.cou_id')
+        ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+        ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+        ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+        ->where('grade.gra_id', $student->stu_gra_id)
+        ->select('schedules.*', 'teachers.*', 'subjects.*')
+        ->orderByRaw("FIELD(sch_day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')")
+        ->orderBy('sch_start_time', 'asc')
+        ->get();
         // $schedules = Students::getScheduleByStudent($student->stu_id);
         return view('student.scheldule', [
             'schedules' => $schedules,

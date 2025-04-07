@@ -54,7 +54,7 @@
         <a href="/teacher/scheldule" class="nav-link {{ Request::is('teacher/scheldule') ? 'active' : '' }}" id="scheldule-link">
             <i class="fa-solid fa-calendar-days"></i><span>Schedule</span>
         </a>
-        <a href="/teacher/document" class="nav-link {{ Request::is('teacher/document') ? 'active' : '' }}" id="scheldule-link">
+        <a href="/teacher/document" class="nav-link {{ Request::is('teacher/document') ? 'active' : '' }}" id="document-link">
             <i class="fa-solid fa-calendar-days"></i><span>Document</span>
         </a>
     </div>
