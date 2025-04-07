@@ -347,7 +347,6 @@ class AdminController extends Controller
     {
         // Validate the incoming request data
         $request->validate([
-            'cou_sub_id' => 'required',
             'cou_tea_id' => 'required',
             'cou_gra_id' => 'required',
         ]);
@@ -356,7 +355,6 @@ class AdminController extends Controller
         $course = Course::findOrFail($id);
 
         // Update the course fields
-        $course->cou_sub_id = $request->cou_sub_id;
         $course->cou_tea_id = $request->cou_tea_id;
         $course->cou_gra_id = $request->cou_gra_id;
 
@@ -469,7 +467,7 @@ class AdminController extends Controller
                 'grade.gra_class',
                 'grade.gra_group'
             )
-            ->orderBy('schedules.sch_date', 'asc')
+            ->orderBy('schedules.sch_day', 'asc')
             ->get();
         $teachers = Teachers::all();
         $grades = Grade::all();
@@ -482,14 +480,14 @@ class AdminController extends Controller
     {
         $request->validate([
             'sch_cou_id' => 'required',
-            'sch_date' => 'required',
+            'sch_day' => 'required',
             'sch_start_time' => 'required',
             'sch_end_time' => 'required',
         ]);
 
         $schedule = new Schedules();
         $schedule->sch_cou_id = $request->sch_cou_id;
-        $schedule->sch_date = $request->sch_date;
+        $schedule->sch_day = $request->sch_day;
         $schedule->sch_start_time = $request->sch_start_time;
         $schedule->sch_end_time = $request->sch_end_time;
         $schedule->save();
@@ -497,5 +495,31 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Schedule created successfully!');
     }
 
+    public function deleteSchedule($id)
+    {
+        $schedule = Schedules::findOrFail($id);
+        $schedule->delete();
+
+        return redirect()->back()->with('success', 'Schedule deleted successfully!');
+    }
+
+    public function updateSchedule(Request $request, $id)
+    {
+        $request->validate([
+            'sch_cou_id' => 'required',
+            'sch_day' => 'required',
+            'sch_start_time' => 'required',
+            'sch_end_time' => 'required',
+        ]);
+
+        $schedule = Schedules::findOrFail($id);
+        $schedule->sch_cou_id = $request->sch_cou_id;
+        $schedule->sch_day = $request->sch_day;
+        $schedule->sch_start_time = $request->sch_start_time;
+        $schedule->sch_end_time = $request->sch_end_time;
+        $schedule->save();
+
+        return redirect()->back()->with('success', 'Schedule updated successfully!');
+    }
 
 }

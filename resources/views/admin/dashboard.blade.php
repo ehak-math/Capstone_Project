@@ -13,27 +13,31 @@
                 <div class="row g-4 mt-2">
                     <div class="col-md-6">
                         <div class="overview-box1 d-flex">
-                            <canvas id="myChart"></canvas>
+                            <canvas id="teacherChart"></canvas>
                             <div class="total-teach-stu">
                                 <h4>Teachers</h4>
                                 <div class="lh-1">
-                                    <p style="font-size: 10px"><span class="color-icon-female"><i class="fa-solid fa-droplet"></i></span>Female(60%)</p>
-                                    <p style="font-size: 10px"><span class="color-icon-male"><i class="fa-solid fa-droplet"></i></span>Male(40%)</p>
+                                    <p style="font-size: 10px"><span class="color-icon-female"><i
+                                                class="fa-solid fa-droplet"></i></span>Female({{ $femaleTeachers }}%)</p>
+                                    <p style="font-size: 10px"><span class="color-icon-male"><i
+                                                class="fa-solid fa-droplet"></i></span>Male({{ $maleTeachers }}%)</p>
                                 </div>
-                                <h2>108</h2>
+                                <h2>{{ $totalTeachers }}</h2>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="overview-box2 d-flex">
-                            <canvas id="myChart1"></canvas>
+                            <canvas id="studentChart"></canvas>
                             <div class="total-teach-stu">
                                 <h4>Students</h4>
                                 <div class="lh-1">
-                                    <p style="font-size: 10px"><span class="color-icon-female"><i class="fa-solid fa-droplet"></i></span>Female(60%)</p>
-                                    <p style="font-size: 10px"><span class="color-icon-male"><i class="fa-solid fa-droplet"></i></span>Male(40%)</p>
+                                    <p style="font-size: 10px"><span class="color-icon-female"><i
+                                                class="fa-solid fa-droplet"></i></span>Female({{ $femaleStudents }}%)</p>
+                                    <p style="font-size: 10px"><span class="color-icon-male"><i
+                                                class="fa-solid fa-droplet"></i></span>Male({{ $maleStudents }}%)</p>
                                 </div>
-                                <h2>308</h2>
+                                <h2>{{ $totalStudents }}</h2>
                             </div>
                         </div>
                     </div>
@@ -46,30 +50,36 @@
                                 <div class="d-flex">
                                     <!-- Date Range Dropdown -->
                                     <div class="dropdown me-2">
-                                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dateDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <button class="btn btn-outline-primary dropdown-toggle" type="button"
+                                            id="dateDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                             Today
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dateDropdown">
-                                            <li><a class="dropdown-item" href="#" onclick="updateAttendanceChart('today')">Today</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="updateAttendanceChart('weekly')">Weekly</a></li>
+                                            <li><a class="dropdown-item" href="#"
+                                                    onclick="updateAttendanceChart('today')">Today</a></li>
+                                            <li><a class="dropdown-item" href="#"
+                                                    onclick="updateAttendanceChart('weekly')">Weekly</a></li>
                                         </ul>
                                     </div>
-                        
+
                                     <!-- Category Dropdown -->
                                     <div class="dropdown">
-                                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <button class="btn btn-outline-primary dropdown-toggle" type="button"
+                                            id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                             Students
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
-                                            <li><a class="dropdown-item" href="#" onclick="updateAttendanceCategory('students')">Students</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="updateAttendanceCategory('teachers')">Teachers</a></li>
+                                            <li><a class="dropdown-item" href="#"
+                                                    onclick="updateAttendanceCategory('students')">Students</a></li>
+                                            <li><a class="dropdown-item" href="#"
+                                                    onclick="updateAttendanceCategory('teachers')">Teachers</a></li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                             <canvas id="attendanceChart"></canvas>
                         </div>
-                        
+
                     </div>
                     <div class="col-md-6">
                         <div class="overview-box4 p-3">
@@ -82,7 +92,7 @@
 
                 </div>
             </div>
-    
+
             <!-- Schedule section -->
             <div class="col-lg-4 col-md-12 mt-4 mt-lg-5 p-3 scheldule-section">
                 <!-- FullCalendar -->
@@ -148,7 +158,11 @@
                         </div>
 
                     </div>
+                </div>
             </div>
         </div>
-    </div>
 @endsection
+    <script>
+        const teacherGenderData = @json($teacherGender);
+        const studentGenderData = @json($studentGender);
+    </script>

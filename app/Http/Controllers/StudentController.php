@@ -250,7 +250,7 @@ class StudentController extends Controller
             ->select('schedules.*', 'courses.*', 'teachers.*', 'subjects.*', 'grade.gra_class')
             ->get();
        
-        // $schedules = Students::getScheduleByStudent($student->stu_id);
+        $schedules = Students::getScheduleByStudent($student->stu_id);
         return view('student.scheldule', [
             'schedules' => $schedules,
             'student' => $student

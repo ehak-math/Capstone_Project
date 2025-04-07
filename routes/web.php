@@ -12,7 +12,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\TeachersImport;
 use App\Imports\StudentsImport;
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TelegramController;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
@@ -69,17 +70,17 @@ Route::put('/subjects/{id}', [TeacherController::class, 'update'])->name('update
 
 
 
-Route::get('admin',[TeacherController::class,'showsubject']);
-Route::post('admin.store', [TeacherController::class, 'store'])->name('addsub');
+// Route::get('admin',[TeacherController::class,'showsubject']);
+// Route::post('admin.store', [TeacherController::class, 'store'])->name('addsub');
 
-Route::get('student',[AdminController::class,'displayOnStu']);
-Route::get('details/{id}', [AdminController::class, 'selectbyId'])->name('showDetails');
+// Route::get('student',[AdminController::class,'displayOnStu']);
+// Route::get('details/{id}', [AdminController::class, 'selectbyId'])->name('showDetails');
 
 
-Route::get('/admin/Schedule',[AdminController::class,'getschedule']);
-Route::post('scheldule.crategrade',[AdminController::class,'createGrade'])->name('crategrade');
-Route::post('scheldule.createcourse',[AdminController::class,'createCourse'])->name('createcourse');
-Route::post('scheldule.createschedule',[AdminController::class,'createSchedule'])->name('createschedule');
+// Route::get('/admin/Schedule',[AdminController::class,'getschedule']);
+// Route::post('scheldule.crategrade',[AdminController::class,'createGrade'])->name('crategrade');
+// Route::post('scheldule.createcourse',[AdminController::class,'createCourse'])->name('createcourse');
+// Route::post('scheldule.createschedule',[AdminController::class,'createSchedule'])->name('createschedule');
 
 
 // student
@@ -133,57 +134,75 @@ Route::prefix('teacher')->group(function () {
 ////////////////////
 // admin course///
 ///////////////////
+
 Route::prefix('admin/courses')->group(function () {
+    
     Route::get('/index', [AdminController::class, 'displayCourses'])->name('admin.courses.index');
     Route::post('/add', [AdminController::class, 'addCourse'])->name('admin.courses.add');
     Route::delete('/{id}', [AdminController::class, 'deleteCourse'])->name('admin.courses.delete');
+    Route::put('/{id}', [AdminController::class, 'updateCourse'])->name('updateCourse');
     Route::get('/view_detail/{id}', [AdminController::class, 'viewCourseDetail'])->name('admin.courses.view_detail');
 });
-Route::get('admin/courses/index', [AdminController::class, 'displayCourses'])->name('admin.courses.index');
-Route::post('admin/courses/add', [AdminController::class, 'addCourse'])->name('admin.courses.add');
-Route::put('admin/courses/{id}', [AdminController::class, 'updateCourse'])->name('updateCourse');
-Route::delete('admin/courses/{id}', [AdminController::class, 'deleteCourse'])->name('admin.courses.delete');
-Route::get('admin/courses/view_detail/{id}', [AdminController::class, 'viewCourseDetail'])->name('admin.courses.view_detail');
 
 //////////////////
 //admin teahcer///
 //////////////////
-Route::get('admin/teachers/index', [AdminController::class, 'displayTeacher'])->name('admin.teachers.index');
-Route::post('admin/teachers/add', [AdminController::class, 'addTeacher'])->name('admin.teachers.add');
-Route::delete('admin/teachers/{id}', [AdminController::class, 'deleteTeacher'])->name('deleteTeacher');
-Route::put('admin/teachers/{id}', [AdminController::class, 'updateTeacher'])->name('updateTeacher');
-Route::get('admin/teachers/search', [AdminController::class, 'searchTeachers'])->name('searchTeachers');
+
+Route::prefix('admin/teachers')->group(function () {
+    Route::get('/index', [AdminController::class, 'displayTeacher'])->name('admin.teachers.index');
+    Route::post('/add', [AdminController::class, 'addTeacher'])->name('admin.teachers.add');
+    Route::delete('/{id}', [AdminController::class, 'deleteTeacher'])->name('deleteTeacher');
+    Route::put('/{id}', [AdminController::class, 'updateTeacher'])->name('updateTeacher');
+    Route::get('/search', [AdminController::class, 'searchTeachers'])->name('searchTeachers');
+});
+
 
 
 //////////////////
 //admin student///
 /////////////////
-Route::get('admin/students/index', [AdminController::class, 'displayOnStu'])->name('admin.students.index');
-Route::delete('admin/students/{id}', [AdminController::class, 'deleteStudent'])->name('deleteStudent');
-Route::put('admin/students/{id}', [AdminController::class, 'updateStudent'])->name('updateStudent');
-Route::post('admin/students/add', [AdminController::class, 'addStudent'])->name('admin.students.add');
-Route::get('admin/students/search', [AdminController::class, 'searchStudents'])->name('searchStudents');
+
+Route::prefix('admin/students')->group(function () {
+    Route::get('/index', [AdminController::class, 'displayOnStu'])->name('admin.students.index');
+    Route::post('/add', [AdminController::class, 'addStudent'])->name('admin.students.add');
+    Route::delete('/{id}', [AdminController::class, 'deleteStudent'])->name('deleteStudent');
+    Route::put('/{id}', [AdminController::class, 'updateStudent'])->name('updateStudent');
+    Route::get('/search', [AdminController::class, 'searchStudents'])->name('searchStudents');
+});
 
 
 ///////////////////
 // grade/subject///
 //////////////////
 
-Route::get('admin/grade_subject/index', [AdminController::class, 'displayGradeSubject'])->name('admin.grade_subject.index');
-Route::post('admin/grade_subject/addGrade', [AdminController::class,'addGrade'])->name('addGrade');
-Route::post('admin/grade_subject/addSubject', [AdminController::class, 'addSubject'])->name('addSubject');
-Route::delete('admin/grade_subject/grade/{id}', [AdminController::class, 'deleteGrade'])->name('deleteGrade');
-Route::put('admin/grade_subject/subject/{id}', [AdminController::class, 'updateSubject'])->name('updateSubject');
-Route::put('admin/grade_subject/grade/{id}', [AdminController::class, 'updateGrade'])->name('updateGrade');
-Route::delete('admin/grade_subject/subject/{id}', [AdminController::class, 'deleteSubject'])->name('deleteSubject');
+Route::prefix('admin/grade_subject')->group(function () {
+    Route::get('/index', [AdminController::class, 'displayGradeSubject'])->name('admin.grade_subject.index');
+    Route::post('/addGrade', [AdminController::class, 'addGrade'])->name('addGrade');
+    Route::post('/addSubject', [AdminController::class, 'addSubject'])->name('addSubject');
+    Route::delete('/grade/{id}', [AdminController::class, 'deleteGrade'])->name('deleteGrade');
+    Route::put('/subject/{id}', [AdminController::class, 'updateSubject'])->name('updateSubject');
+    Route::put('/grade/{id}', [AdminController::class, 'updateGrade'])->name('updateGrade');
+    Route::delete('/subject/{id}', [AdminController::class, 'deleteSubject'])->name('deleteSubject');
+});
+
 
 /////////////
 // schedule//
 /////////////
 
-Route::get('admin/schedule/index', [AdminController::class, 'displaySchedule'])->name('admin.schedule.index');
-Route::post('admin/schedule/add', [AdminController::class, 'addSchedule'])->name('addSchedule');
-
-Route::get('admin/dashboard', function () {
-    return view('admin.dashboard');
+Route::prefix('admin/schedule')->group(function () {
+    Route::get('/index', [AdminController::class, 'displaySchedule'])->name('admin.schedule.index');
+    Route::post('/add', [AdminController::class, 'addSchedule'])->name('addSchedule');
+    Route::delete('/{id}', [AdminController::class, 'deleteSchedule'])->name('deleteSchedule');
+    Route::put('/{id}', [AdminController::class, 'updateSchedule'])->name('updateSchedule');
 });
+
+
+// Route::get('admin/dashboard', function () {
+//     return view('admin.dashboard');
+// });
+
+// chart
+Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+

@@ -51,7 +51,7 @@
                             <div class="card h-100" style="">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center">
-                                    <h3 class="card-title">{{ \Carbon\Carbon::parse($schedule->sch_date)->format('l') }}</h3>
+                                    <h3 class="card-title">{{ $schedule->sch_day }}</h3>
                                         <h5 class="card-title">{{ $schedule->gra_class }}{{ $schedule->gra_group }}</h5>
                                     </div>
                                     <h5 class="card-subtitle mb-2 mt-1 text-body-secondary">{{ $schedule->sub_name }}
@@ -62,8 +62,8 @@
                                         {{ \Carbon\Carbon::parse($schedule->sch_start_time)->format('H:i') }}h -
                                         {{ \Carbon\Carbon::parse($schedule->sch_end_time)->format('H:i') }}h
                                     </p>
-                                    <a href="#" class="btn btn-primary">EDIT</a>
-                                    <a href="#" class="btn btn-danger">DELETE</a>
+                                    @include('admin.schedule.edit')
+                                    @include('admin.schedule.delete')
                                 </div>
                             </div>
                         </div>

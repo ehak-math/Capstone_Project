@@ -1,13 +1,13 @@
-// Chart1
-const ctx = document.getElementById('myChart').getContext('2d');
+// teacherChart
+const ctx = document.getElementById('teacherChart').getContext('2d');
 
 new Chart(ctx, {
     type: 'doughnut',
     data: {
         // labels: ['Male', 'Female'],
         datasets: [{
-            label: 'Student Distribution',
-            data: [60, 40],
+            label: 'Teacher Distribution',
+            data: teacherGenderData,
             backgroundColor: ['#11117E', '#e74c3c'],
             // borderColor: ['#ffff', '#ffffff'],
             borderWidth: 1
@@ -50,9 +50,9 @@ new Chart(ctx, {
     }
 });
 
-// chart2
+// studentChart
 
-const ctx1 = document.getElementById('myChart1').getContext('2d');
+const ctx1 = document.getElementById('studentChart').getContext('2d');
 
 new Chart(ctx1, {
     type: 'doughnut',
@@ -60,7 +60,7 @@ new Chart(ctx1, {
         // labels: ['Male', 'Female'],
         datasets: [{
             label: 'Student Distribution',
-            data: [60, 40],
+            data: studentGenderData,
             backgroundColor: ['#11117E', '#e74c3c'],
             // borderColor: ['#ffff', '#ffffff'],
             borderWidth: 1
