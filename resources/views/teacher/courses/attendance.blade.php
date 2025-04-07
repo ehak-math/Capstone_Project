@@ -60,12 +60,34 @@
                                                 <i class="fas fa-door-closed me-2"></i>Close Attendance
                                             </button>
                                         </form>
+
                                     </div>
+
+                                    @if($selectAttSub->contains('sch_id', $att->sch_id))
+                                    <div class="text-center">
+                                        @foreach($selectAttSub as $stuSub)
+                                            <div class="alert alert-info mt-2">
+                                                <p><strong>Student ID:</strong> {{$stuSub->stu_id}}</p>
+                                                <p><strong>Status:</strong> <span class="badge bg-success">{{$stuSub->att_sub_status}}</span></p>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    @endif
                                 @else
                                     <div class="alert alert-warning text-center">
                                         <p><strong>Attendance Code:</strong> {{$getatt->att_code}}</p>
                                         <p><strong>Status:</strong> <span class="badge bg-warning">{{$getatt->att_status}}</span></p>
                                     </div>
+                                    @if($selectAttSub->contains('sch_id', $att->sch_id))
+                                    <div class="text-center">
+                                        @foreach($selectAttSub as $stuSub)
+                                            <div class="alert alert-info mt-2">
+                                                <p><strong>Student ID:</strong> {{$stuSub->stu_id}}</p>
+                                                <p><strong>Status:</strong> <span class="badge bg-success">{{$stuSub->att_sub_status}}</span></p>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    @endif
                                 @endif
                             @else
                                 <div class="alert alert-secondary text-center">
