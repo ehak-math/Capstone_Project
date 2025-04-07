@@ -172,7 +172,7 @@ class TeacherController extends Controller
         $selectatt = Schedules::join('courses' ,'courses.cou_id','=','schedules.sch_cou_id')
             ->where('courses.cou_id' , $id)
             ->get();
-            $currentday = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d'); // Format as date string
+        $currentday = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d'); // Format as date string
             // $currentday = '2025-04-07'; // Format as date string
 
         $getatt = Attendances::join('schedules', 'schedules.sch_id','=', 'attendances.att_sch_id')
@@ -612,5 +612,36 @@ class TeacherController extends Controller
 
         // Scores::create($data);
         return redirect()->back()->with('success', 'Score created successfully!');
+    }
+
+    public function showSchedule(){
+       
+
+        $teacher = session('teacher');
+        if (!$teacher) {
+            return redirect()->route('teacher.login')->with('error', 'Teacher session not found');
+        }
+        // $disSchedule= Schedules::join('courses','courses.cou_id','=','schedules.sch_cou_id')
+        //     ->join('teachers','teachers.tea_id','=','courses.cou_tea_id')
+        //     ->join('subjects','subjects.sub_id' ,'=', 'teachers.tea_id')
+        //     ->join('grade','grade.gra_id','=','courses.cou_gra_id')
+        //     ->join('students','students.stu_gra_id','=','grade.gra_id')
+        //     ->where('students.stu_id', $student->stu_id)
+        //     ->select('schedules.*', 'courses.*', 'teachers.*', 'subjects.*', 'grade.gra_class')
+        //     ->get();
+        $schedules = Schedules::join('courses', 'schedules.sch_cou_id', '=', 'courses.cou_id')
+        ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+        ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+        ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+        ->where('teachers.tea_id', $teacher->tea_id)
+        ->select('schedules.*', 'teachers.*', 'subjects.*','grade.*')
+        ->orderByRaw("FIELD(sch_day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')")
+        ->orderBy('sch_start_time', 'asc')
+        ->get();
+        // $schedules = Students::getScheduleByStudent($student->stu_id);
+        return view('teacher.scheldule', [
+            'schedules' => $schedules,
+            'teacher' => $teacher
+        ]);
     }
 }
