@@ -16,9 +16,10 @@ class Course extends Model
 
     public static function displayCourse()
     {
-        $listcourses = self::join('teachers', 'courses.cou_tea_id','=','teachers.tea_id')
-            ->join('grade', 'courses.cou_gra_id','=','grade.gra_id')
-            ->select('courses.*','teachers.tea_fname','grade.gra_class')
+        $listcourses = self::join('subjects', 'courses.cou_sub_id', '=', 'subjects.sub_id')
+            ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+            ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+            ->select('courses.*', 'subjects.sub_name', 'teachers.tea_fname', 'grade.gra_group', 'grade.gra_class')
             ->get();
         return $listcourses;
     }
@@ -27,9 +28,14 @@ class Course extends Model
     {
         return $this->hasMany(Grade::class, 'cou_gra_id', 'gra_id');
     }
+    public function teacher()
+    {
+        return $this->belongsTo(Teachers::class, 'cou_tea_id'); // or the correct foreign key
+    }
 
 
-    public static function insertCourse($data){
+    public static function insertCourse($data)
+    {
         $course = new Course();
         $course->cou_tea_id = $data['cou_tea_id'];
         $course->cou_gra_id = $data['cou_gra_id'];
@@ -38,12 +44,12 @@ class Course extends Model
     }
     public static function displayCourseByTeacher($id)
     {
-        $course = self::join('teachers', 'courses.cou_tea_id','=','teachers.tea_id')
-            ->join('subjects', 'teachers.tea_subject','=','subjects.sub_id')
-            ->join('grade', 'courses.cou_gra_id','=','grade.gra_id')
-            ->select('courses.*','teachers.tea_fname','grade.gra_class','subjects.sub_name','grade.gra_group')    
-            ->where('cou_tea_id',$id)
+        $course = self::join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+            ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+            ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+            ->select('courses.*', 'teachers.tea_fname', 'grade.gra_class', 'subjects.sub_name', 'grade.gra_group')
+            ->where('cou_tea_id', $id)
             ->get();
         return $course;
-    } 
+    }
 }

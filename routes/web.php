@@ -132,6 +132,12 @@ Route::prefix('teacher')->group(function () {
 ////////////////////
 // admin course///
 ///////////////////
+Route::prefix('admin/courses')->group(function () {
+    Route::get('/index', [AdminController::class, 'displayCourses'])->name('admin.courses.index');
+    Route::post('/add', [AdminController::class, 'addCourse'])->name('admin.courses.add');
+    Route::delete('/{id}', [AdminController::class, 'deleteCourse'])->name('admin.courses.delete');
+    Route::get('/view_detail/{id}', [AdminController::class, 'viewCourseDetail'])->name('admin.courses.view_detail');
+});
 Route::get('admin/courses/index', [AdminController::class, 'displayCourses'])->name('admin.courses.index');
 Route::post('admin/courses/add', [AdminController::class, 'addCourse'])->name('admin.courses.add');
 Route::put('admin/courses/{id}', [AdminController::class, 'updateCourse'])->name('updateCourse');
@@ -174,9 +180,8 @@ Route::delete('admin/grade_subject/subject/{id}', [AdminController::class, 'dele
 // schedule//
 /////////////
 
-Route::get('admin/schedule/index', function () {
-    return view('admin.schedule.index');
-});
+Route::get('admin/schedule/index', [AdminController::class, 'displaySchedule'])->name('admin.schedule.index');
+Route::post('admin/schedule/add', [AdminController::class, 'addSchedule'])->name('addSchedule');
 
 Route::get('admin/dashboard', function () {
     return view('admin.dashboard');

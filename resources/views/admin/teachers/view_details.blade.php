@@ -44,7 +44,7 @@
                     </div>
                     <div class="d-flex justify-content-between">
                         <span>Subject:</span>
-                        <p>{{$teacher->subject->sub_name}}</p>
+                        <p>{{$teacher->subject ? $teacher->subject->sub_name : 'N/A' }}</p>
                     </div>
                     <div class="d-flex justify-content-between">
                         <span>Date of Birth:</span>

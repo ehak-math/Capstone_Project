@@ -12,7 +12,7 @@ class Schedules extends Model
     protected $table = 'schedules';
     public $timestamps = false;
     protected $pramary = 'sch_id';
-    protected $fillable = ['sch_start_time','sch_end_time','sch_day','sch_cou_id'];
+    protected $fillable = ['sch_start_time','sch_date','sch_end_time','sch_day','sch_cou_id'];
 
     public static function displaySchedule()
     {

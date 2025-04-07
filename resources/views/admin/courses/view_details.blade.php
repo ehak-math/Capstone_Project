@@ -50,7 +50,7 @@
                     <hr>
                     <!-- title subject and teacher name -->
                     <div class="d-flex align-items-center gap-2">
-                        <h3><strong>Subject: {{ $subject->sub_name }}</strong></h3>
+                        <h3><strong>Subject: {{ $teacher->subject->sub_name }}</strong></h3>
                         <h3><strong>({{ $teacher->tea_fname }})</strong></h3>
                     </div>
                     <hr>

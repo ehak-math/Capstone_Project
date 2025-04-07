@@ -291,10 +291,16 @@ class AdminController extends Controller
         $subjects = Subjects::all();
         $grades = Grade::all();
         $teachers = Teachers::all();
-        $courses = Course::join('subjects', 'courses.cou_sub_id', '=', 'subjects.sub_id')
-            ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+        $courses = Course::join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+            ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id') // Join teachers with subjects
             ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
-            ->select('courses.*', 'subjects.sub_name', 'teachers.tea_fname', 'grade.gra_group', 'grade.gra_class')
+            ->select(
+                'courses.*',
+                'teachers.tea_fname',
+                'subjects.sub_name',
+                'grade.gra_class',
+                'grade.gra_group'
+            )
             ->get();
 
         return view('admin.courses.index', compact('subjects', 'grades', 'teachers', 'courses'));
@@ -303,13 +309,11 @@ class AdminController extends Controller
     public function addCourse(Request $request)
     {
         $request->validate([
-            'cou_sub_id' => 'required',
             'cou_tea_id' => 'required',
             'cou_gra_id' => 'required',
         ]);
 
         $course = new Course();
-        $course->cou_sub_id = $request->cou_sub_id;
         $course->cou_tea_id = $request->cou_tea_id;
         $course->cou_gra_id = $request->cou_gra_id;
         $course->save();
@@ -329,15 +333,14 @@ class AdminController extends Controller
     public function viewCourseDetail($id)
     {
         $course = Course::findOrFail($id);
-        $subject = Subjects::findOrFail($course->cou_sub_id);
-        $teacher = Teachers::findOrFail($course->cou_tea_id);
+        $teacher = Teachers::with('subject')->findOrFail($course->cou_tea_id);
         $grade = Grade::where('gra_id', $course->cou_gra_id)->firstOrFail();
 
         $students = Students::where('stu_gra_id', $grade->gra_id)->get();
 
         $scores = Scores::where('sco_cou_id', $id)->get();
 
-        return view('admin.courses.view_details', compact('course', 'subject', 'teacher', 'grade', 'students', 'scores'));
+        return view('admin.courses.view_details', compact('course', 'teacher', 'grade', 'students', 'scores'));
     }
 
     public function updateCourse(Request $request, $id)
@@ -348,18 +351,18 @@ class AdminController extends Controller
             'cou_tea_id' => 'required',
             'cou_gra_id' => 'required',
         ]);
-    
+
         // Find the course by ID
         $course = Course::findOrFail($id);
-    
+
         // Update the course fields
         $course->cou_sub_id = $request->cou_sub_id;
         $course->cou_tea_id = $request->cou_tea_id;
         $course->cou_gra_id = $request->cou_gra_id;
-    
+
         // Save the updated course
         $course->save();
-    
+
         // Redirect back with a success message
         return redirect()->route('admin.courses.index')->with('success', 'Course updated successfully!');
     }
@@ -371,6 +374,12 @@ class AdminController extends Controller
         $subjects = Subjects::all();
         return view('admin.grade_subject.index', compact('grades', 'subjects'));
     }
+    // public function displayGradeSubject()
+    // {
+    //     $courses = Course::with('teacher.subject')->get(); // <- this is key
+    //     return view('admin.grade_subject.index', compact('courses'));
+    // }
+
     public function addGrade(Request $request)
     {
         $request->validate([
@@ -390,7 +399,7 @@ class AdminController extends Controller
     {
         $grade = Grade::findOrFail($id);
         $grade->delete();
-    
+
         return redirect()->back()->with('success', 'Grade deleted successfully!');
     }
 
@@ -445,13 +454,48 @@ class AdminController extends Controller
 
     // admin.schedule
 
-    // public function displaySchedule()
-    // {
-    //     $schedules = Schedule::with('course', 'course.subject', 'course.teacher', 'course.grade')
-    //         ->get();
+    public function displaySchedule()
+    {
+        $schedules = Schedules::join('courses', 'schedules.sch_cou_id', '=', 'courses.cou_id')
+            ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+            ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id') // Join teachers with subjects
+            ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+            ->select(
+                'schedules.*',
+                'courses.cou_tea_id',
+                'courses.cou_gra_id',
+                'subjects.sub_name',
+                'teachers.tea_fname',
+                'grade.gra_class',
+                'grade.gra_group'
+            )
+            ->orderBy('schedules.sch_date', 'asc')
+            ->get();
+        $teachers = Teachers::all();
+        $grades = Grade::all();
+        $subjects = Subjects::all();
+        $courses = Course::all();
+        return view('admin.schedule.index', compact('schedules', 'teachers', 'subjects', 'grades', 'courses'));
+    }
 
-    //     return view('admin.schedule.index', compact('schedules'));
-    // }
+    public function addSchedule(Request $request)
+    {
+        $request->validate([
+            'sch_cou_id' => 'required',
+            'sch_date' => 'required',
+            'sch_start_time' => 'required',
+            'sch_end_time' => 'required',
+        ]);
+
+        $schedule = new Schedules();
+        $schedule->sch_cou_id = $request->sch_cou_id;
+        $schedule->sch_date = $request->sch_date;
+        $schedule->sch_start_time = $request->sch_start_time;
+        $schedule->sch_end_time = $request->sch_end_time;
+        $schedule->save();
+
+        return redirect()->back()->with('success', 'Schedule created successfully!');
+    }
 
 
 }

@@ -111,7 +111,7 @@
                                         <td>{{$teacher->tea_username}}</td>
                                         <td>{{$teacher->tea_fname}}</td>
                                         <td>{{$teacher->tea_gender}}</td>
-                                        <td>{{$teacher->subject->sub_name}}</td>
+                                        <td>{{ $teacher->subject ? $teacher->subject->sub_name : 'N/A' }}</td>
                                         <td>0{{$teacher->tea_ph_number}}</td>
                                         <td>
                                             @include('admin.teachers.view_details')
