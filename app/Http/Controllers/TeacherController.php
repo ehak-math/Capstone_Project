@@ -215,11 +215,22 @@ class TeacherController extends Controller
         // ->whereDate('att_startime', Carbon::today('Asia/Phnom_Penh'))
         // ->select('att_code')
         // ->first();
+            // $currentdayi = '2025-04-04'; // Format as date string
+
+        $selectAttSub = Attendancesubmit::join('students', 'attendance_submit.att_sub_stu_id', '=', 'students.stu_id')
+            ->join('schedules', 'attendance_submit.att_sub_sch_id', '=', 'schedules.sch_id')
+            // ->where('students.stu_id', $student->stu_id)
+            // ->where('attendance_submit.att_sub_att_id', $subAttendance->att_id)
+            ->where('attendance_submit.att_sub_date', $currentday)
+            // ->orderBy('attendance_submit.att_sub_id', 'desc')
+            // ->select('attendance_submit.*', 'students.*')
+            ->get();
 
         return view('teacher.courses.attendance', [
             'att_dis' => $selectatt,
             'course' => $getcourse,
-            'getatt' => $getatt
+            'getatt' => $getatt,
+            'selectAttSub' => $selectAttSub,
             // 'attendance' => $currentAttendance,
             // 'selectStudentSubmit' => $selectStudentSubmit,
              
