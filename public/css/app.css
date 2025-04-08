@@ -189,16 +189,30 @@
 }
 
 .overview-box1,.overview-box2 {
+    display: flex;
+    align-items: center;
     margin: auto;
     background: #ffff;
     border-radius: 20px;
     color: #11117E;
-    padding: 5px 0 15px 5px;
+    /* padding: 5px 0 15px 5px; */
+    padding: 25px;
     width: auto;
     height: 180px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
+.title_over {
+    background: #11117E;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    font-size: 30px;
+    width: 100px;
+    padding: 40px;
+}
 
 .overview-box3,.overview-box4 {
     background: #ffff;
@@ -220,13 +234,23 @@
 }
 .total-teach-stu h4 {
     font-size: 25px;
+    color: #11117E;
 }
 
 .color-icon-male {
     color: #11117E;
+    margin-right: 5px;
 }
 .color-icon-female{
     color: #e74c3c;
+    margin-right: 5px;
+
+}
+
+.color-female, .color-male {
+    color: #11117E;
+    margin-right: 5px;
+
 }
 
 
@@ -249,6 +273,7 @@
 
 .pro-name {
     color: #ffff;
+    font-size: larger;
 }
 
 .pro-email {
@@ -598,6 +623,11 @@ input:valid ~ label {
     width: 50px;
     height: 50px;
     border-radius: 5px;
+}
+.profile_bar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
 }
 
 .course-link {

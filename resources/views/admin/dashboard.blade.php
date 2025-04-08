@@ -10,7 +10,7 @@
                     <h3>Greatings, {{ Auth::user()->name }}!</h3>
                     <p id="currentDate"></p>
                 </div>
-                
+
                 <div class="row g-4 mt-2">
                     <div class="col-md-6">
                         <div class="overview-box1 d-flex">
@@ -18,9 +18,9 @@
                             <div class="total-teach-stu">
                                 <h4>Teachers</h4>
                                 <div class="lh-1">
-                                    <p style="font-size: 10px"><span class="color-icon-female"><i
+                                    <p style="font-size: 12px"><span class="color-icon-female"><i
                                                 class="fa-solid fa-droplet"></i></span>Female({{ $femaleTeachers }})</p>
-                                    <p style="font-size: 10px"><span class="color-icon-male"><i
+                                    <p style="font-size: 12px"><span class="color-icon-male"><i
                                                 class="fa-solid fa-droplet"></i></span>Male({{ $maleTeachers }})</p>
                                 </div>
                                 <h2>{{ $totalTeachers }}</h2>
@@ -33,9 +33,9 @@
                             <div class="total-teach-stu">
                                 <h4>Students</h4>
                                 <div class="lh-1">
-                                    <p style="font-size: 10px"><span class="color-icon-female"><i
+                                    <p style="font-size: 12px"><span class="color-icon-female"><i
                                                 class="fa-solid fa-droplet"></i></span>Female({{ $femaleStudents }})</p>
-                                    <p style="font-size: 10px"><span class="color-icon-male"><i
+                                    <p style="font-size: 12px"><span class="color-icon-male"><i
                                                 class="fa-solid fa-droplet"></i></span>Male({{ $maleStudents }})</p>
                                 </div>
                                 <h2>{{ $totalStudents }}</h2>
@@ -44,51 +44,56 @@
                     </div>
                 </div>
                 <div class="row g-4 mt-2">
-                    <div class="col-md-6">
-                        <div class="overview-box3 p-3">
-                            <div class="attendance-summary mb-4 d-flex justify-content-between align-items-center">
-                                <h4>Attendance Summary</h4>
-                                <div class="d-flex">
-                                    <!-- Date Range Dropdown -->
-                                    <div class="dropdown me-2">
-                                        <button class="btn btn-outline-primary dropdown-toggle" type="button"
-                                            id="dateDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Today
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="dateDropdown">
-                                            <li><a class="dropdown-item" href="#"
-                                                    onclick="updateAttendanceChart('today')">Today</a></li>
-                                            <li><a class="dropdown-item" href="#"
-                                                    onclick="updateAttendanceChart('weekly')">Weekly</a></li>
-                                        </ul>
-                                    </div>
+                    <h4>List of user</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Profile</th>
+                                    <th>Name</th>
+                                    <th>Gender</th>
+                                    <th>Phone Number</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($teachers as $teacher)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>
+                                            @if($teacher->tea_profile && file_exists(public_path('storage/' . $teacher->tea_profile)))
+                                                <img class="profile_teacher" src="{{ asset('storage/' . $teacher->tea_profile) }}"
+                                                    alt="Teacher Profile">
+                                            @else
+                                                <img class="profile_teacher" src="{{ asset('images/placeholder_teacher.jpg') }}"
+                                                    alt="Placeholder Image">
+                                            @endif
+                                        </td>
+                                        <td>{{ $teacher->tea_fname }}</td>
+                                        <td>{{ $teacher->tea_gender }}</td>
+                                        <td>{{ $teacher->tea_ph_number }}</td>
+                                    </tr>
+                                @endforeach
+                                @foreach ($students as $student)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>
+                                            @if($student->stu_profile && file_exists(public_path('storage/' . $student->stu_profile)))
+                                                <img class="profile_stu" src="{{ asset('storage/' . $student->stu_profile) }}"
+                                                    alt="Student Profile">
+                                            @else
+                                                <img class="profile_stu" src="{{ asset('images/placeholder_student.jpg') }}"
+                                                    alt="Placeholder Image">
+                                            @endif
+                                        </td>
+                                        <td>{{ $student->stu_fname }}</td>
+                                        <td>{{ $student->stu_gender }}</td>
+                                        <td>{{ $student->stu_ph_number }}</td>
+                                    </tr>
+                                @endforeach
 
-                                    <!-- Category Dropdown -->
-                                    <div class="dropdown">
-                                        <button class="btn btn-outline-primary dropdown-toggle" type="button"
-                                            id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Students
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
-                                            <li><a class="dropdown-item" href="#"
-                                                    onclick="updateAttendanceCategory('students')">Students</a></li>
-                                            <li><a class="dropdown-item" href="#"
-                                                    onclick="updateAttendanceCategory('teachers')">Teachers</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <canvas id="attendanceChart"></canvas>
-                        </div>
-
-                    </div>
-                    <div class="col-md-6">
-                        <div class="overview-box4 p-3">
-                            <div class="student-selected mb-4 d-flex justify-content-between align-items-center">
-                                <h4>Student Selected</h4>
-                            </div>
-                            <canvas id="departmentChart"></canvas>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
 
                 </div>
@@ -118,46 +123,6 @@
                             <div class="day">Sat</div>
                         </div>
                         <div class="dates" id="dates"></div>
-                    </div>
-                </div>
-                <!-- next Event -->
-                <div class="next-event mt-4 rounded">
-                    <div class="event-today mb-2 d-flex justify-content-between">
-                        <h3 style="color: #11117E">Event</h3>
-                        <h5 style="color: #11117E">22</h5>
-                    </div>
-                    <div class="event">
-                        <div class="event1 rounded">
-                            <div>
-                                <h5>7h - 8h</h5>
-                                <h5>Math</h5>
-                            </div>
-                            <div class="lh-1">
-                                <p>Event 1 Description</p>
-                                <p>12A</p>
-                            </div>
-                        </div>
-                        <div class="event2 rounded">
-                            <div>
-                                <h5>8h - 9h</h5>
-                                <h5>Physical</h5>
-                            </div>
-                            <div class="lh-1">
-                                <p>Event 1 Description</p>
-                                <p>12A</p>
-                            </div>
-                        </div>
-                        <div class="event3 rounded">
-                            <div>
-                                <h5>9h - 10h</h5>
-                                <h5>Khmer</h5>
-                            </div>
-                            <div class="lh-1">
-                                <p>Event 1 Description</p>
-                                <p>12A</p>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </div>

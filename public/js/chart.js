@@ -62,23 +62,12 @@ new Chart(ctx1, {
             label: 'Student Distribution',
             data: studentGenderData,
             backgroundColor: ['#11117E', '#e74c3c'],
-            // borderColor: ['#ffff', '#ffffff'],
             borderWidth: 1
 
         }]
     },
     options: {
         plugins: {
-            // legend: {
-            //     display: true,
-            //     position: 'bottom',
-            //     labels: {
-            //         color: '#11117E',
-            //         font: {
-            //             size: 8
-            //         }
-            //     }
-            // },
             tooltip: {
                 callbacks: {
                     label: function (tooltipItem) {
@@ -99,64 +88,6 @@ new Chart(ctx1, {
         hover: {
             mode: 'nearest',
             intersect: true
-        }
-    }
-});
-
-const ctx2 = document.getElementById('attendanceChart').getContext('2d');
-
-new Chart(ctx2, {
-    type: 'bar',
-    data: {
-        labels: ['Mon', 'Tue', 'Wed', 'Fri', 'Sat'],	
-        datasets: [{
-            label: 'Present',
-            data: [30, 28, 32, 31, 29],
-            backgroundColor: 'green'
-        }, {
-            label: 'Absent',
-            data: [5, 7, 3, 4, 6],
-            backgroundColor: 'red'
-        }]
-    },
-    options: {
-        responsive: true,
-        // maintainAspectRatio: false,
-        scales: {
-            y: { beginAtZero: true }
-        }
-    }
-});
-
-
-const ctx3 = document.getElementById('departmentChart').getContext('2d');
-
-new Chart(ctx3, {
-    type: 'line',
-    data: {
-        labels: ['2020', '2021', '2022', '2023'],
-        datasets: [
-            {
-                label: 'Science',
-                data: [120, 140, 150, 160],
-                borderColor: 'blue',
-                backgroundColor: 'rgba(0, 0, 255, 0.1)',
-                fill: true
-            },
-            {
-                label: 'Social',
-                data: [100, 110, 130, 125],
-                borderColor: 'orange',
-                backgroundColor: 'rgba(255, 165, 0, 0.1)',
-                fill: true
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        // maintainAspectRatio: false,
-        scales: {
-            y: { beginAtZero: true }
         }
     }
 });
