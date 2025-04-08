@@ -252,6 +252,28 @@ class StudentController extends Controller
             return redirect()->route('student.login');
         }
         $student = session('student');
+// <<<<<<< HEAD
+        
+//         // $disSchedule= Schedules::join('courses','courses.cou_id','=','schedules.sch_cou_id')
+//         //     ->join('teachers','teachers.tea_id','=','courses.cou_tea_id')
+//         //     ->join('subjects','subjects.sub_id' ,'=', 'teachers.tea_id')
+//         //     ->join('grade','grade.gra_id','=','courses.cou_gra_id')
+//         //     ->join('students','students.stu_gra_id','=','grade.gra_id')
+//         //     ->where('students.stu_id', $student->stu_id)
+//         //     ->select('schedules.*', 'courses.*', 'teachers.*', 'subjects.*', 'grade.gra_class')
+//         //     ->get();
+//         $schedules = Schedules::join('courses', 'schedules.sch_cou_id', '=', 'courses.cou_id')
+//         ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+//         ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+//         ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+//         ->where('grade.gra_id', $student->stu_gra_id)
+//         ->select('schedules.*', 'teachers.*', 'subjects.*')
+//         ->orderByRaw("FIELD(sch_day, 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')")
+//         ->orderBy('sch_start_time', 'asc')
+//         ->get();
+//         // $schedules = Students::getScheduleByStudent($student->stu_id);
+//         return view('student.scheldule', [
+// =======
 
         // Direct query to get the schedule for the student
         $schedules = Schedules::join('courses', 'courses.cou_id', '=', 'schedules.sch_cou_id')
@@ -264,10 +286,44 @@ class StudentController extends Controller
             ->get();
 
         return view('student.schedule', [
+// >>>>>>> c2b06d77f2e4aaff8d7a5d5da5a4f111d69fa141
             'schedules' => $schedules,
             'student' => $student
         ]);
     }
 
+    function showAttSubStu(){
+        if (!session('student')) {
+            return redirect()->route('student.login');
+        }
+        $student = session('student');
+        $attendances = Attendancesubmit::join('students', 'attendance_submit.att_sub_stu_id', '=', 'students.stu_id')
+            ->join('schedules', 'attendance_submit.att_sub_sch_id', '=', 'schedules.sch_id')
+            ->join('courses', 'schedules.sch_cou_id', '=', 'courses.cou_id')
+            ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+            ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+            ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+            ->select(
+            'attendance_submit.*', 
+            'students.stu_fname', 
+            'students.stu_id', 
+            'courses.cou_id', 
+            'teachers.tea_fname', 
+            'grade.gra_class',
+            'subjects.sub_name',
+            )
+            ->where('students.stu_id', $student->stu_id)
+            ->get();
+
+        
+        return view('student.attendance', [
+            'attendances' => $attendances,
+            'student' => $student
+        ]);
+
+    }
+    
+
+            
 
 }

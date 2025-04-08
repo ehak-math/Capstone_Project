@@ -141,4 +141,4 @@
     font-size: 1rem;
 }
 </style>
-
+@endsection

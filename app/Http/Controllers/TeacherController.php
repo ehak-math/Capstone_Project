@@ -556,10 +556,17 @@ class TeacherController extends Controller
             ->get();
 
         $selectallpoint = Course::join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
-            ->join('students', 'grade.gra_id', '=', 'students.stu_gra_id')
-            ->join('scores', 'scores.sco_stu_id', '=', 'students.stu_id')
-            ->where('courses.cou_id', $id)
-            ->get();
+        ->join('students', 'grade.gra_id', '=', 'students.stu_gra_id')
+        ->join('scores', 'scores.sco_stu_id', '=', 'students.stu_id')
+        ->where('courses.cou_id', $id)
+        ->orderByRaw("FIELD(sco_month, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December')")
+        ->get();
+// =======
+//             ->join('students', 'grade.gra_id', '=', 'students.stu_gra_id')
+//             ->join('scores', 'scores.sco_stu_id', '=', 'students.stu_id')
+//             ->where('courses.cou_id', $id)
+//             ->get();
+// >>>>>>> c2b06d77f2e4aaff8d7a5d5da5a4f111d69fa141
 
         return view('teacher.courses.score', [
             'teacher' => $teacher,
@@ -668,5 +675,35 @@ class TeacherController extends Controller
             'schedules' => $schedules,
             'teacher' => $teacher
         ]);
+    }
+    function showAttendance(){
+        $teacher = session('teacher');
+        if (!$teacher) {
+            return redirect()->route('teacher.login')->with('error', 'Teacher session not found');
+        }
+        $attendances = Attendancesubmit::join('students', 'attendance_submit.att_sub_stu_id', '=', 'students.stu_id')
+            ->join('schedules', 'attendance_submit.att_sub_sch_id', '=', 'schedules.sch_id')
+            ->join('courses', 'schedules.sch_cou_id', '=', 'courses.cou_id')
+            ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+            ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+            ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+            ->select(
+            'attendance_submit.*', 
+            'students.stu_fname', 
+            'students.stu_id', 
+            'courses.cou_id', 
+            'teachers.tea_fname', 
+            'grade.gra_class',
+            'subjects.sub_name',
+            )
+            ->where('teachers.tea_id', $teacher->tea_id)
+            ->get();
+
+        
+        return view('teacher.attendance', [
+            'attendances' => $attendances,
+            'teacher' => $teacher
+        ]);
+
     }
 }
