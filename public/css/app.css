@@ -501,8 +501,9 @@
 .login-form {
     position: relative;
     width: 500px;
-    height: 400px;
+    height: auto;
     display: flex;
+    padding: 20px;
     justify-content: center;
     align-items: center;
     border-radius: 10px;

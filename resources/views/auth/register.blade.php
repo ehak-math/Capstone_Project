@@ -25,28 +25,39 @@
 <body>
     <div class="container-login">
         <div class="login-form">
-            <form action="{{ route('login.submit') }}" method="POST">
-                @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            <form action="{{ route('register.submit') }}" method="POST">
                 @csrf
-                <h1>Login</h1>
+                <h1>Register</h1>
                 <div class="input-box">
-                    <i class="fa-solid fa-lock"></i>
-                    <input type="email" name="email" value="{{ old('email') }}" class="input-field" required>
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" name="name" value="{{ old('name') }}" class="input-field" required>
+                    <label for="name">Name</label>
+                </div>
+                <div class="input-box">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="email" name="email" class="input-field" value="{{ old('email') }}" required>
                     <label for="email">Email</label>
                 </div>
+
                 <div class="input-box">
                     <i class="fa-solid fa-lock"></i>
                     <input type="password" name="password" class="input-field" required>
                     <label for="password">Password</label>
                 </div>
-                <button type="submit" class="btn-submit">Login</button>
+                <div class="input-box">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" name="password_confirmation" class="input-field" required>
+                    <label for="password_confirmation">Confirm Password</label>
+                </div>
+                <button type="submit" class="btn-submit">Register</button>
                 <div class="register-link mt-3 text-center">
-                    <p>Don't have an account? <a href="{{ route('register') }}">Register</a></p>
+                    <p>Already have an account? <a href="{{ route('login') }}">Login</a></p>
                 </div>
                 <!-- validation error -->
                 @if ($errors->any())

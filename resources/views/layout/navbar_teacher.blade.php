@@ -57,6 +57,12 @@
         <a href="/teacher/document" class="nav-link {{ Request::is('teacher/document') ? 'active' : '' }}" id="document-link">
             <i class="fa-solid fa-calendar-days"></i><span>Document</span>
         </a>
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button class="nav-link" id="logout-link">
+                <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+            </button>
+        </form>
     </div>
 
 

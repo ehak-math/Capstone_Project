@@ -49,15 +49,16 @@ class StudentController extends Controller
     public function dashboard()
     {
         // Check if student is logged in
-        if (!session('student')) {
-            return redirect()->route('student.login');
-        }
+        // if (!session('student')) {
+        //     return redirect()->route('student.login');
+        // }
 
-        $student = session('student');
-        $showStudent = Students::join('grade', 'students.stu_gra_id', '=', 'grade.gra_id')
-            ->where('stu_id', $student->stu_id)
-            ->first();
-        return view('student.dashboard', ['student' => $student , 'showStudent' => $showStudent]);
+        // $student = session('student');
+        // $showStudent = Students::join('grade', 'students.stu_gra_id', '=', 'grade.gra_id')
+        //     ->where('stu_id', $student->stu_id)
+        //     ->first();
+        // return view('student.dashboard', ['student' => $student , 'showStudent' => $showStudent]);
+        return  view('student.dashboard');
     }
 
     public function displayCourseStudent()

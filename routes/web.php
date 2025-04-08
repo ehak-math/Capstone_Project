@@ -62,25 +62,12 @@ Route::get('/', function () {
 //// admin
 //////////////
 
-Route::post('admin.uploadImage', [AdminController::class, 'creatAdmin'])->name('uploadfile');
-// Route::get('/subjects/{id}/edit', [TeacherController::class, 'edit'])->name('subject.edit');
-Route::get('/subjects/{id}', [TeacherController::class, 'editsubject']);
-Route::get('/subjects/{id}/edit', [TeacherController::class, 'editsubject'])->name('subject.edit');
-Route::put('/subjects/{id}', [TeacherController::class, 'update'])->name('updatesub');
+// Route::post('admin.uploadImage', [AdminController::class, 'creatAdmin'])->name('uploadfile');
+// // Route::get('/subjects/{id}/edit', [TeacherController::class, 'edit'])->name('subject.edit');
+// Route::get('/subjects/{id}', [TeacherController::class, 'editsubject']);
+// Route::get('/subjects/{id}/edit', [TeacherController::class, 'editsubject'])->name('subject.edit');
+// Route::put('/subjects/{id}', [TeacherController::class, 'update'])->name('updatesub');
 
-
-
-// Route::get('admin',[TeacherController::class,'showsubject']);
-// Route::post('admin.store', [TeacherController::class, 'store'])->name('addsub');
-
-// Route::get('student',[AdminController::class,'displayOnStu']);
-// Route::get('details/{id}', [AdminController::class, 'selectbyId'])->name('showDetails');
-
-
-// Route::get('/admin/Schedule',[AdminController::class,'getschedule']);
-// Route::post('scheldule.crategrade',[AdminController::class,'createGrade'])->name('crategrade');
-// Route::post('scheldule.createcourse',[AdminController::class,'createCourse'])->name('createcourse');
-// Route::post('scheldule.createschedule',[AdminController::class,'createSchedule'])->name('createschedule');
 
 
 // student
@@ -204,6 +191,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
 
 // admin.dashboard
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard')->middleware(['auth', 'role:admin']);

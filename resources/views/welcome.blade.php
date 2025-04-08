@@ -117,14 +117,24 @@
         <p class="welcome-subtitle">Efficiently manage students, teachers, courses, and more.</p>
 
         @auth
-            <a href="{{ route('admin.dashboard') }}" class="btn btn-animated btn-register">
-                Go to Dashboard <i class="fa-solid fa-arrow-right"></i>
-            </a>
+            @if (auth()->user()->role === 'admin')
+                <a href="{{ route('admin.dashboard') }}" class="btn btn-animated btn-register">
+                    Go to Admin Dashboard <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            @elseif (auth()->user()->role === 'student')
+                <a href="{{ route('student.dashboard') }}" class="btn btn-animated btn-register">
+                    Go to Student Dashboard <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            @elseif (auth()->user()->role === 'teacher')
+                <a href="{{ route('teacher.dashboard') }}" class="btn btn-animated btn-register">
+                    Go to Teacher Dashboard <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            @endif
         @else
             <a href="{{ route('login') }}" class="btn btn-animated btn-login">
                 <i class="fa-solid fa-right-to-bracket"></i> Login
             </a>
-            <a href="#" class="btn btn-animated btn-register">
+            <a href="{{ route('register') }}" class="btn btn-animated btn-register">
                 <i class="fa-solid fa-user-plus"></i> Register
             </a>
         @endauth
