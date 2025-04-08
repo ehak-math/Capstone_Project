@@ -9,14 +9,14 @@
                 <div class="list-of-student m-2">
                     <h1 class="mt-5 text-center text-primary">List of Scores</h1>
                     <!-- List of scores -->
-                    @if(!isset($score))
+                    @if(isset($score))
                         @foreach($score as $sco)
                             <div class="attendance d-flex justify-content-between align-items-center shadow-sm">
                                 <div class="image-text d-flex align-items-center">
                                     <img src="{{ asset('images/math.jpg') }}" class="rounded-3" alt="Subject Image" width="80px" height="80px">
                                     <div class="sub-text ms-3">
                                         <h4 class="mb-1 text-dark">{{$sco->sub_name}}</h4>
-                                        <h6 class="mb-1 text-muted">{{$sco->gra_class}}</h6>
+                                        <h6 class="mb-1 text-muted">{{$sco->gra_class}}{{$sco->gra_group}}</h6>
                                         <p class="mb-0 text-secondary">Month: {{$sco->sco_month}}</p>
                                     </div>
                                 </div>
@@ -24,11 +24,15 @@
                                     <div class="sub-attendance">
                                         <p class="box-att bg-success">{{$sco->sco_point}}</p>
                                     </div>
-                                @else
-                                    <div class="sub-attendance">
-                                        <p class="box-att bg-danger">{{$sco->sco_point}}</p>
-                                    </div>
-                                @endif
+                                    @elseif($sco->sco_point < 50 && $sco->sco_point > 0)
+                                        <div class="sub-attendance">
+                                            <p class="box-att bg-danger">{{$sco->sco_point}}</p>
+                                        </div>
+                                        @else
+                                        <div class="sub-attendance">
+                                            <p class="box-att bg-danger">Null</p>
+                                        </div>
+                                        @endif
                             </div>
                         @endforeach
                     @else

@@ -7,47 +7,30 @@
             <!-- Main content area -->
             <div class="col-lg-8 col-md-12 mt-5">
                 <div class="list-of-student m-2">
-                    <h1 class="mt-5">List of attendance</h1>
+                    <h1 class="mt-5">List of attendance</h1>`
+                    <h3>StudentName:{{$student->stu_fname}} {{$student->stu_id}}</h3>
                     <!-- list of attendance -->
+                    @foreach($attendances as $att_stu)
                      <div class="attendance d-flex justify-content-between">
                         <div class="image-text d-flex">
                             <img src="{{ asset('images/math.jpg') }}" class="rounded-3" alt="" width="80px" height="80px">
                             <div class="sub-text align-items-center justify-content-center">
-                                <h4>Math</h4>
-                                <p>Date: 22/03/2025</p>
+                                <h4>Teacher:{{$att_stu->tea_fname}}</h4>
+                                <p>Date: {{$att_stu->att_sub_date}}</p>
+                                <p>Subject: {{$att_stu->sub_name}}</p>
                             </div>
                         </div>
-                        <div class="sub-attendance">
-                            <p class="box-att" style="background: green;">Present</p>
-                        </div>
-                     </div>
 
-                     <div class="attendance d-flex justify-content-between mt-3">
-                        <div class="image-text d-flex">
-                            <img src="{{ asset('images/math.jpg') }}" class="rounded-3" alt="" width="80px" height="80px">
-                            <div class="sub-text align-items-center justify-content-center">
-                                <h4>Math</h4>
-                                <p>Date: 22/03/2025</p>
-                            </div>
-                        </div>
                         <div class="sub-attendance">
-                            <p class="box-att" style="background: green;">Present</p>
+                            @if($att_stu->att_sub_status == 'Absent')
+                            <p class="box-att" style="background: red;">{{$att_stu->att_sub_status}}</p>
+                            @elseif($att_stu->att_sub_status == 'Present')  
+                            <p class="box-att" style="background: green;">{{$att_stu->att_sub_status}}</p>
+                            @endif
                         </div>
                      </div>
-
-                     <div class="attendance d-flex justify-content-between mt-3">
-                        <div class="image-text d-flex">
-                            <img src="{{ asset('images/math.jpg') }}" class="rounded-3" alt="" width="80px" height="80px">
-                            <div class="sub-text align-items-center justify-content-center">
-                                <h4>Math</h4>
-                                <p>Date: 22/03/2025</p>
-                            </div>
-                        </div>
-                        <div class="sub-attendance">
-                            <p class="box-att" style="background: red;">Absent</p>
-                        </div>
-                     </div>
-                    
+                     @endforeach
+                     
                 </div>
             </div>
         </div>

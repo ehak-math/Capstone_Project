@@ -255,7 +255,7 @@ class StudentController extends Controller
         ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
         ->where('grade.gra_id', $student->stu_gra_id)
         ->select('schedules.*', 'teachers.*', 'subjects.*')
-        ->orderByRaw("FIELD(sch_day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')")
+        ->orderByRaw("FIELD(sch_day, 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')")
         ->orderBy('sch_start_time', 'asc')
         ->get();
         // $schedules = Students::getScheduleByStudent($student->stu_id);
@@ -264,6 +264,38 @@ class StudentController extends Controller
             'student' => $student
         ]);
     }
+
+    function showAttSubStu(){
+        if (!session('student')) {
+            return redirect()->route('student.login');
+        }
+        $student = session('student');
+        $attendances = Attendancesubmit::join('students', 'attendance_submit.att_sub_stu_id', '=', 'students.stu_id')
+            ->join('schedules', 'attendance_submit.att_sub_sch_id', '=', 'schedules.sch_id')
+            ->join('courses', 'schedules.sch_cou_id', '=', 'courses.cou_id')
+            ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+            ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+            ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+            ->select(
+            'attendance_submit.*', 
+            'students.stu_fname', 
+            'students.stu_id', 
+            'courses.cou_id', 
+            'teachers.tea_fname', 
+            'grade.gra_class',
+            'subjects.sub_name',
+            )
+            ->where('students.stu_id', $student->stu_id)
+            ->get();
+
+        
+        return view('student.attendance', [
+            'attendances' => $attendances,
+            'student' => $student
+        ]);
+
+    }
+    
 
             
 }

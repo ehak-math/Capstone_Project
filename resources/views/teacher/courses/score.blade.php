@@ -3,85 +3,92 @@
 @section('mainContent')
 <div class="content">
     <div class="row justify-content-center">
-        <!-- Main content area -->
-        <div class="col-lg-8 col-md-12">
-            <div class="row g-2 mt-5">
-                <div class="card shadow-sm p-3">
-                    <h1 class="text-primary">Hello, {{$teacher->tea_id}}</h1>
-                    <p><strong>Course:</strong> {{$course->cou_id}}</p>
-                    <hr>
-
+        <div class="col-lg-10 col-md-12">
+            <!-- Course Info Card -->
+            <div class="card shadow-sm mt-4 mb-4">
+                <div class="card-body">
+                    <h4 class="card-title">Course: {{$course->cou_id}}</h4>
+                    <p class="text-muted">Teacher ID: {{$teacher->tea_id}}</p>
+                    
                     <!-- Add Score Form -->
-                    <form action="{{route('teacher.score.create')}}" method="post" class="mb-3">
+                    <form action="{{route('teacher.score.create')}}" method="post">
                         @csrf
-                        <div class="mb-2">
-                            <label for="cou_id" class="form-label">Add Score to Students in Course {{$course->cou_id}}</label>
-                            <input type="hidden" class="form-control" value="{{$course->cou_id}}" name="cou_id" required>
+                        <input type="hidden" value="{{$course->cou_id}}" name="cou_id">
+                        <div class="row align-items-end">
+                            <div class="col-md-8">
+                                <label for="month">Select Month</label>
+                                <select id="month" name="sco_month" class="form-select">
+                                    @foreach(['January', 'February', 'March', 'April', 'May', 'June', 
+                                            'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                                        <option value="{{$month}}">{{$month}}</option>
+                                    @endforeach
+                                </select>  
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-plus-circle"></i> Add Scores
+                                </button>
+                            </div>
                         </div>
-                        <div class="mb-2">
-                            <label for="month" class="form-label">Select Month:</label>
-                            <select id="month" name="sco_month" class="form-select">
-                                <option value="January">January</option>
-                                <option value="February">February</option>
-                                <option value="March">March</option>
-                                <option value="April">April</option>
-                                <option value="May">May</option>
-                                <option value="June">June</option>
-                                <option value="July">July</option>
-                                <option value="August">August</option>
-                                <option value="September">September</option>
-                                <option value="October">October</option>
-                                <option value="November">November</option>
-                                <option value="December">December</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="fas fa-plus-circle me-2"></i>Submit
-                        </button>
                     </form>
                 </div>
+            </div>
 
-                <hr>
-
-                <!-- Display Scores -->
+            <!-- Score Listings -->
+            <div class="accordion" id="scoreAccordion">
                 @if(!isset($selectallpoint))
-                    @foreach($selectallStudent as $stu)
-                        <div class="card shadow-sm p-2 mb-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="text-dark mb-1">Student ID: {{$stu->stu_id}}</h6>
-                                    <p class="mb-0"><strong>Name:</strong> {{$stu->stu_fname}}</p>
-                                    <p class="mb-0"><strong>Class:</strong> {{$stu->gra_class}}{{$stu->gra_group}}</p>
-                                </div>
-                                <span class="badge bg-secondary">0</span>
-                            </div>
-                        </div>
-                    @endforeach
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> No scores available yet.
+                    </div>
                 @else
-                    @foreach($selectallpoint as $stupoint)
-                        <div class="card shadow-sm p-2 mb-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="text-dark mb-1">Student ID: {{$stupoint->stu_id}}</h6>
-                                    <p class="mb-0"><strong>Name:</strong> {{$stupoint->stu_fname}}</p>
-                                    <p class="mb-0"><strong>Class:</strong> {{$stupoint->gra_class}}{{$stupoint->gra_group}}</p>
+                    @foreach(['January', 'February', 'March', 'April', 'May', 'June', 
+                             'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                        @if($selectallpoint->where('sco_month', $month)->count() > 0)
+                            <div class="accordion-item mb-2">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" 
+                                            data-bs-toggle="collapse" data-bs-target="#month{{$month}}">
+                                        {{$month}} Scores
+                                    </button>
+                                </h2>
+                                <div id="month{{$month}}" class="accordion-collapse collapse">
+                                    <div class="accordion-body">
+                                        @foreach($selectallpoint->where('sco_month', $month)->where('sco_cou_id', $course->cou_id) as $score)
+                                            <div class="card mb-2">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <h6>{{$score->stu_fname}} ({{$score->stu_id}})</h6>
+                                                            <small class="text-muted">Class: {{$score->gra_class}}{{$score->gra_group}}</small>
+                                                        </div>
+                                                        <h4><span class="badge bg-success">{{$score->sco_point}}</span></h4>
+                                                    </div>
+                                                    
+                                                    <form action="{{route('teacher.score.addscore')}}" 
+                                                          method="post" 
+                                                          class="mt-2" 
+                                                          onsubmit="saveAccordionState(event)">
+                                                        @csrf
+                                                        <input type="hidden" name="sco_id" value="{{$score->sco_id}}">
+                                                        <input type="hidden" name="stu_id" value="{{$score->stu_id}}">
+                                                        <input type="hidden" name="cou_id" value="{{$score->cou_id}}">
+                                                        <input type="hidden" name="current_month" value="{{$month}}">
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control" 
+                                                                   value="{{$score->sco_point}}" 
+                                                                   name="sco_point" required>
+                                                            <button class="btn btn-warning">
+                                                                <i class="fas fa-edit"></i> Update
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 </div>
-                                <span class="badge bg-success">{{$stupoint->sco_point}}</span>
                             </div>
-                            <form action="{{route('teacher.score.addscore')}}" method="post" class="mt-2">
-                                @csrf
-                                <input type="hidden" name="sco_id" value="{{$stupoint->sco_id}}">
-                                <input type="hidden" name="stu_id" value="{{$stupoint->stu_id}}">
-                                <input type="hidden" name="cou_id" value="{{$stupoint->cou_id}}">
-                                <div class="mb-2">
-                                    <label for="score" class="form-label">Update Score</label>
-                                    <input type="number" class="form-control form-control-sm" value="{{$stupoint->sco_point}}" name="sco_point" required>
-                                </div>
-                                <button type="submit" class="btn btn-warning btn-sm w-100">
-                                    <i class="fas fa-edit me-2"></i>Update
-                                </button>
-                            </form>
-                        </div>
+                        @endif
                     @endforeach
                 @endif
             </div>
@@ -90,38 +97,63 @@
 </div>
 
 <style>
-    .card {
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 10px;
-        margin-bottom: 10px;
-        background-color: #fff;
-    }
+.accordion-button:not(.collapsed) {
+    background-color: #e7f1ff;
+    color: #0c63e4;
+}
 
-    .card h6, .card p {
-        margin: 0;
-        font-size: 0.9rem;
-    }
+.badge {
+    font-size: 1rem;
+}
 
-    .card .badge {
-        font-size: 0.85rem;
-        padding: 5px 10px;
-        border-radius: 12px;
-    }
+.card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,.05);
+}
 
-    .badge.bg-secondary {
-        background-color: #6c757d !important;
-    }
-
-    .badge.bg-success {
-        background-color: #28a745 !important;
-    }
-
-    .btn-sm {
-        font-size: 0.85rem;
-        padding: 5px 10px;
-    }
+.accordion-item {
+    border-radius: 8px;
+    overflow: hidden;
+}
 </style>
+@endsection
+
+@section('scripts')
+<script>
+// Save accordion state before form submission
+function saveAccordionState(event) {
+    const month = event.target.querySelector('[name="current_month"]').value;
+    localStorage.setItem('activeMonth', month); // Using localStorage instead of sessionStorage
+}
+
+// When page loads, restore accordion state
+document.addEventListener('DOMContentLoaded', function() {
+    const activeMonth = localStorage.getItem('activeMonth');
+    if (activeMonth) {
+        setTimeout(() => {
+            const accordionElement = document.querySelector(`#month${activeMonth}`);
+            if (accordionElement) {
+                // Force open the accordion
+                const bsCollapse = new bootstrap.Collapse(accordionElement, {
+                    show: true,
+                    toggle: true
+                });
+            }
+        }, 100); // Small delay to ensure DOM is ready
+    }
+});
+
+// Save state when accordion is manually toggled
+document.querySelectorAll('.accordion-button').forEach(button => {
+    button.addEventListener('click', function() {
+        const month = this.textContent.trim().split(' ')[0];
+        if (this.classList.contains('collapsed')) {
+            localStorage.removeItem('activeMonth');
+        } else {
+            localStorage.setItem('activeMonth', month);
+        }
+    });
+});
+</script>
 @endsection
 
