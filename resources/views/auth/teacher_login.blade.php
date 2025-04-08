@@ -44,9 +44,9 @@
                     <label for="password">Password</label>
                 </div>
                 <button type="submit" class="btn-submit">Login</button>
-                <!-- <div class="register-link mt-3 text-center">
-                    <p>Don't have an account? <a href="{{ route('register') }}">Register</a></p>
-                </div> -->
+                <div class="register-link mt-3 text-center">
+                    <p>go to home page? <a href="{{ route('welcome') }}">Home page</a></p>
+                </div>
                 <!-- validation error -->
                 @if ($errors->any())
                     <div class="alert alert-danger mt-2">

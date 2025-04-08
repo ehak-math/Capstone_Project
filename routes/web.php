@@ -52,7 +52,7 @@ Route::post('/students/import', function (Request $request) {
 
 Route::get('/', function () {
     return view('welcome');
-})->name('Welcome');
+})->name('welcome');
 //
 //
 
