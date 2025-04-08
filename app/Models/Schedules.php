@@ -11,7 +11,7 @@ class Schedules extends Model
     use HasFactory;
     protected $table = 'schedules';
     public $timestamps = false;
-    protected $pramary = 'sch_id';
+    protected $primaryKey = 'sch_id';
     protected $fillable = ['sch_start_time','sch_date','sch_end_time','sch_day','sch_cou_id'];
 
     public static function displaySchedule()

@@ -7,10 +7,8 @@
             <!-- Main content area -->
             <div class="col-lg-8 col-md-12">
                 <div class="date_name">
-                    <h3>Greatings, Bro!</h3>
-                    <p >Welcome,{{$teacher->tea_fname}}
-                    </p>
-                    <p >You is grade,
+                    <h3>Greatings, {{$teacher->tea_fname}}!</h3>
+                    <p >Subject, {{ $teacher->subject->sub_name }}
                     </p>
                 </div>
                 <div class="row g-4 mt-2">

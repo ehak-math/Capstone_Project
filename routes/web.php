@@ -12,7 +12,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\TeachersImport;
 use App\Imports\StudentsImport;
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TelegramController;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
@@ -51,7 +52,7 @@ Route::post('/students/import', function (Request $request) {
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('Welcome');
 //
 //
 
@@ -61,25 +62,12 @@ Route::get('/', function () {
 //// admin
 //////////////
 
-Route::post('admin.uploadImage', [AdminController::class, 'creatAdmin'])->name('uploadfile');
-// Route::get('/subjects/{id}/edit', [TeacherController::class, 'edit'])->name('subject.edit');
-Route::get('/subjects/{id}', [TeacherController::class, 'editsubject']);
-Route::get('/subjects/{id}/edit', [TeacherController::class, 'editsubject'])->name('subject.edit');
-Route::put('/subjects/{id}', [TeacherController::class, 'update'])->name('updatesub');
+// Route::post('admin.uploadImage', [AdminController::class, 'creatAdmin'])->name('uploadfile');
+// // Route::get('/subjects/{id}/edit', [TeacherController::class, 'edit'])->name('subject.edit');
+// Route::get('/subjects/{id}', [TeacherController::class, 'editsubject']);
+// Route::get('/subjects/{id}/edit', [TeacherController::class, 'editsubject'])->name('subject.edit');
+// Route::put('/subjects/{id}', [TeacherController::class, 'update'])->name('updatesub');
 
-
-
-Route::get('admin',[TeacherController::class,'showsubject']);
-Route::post('admin.store', [TeacherController::class, 'store'])->name('addsub');
-
-Route::get('student',[AdminController::class,'displayOnStu']);
-Route::get('details/{id}', [AdminController::class, 'selectbyId'])->name('showDetails');
-
-
-Route::get('/admin/Schedule',[AdminController::class,'getschedule']);
-Route::post('scheldule.crategrade',[AdminController::class,'createGrade'])->name('crategrade');
-Route::post('scheldule.createcourse',[AdminController::class,'createCourse'])->name('createcourse');
-Route::post('scheldule.createschedule',[AdminController::class,'createSchedule'])->name('createschedule');
 
 
 // student
@@ -91,14 +79,20 @@ Route::post('scheldule.createschedule',[AdminController::class,'createSchedule']
 Route::prefix('student')->group(function () {
     Route::get('/login', [StudentController::class, 'showLoginForm'])->name('student.login');
     Route::post('/login', [StudentController::class, 'studentLogin'])->name('student.login.submit');
+    Route::post('/logout', [StudentController::class, 'logout'])->name('student.logout');
     Route::get('/dashboard', [StudentController::class, 'dashboard'])->name('student.dashboard');
     Route::get('/courses/subject', [StudentController::class, 'displayCourseStudent']);
     Route::get('/courses/subject/{id}', [StudentController::class, 'submitAtt'])->name('student.course.submit.show');
     Route::post('/courses/subject/submit-attendance', [StudentController::class, 'subAttendance'])->name('student.course.submit');
     Route::get('/student/course/document/{id}', [StudentController::class, 'showDoc'])->name('student.course.document');    
     // Route::get('/student/scheldule', [StudentController::class, 'showSchedule'])->name('student.scheldule');
+<<<<<<< HEAD
     Route::get('/scheldule', [StudentController::class, 'showSchedule'])->name('student.scheldule');
     Route::get('/attendance', [StudentController::class, 'showAttSubStu'])->name('student.attendance');
+=======
+    Route::get('/schedule', [StudentController::class, 'showSchedule'])->name('student.scheldule');
+
+>>>>>>> c2b06d77f2e4aaff8d7a5d5da5a4f111d69fa141
     Route::post('/logout', [StudentController::class, 'logout'])->name('student.logout');
     Route::get('/score',  [StudentController::class, 'displayStudentSocre'])->name('student.score');
 });
@@ -110,11 +104,12 @@ Route::prefix('student')->group(function () {
 
 
 Route::prefix('teacher')->group(function () {
-    Route::get('/login', [TeacherController::class, 'TeacherLoginForm'])->name('teacherLogin');
+    Route::get('/login', [TeacherController::class, 'TeacherLoginForm'])->name('teacher.login');
     Route::post('/login', [TeacherController::class, 'TeacherLogin'])->name('teacher.login.submit');
-    Route::get('/dashboard', [TeacherController::class, 'teacherDashbord'])->name('teacher.dashboard');
+    Route::get('/dashboard', [TeacherController::class, 'teacherDashboard'])->name('teacher.dashboard');
     Route::post('/logout', [TeacherController::class, 'logout'])->name('teacher.logout');
     Route::get('/course', [TeacherController::class, 'teacherCourse'])->name('teacher.course');
+    Route::get('/course/student/{id}', [TeacherController::class, 'teacherStudent'])->name('teacher.student.show');
     // Route::get('/course/attendance/{id}', [TeacherController::class, 'teacherAttendance'])->name('attendance');
     Route::post('/attendance/close', [TeacherController::class, 'closeatt'])->name('teacher.attendance.close');
     Route::post('/attendance/open', [TeacherController::class, 'openatt'])->name('teacher.attendance.open');
@@ -130,60 +125,80 @@ Route::prefix('teacher')->group(function () {
     Route::delete('/teacher/document/delete/{id}', [TeacherController::class, 'deleteDocument'])->name('teacher.document.delete');
 });
 
+
 ////////////////////
 // admin course///
 ///////////////////
-Route::prefix('admin/courses')->group(function () {
-    Route::get('/index', [AdminController::class, 'displayCourses'])->name('admin.courses.index');
-    Route::post('/add', [AdminController::class, 'addCourse'])->name('admin.courses.add');
-    Route::delete('/{id}', [AdminController::class, 'deleteCourse'])->name('admin.courses.delete');
-    Route::get('/view_detail/{id}', [AdminController::class, 'viewCourseDetail'])->name('admin.courses.view_detail');
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/courses/index', [AdminController::class, 'displayCourses'])->name('admin.courses.index');
+    Route::post('/admin/courses/add', [AdminController::class, 'addCourse'])->name('admin.courses.add');
+    Route::delete('/admin/courses/{id}', [AdminController::class, 'deleteCourse'])->name('admin.courses.delete');
+    Route::put('/admin/courses/{id}', [AdminController::class, 'updateCourse'])->name('updateCourse');
+    Route::get('/admin/courses/view_detail/{id}', [AdminController::class, 'viewCourseDetail'])->name('admin.courses.view_detail');
+
+    // Route::get('/admin/courses/search', [AdminController::class, 'searchCourses'])->name('searchCourses');
 });
-Route::get('admin/courses/index', [AdminController::class, 'displayCourses'])->name('admin.courses.index');
-Route::post('admin/courses/add', [AdminController::class, 'addCourse'])->name('admin.courses.add');
-Route::put('admin/courses/{id}', [AdminController::class, 'updateCourse'])->name('updateCourse');
-Route::delete('admin/courses/{id}', [AdminController::class, 'deleteCourse'])->name('admin.courses.delete');
-Route::get('admin/courses/view_detail/{id}', [AdminController::class, 'viewCourseDetail'])->name('admin.courses.view_detail');
+
 
 //////////////////
 //admin teahcer///
 //////////////////
-Route::get('admin/teachers/index', [AdminController::class, 'displayTeacher'])->name('admin.teachers.index');
-Route::post('admin/teachers/add', [AdminController::class, 'addTeacher'])->name('admin.teachers.add');
-Route::delete('admin/teachers/{id}', [AdminController::class, 'deleteTeacher'])->name('deleteTeacher');
-Route::put('admin/teachers/{id}', [AdminController::class, 'updateTeacher'])->name('updateTeacher');
-Route::get('admin/teachers/search', [AdminController::class, 'searchTeachers'])->name('searchTeachers');
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/teachers/index', [AdminController::class, 'displayTeacher'])->name('admin.teachers.index');
+    Route::post('/admin/teachers/add', [AdminController::class, 'addTeacher'])->name('admin.teachers.add');
+    Route::delete('/admin/teachers/{id}', [AdminController::class, 'deleteTeacher'])->name('deleteTeacher');
+    Route::put('/admin/teachers/{id}', [AdminController::class, 'updateTeacher'])->name('updateTeacher');
+    Route::get('/admin/teachers/search', [AdminController::class, 'searchTeachers'])->name('searchTeachers');
+});
 
 
 //////////////////
 //admin student///
 /////////////////
-Route::get('admin/students/index', [AdminController::class, 'displayOnStu'])->name('admin.students.index');
-Route::delete('admin/students/{id}', [AdminController::class, 'deleteStudent'])->name('deleteStudent');
-Route::put('admin/students/{id}', [AdminController::class, 'updateStudent'])->name('updateStudent');
-Route::post('admin/students/add', [AdminController::class, 'addStudent'])->name('admin.students.add');
-Route::get('admin/students/search', [AdminController::class, 'searchStudents'])->name('searchStudents');
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/students/index', [AdminController::class, 'displayOnStu'])->name('admin.students.index');
+    Route::post('/admin/students/add', [AdminController::class, 'addStudent'])->name('admin.students.add');
+    Route::delete('/admin/students/{id}', [AdminController::class, 'deleteStudent'])->name('deleteStudent');
+    Route::put('/admin/students/{id}', [AdminController::class, 'updateStudent'])->name('updateStudent');
+    Route::get('/admin/students/search', [AdminController::class, 'searchStudents'])->name('searchStudents');
+});
+
 
 
 ///////////////////
-// grade/subject///
+// admin grade/subject///
 //////////////////
-
-Route::get('admin/grade_subject/index', [AdminController::class, 'displayGradeSubject'])->name('admin.grade_subject.index');
-Route::post('admin/grade_subject/addGrade', [AdminController::class,'addGrade'])->name('addGrade');
-Route::post('admin/grade_subject/addSubject', [AdminController::class, 'addSubject'])->name('addSubject');
-Route::delete('admin/grade_subject/grade/{id}', [AdminController::class, 'deleteGrade'])->name('deleteGrade');
-Route::put('admin/grade_subject/subject/{id}', [AdminController::class, 'updateSubject'])->name('updateSubject');
-Route::put('admin/grade_subject/grade/{id}', [AdminController::class, 'updateGrade'])->name('updateGrade');
-Route::delete('admin/grade_subject/subject/{id}', [AdminController::class, 'deleteSubject'])->name('deleteSubject');
-
-/////////////
-// schedule//
-/////////////
-
-Route::get('admin/schedule/index', [AdminController::class, 'displaySchedule'])->name('admin.schedule.index');
-Route::post('admin/schedule/add', [AdminController::class, 'addSchedule'])->name('addSchedule');
-
-Route::get('admin/dashboard', function () {
-    return view('admin.dashboard');
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/grade_subject/index', [AdminController::class, 'displayGradeSubject'])->name('admin.grade_subject.index');
+    Route::post('/admin/grade_subject/addGrade', [AdminController::class, 'addGrade'])->name('addGrade');
+    Route::post('/admin/grade_subject/addSubject', [AdminController::class, 'addSubject'])->name('addSubject');
+    Route::put('/admin/grade_subject/subject/{id}', [AdminController::class, 'updateSubject'])->name('updateSubject');
+    Route::put('/admin/grade_subject/grade/{id}', [AdminController::class, 'updateGrade'])->name('updateGrade');
+    Route::delete('/admin/grade_subject/grade/{id}', [AdminController::class, 'deleteGrade'])->name('deleteGrade');
+    Route::delete('/admin/grade_subject/subject/{id}', [AdminController::class, 'deleteSubject'])->name('deleteSubject');
 });
+
+
+
+///////////////////
+//admin schedule//
+///////////////////
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/schedule/index', [AdminController::class, 'displaySchedule'])->name('admin.schedule.index');
+    Route::post('/admin/schedule/add', [AdminController::class, 'addSchedule'])->name('addSchedule');
+    Route::delete('/admin/schedule/{id}', [AdminController::class, 'deleteSchedule'])->name('deleteSchedule');
+    Route::put('/admin/schedule/{id}', [AdminController::class, 'updateSchedule'])->name('updateSchedule');
+   
+});
+
+
+// / Login/Logout Routes
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
+
+// admin.dashboard
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard')->middleware(['auth', 'role:admin']);

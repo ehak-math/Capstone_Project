@@ -15,6 +15,7 @@ use App\Models\Attendances;
 use App\Models\Attendancesubmit;
 use App\Models\Subjects;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
@@ -22,6 +23,32 @@ use phpDocumentor\Reflection\Types\Nullable;
 
 class AdminController extends Controller
 {
+    // admin.login
+
+    public function dashboard()
+    {
+        $totalTeachers = Teachers::count();
+        $totalStudents = Students::count();
+        $maleTeachers = Teachers::where('tea_gender', 'Male')->count();
+        $femaleTeachers = Teachers::where('tea_gender', 'Female')->count();
+
+        // Sample: Get student gender count
+        $maleStudents = Students::where('stu_gender', 'Male')->count();
+        $femaleStudents = Students::where('stu_gender', 'Female')->count();
+
+        // Pass data to view
+        return view('admin.dashboard', [
+            'teacherGender' => [$maleTeachers, $femaleTeachers],
+            'studentGender' => [$maleStudents, $femaleStudents],
+            'totalTeachers' => $totalTeachers,
+            'totalStudents' => $totalStudents,
+            'maleTeachers' => $maleTeachers,
+            'femaleTeachers' => $femaleTeachers,
+            'maleStudents' => $maleStudents,
+            'femaleStudents' => $femaleStudents,
+        ]);
+    }
+
 
     //admin.student
     function uploadsIamge($data, $pathname)
@@ -40,6 +67,7 @@ class AdminController extends Controller
     }
     function addStudent(Request $request)
     {
+        
         $request->validate([
             'stu_fname' => 'required',
             'stu_username' => 'required|string|max:255|unique:students,stu_username',
@@ -62,7 +90,7 @@ class AdminController extends Controller
         $student->stu_fname = $request->stu_fname;
         $student->stu_gra_id = $request->stu_grade;
         $student->stu_username = $request->stu_username;
-        $student->stu_password = bcrypt($request->stu_password);
+        $student->stu_password = $request->stu_password;
         $student->stu_gender = $request->stu_gender;
         $student->stu_dob = $request->stu_dob;
         $student->stu_ph_number = $request->stu_ph_number;
@@ -76,6 +104,7 @@ class AdminController extends Controller
 
     function displayOnStu()
     {
+    
         $students = Students::displayStudent();
         $grades = Grade::displayGrade();
         return view('admin.students.index', ['students' => $students, 'grades' => $grades]);
@@ -347,7 +376,6 @@ class AdminController extends Controller
     {
         // Validate the incoming request data
         $request->validate([
-            'cou_sub_id' => 'required',
             'cou_tea_id' => 'required',
             'cou_gra_id' => 'required',
         ]);
@@ -356,7 +384,6 @@ class AdminController extends Controller
         $course = Course::findOrFail($id);
 
         // Update the course fields
-        $course->cou_sub_id = $request->cou_sub_id;
         $course->cou_tea_id = $request->cou_tea_id;
         $course->cou_gra_id = $request->cou_gra_id;
 
@@ -374,11 +401,6 @@ class AdminController extends Controller
         $subjects = Subjects::all();
         return view('admin.grade_subject.index', compact('grades', 'subjects'));
     }
-    // public function displayGradeSubject()
-    // {
-    //     $courses = Course::with('teacher.subject')->get(); // <- this is key
-    //     return view('admin.grade_subject.index', compact('courses'));
-    // }
 
     public function addGrade(Request $request)
     {
@@ -469,7 +491,7 @@ class AdminController extends Controller
                 'grade.gra_class',
                 'grade.gra_group'
             )
-            ->orderBy('schedules.sch_date', 'asc')
+            ->orderBy('schedules.sch_day', 'asc')
             ->get();
         $teachers = Teachers::all();
         $grades = Grade::all();
@@ -482,19 +504,46 @@ class AdminController extends Controller
     {
         $request->validate([
             'sch_cou_id' => 'required',
-            'sch_date' => 'required',
+            'sch_day' => 'required',
             'sch_start_time' => 'required',
             'sch_end_time' => 'required',
         ]);
 
         $schedule = new Schedules();
         $schedule->sch_cou_id = $request->sch_cou_id;
-        $schedule->sch_date = $request->sch_date;
+        $schedule->sch_day = $request->sch_day;
         $schedule->sch_start_time = $request->sch_start_time;
         $schedule->sch_end_time = $request->sch_end_time;
         $schedule->save();
 
         return redirect()->back()->with('success', 'Schedule created successfully!');
+    }
+
+    public function deleteSchedule($id)
+    {
+        $schedule = Schedules::findOrFail($id);
+        $schedule->delete();
+
+        return redirect()->back()->with('success', 'Schedule deleted successfully!');
+    }
+
+    public function updateSchedule(Request $request, $id)
+    {
+        $request->validate([
+            'sch_cou_id' => 'required',
+            'sch_day' => 'required',
+            'sch_start_time' => 'required',
+            'sch_end_time' => 'required',
+        ]);
+
+        $schedule = Schedules::findOrFail($id);
+        $schedule->sch_cou_id = $request->sch_cou_id;
+        $schedule->sch_day = $request->sch_day;
+        $schedule->sch_start_time = $request->sch_start_time;
+        $schedule->sch_end_time = $request->sch_end_time;
+        $schedule->save();
+
+        return redirect()->back()->with('success', 'Schedule updated successfully!');
     }
 
 

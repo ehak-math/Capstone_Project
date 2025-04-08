@@ -26,7 +26,7 @@ class Course extends Model
 
     public function grade()
     {
-        return $this->hasMany(Grade::class, 'cou_gra_id', 'gra_id');
+        return $this->belongsTo(Grade::class, 'cou_gra_id', 'gra_id');
     }
     public function teacher()
     {

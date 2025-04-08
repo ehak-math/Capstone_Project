@@ -16,23 +16,25 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Course;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
- 
+
 class TeacherController extends Controller
 {
-// test function
-    public function showsubject(){
+    // test function
+    public function showsubject()
+    {
         $subjects = Subject::displaySubject();
         $teachers = Teachers::displayTeacher();
         return view('listadmin', ['subjects' => $subjects, 'teachers' => $teachers]);
 
     }
-    function uploads($data){
+    function uploads($data)
+    {
         if ($data) {
-            $file =$data;
-            
+            $file = $data;
+
             // Create unique filename
             $imageName = 'sub_name' . '_' . time() . '.' . $file->getClientOriginalExtension();
-            
+
             // Store file in public/images directory
             $path = $file->storeAs('images', $imageName, 'public');
         }
@@ -47,7 +49,7 @@ class TeacherController extends Controller
         ]);
 
         $path = $this->uploads($request->file('sub_image'));
-        
+
         if (!$path) {
             return redirect()->back()
                 ->with('error', 'Failed to upload image')
@@ -120,38 +122,47 @@ class TeacherController extends Controller
 
     public function TeacherLoginForm()
     {
-        return view('teacher.teacher_login');
+        return view('auth.teacher_login');
     }
     public function TeacherLogin(Request $request)
     {
         $request->validate([
             'username' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
-
+    
         $username = $request->input('username');
         $password = $request->input('password');
-        
+    
+        // Find teacher by username
         $teacher = Teachers::where('tea_username', $username)->first();
-        
+    
+        // Check if teacher exists and password matches
         if (!$teacher || $password !== $teacher->tea_password) {
-            return redirect()->back()
-                ->with('error', 'Username or Password is incorrect');
-        }   
-
+            return back()->withErrors([
+                'username' => 'Username or Password is incorrect.',
+            ])->withInput();
+        }
+    
+    
+        // Store teacher info in session
         $request->session()->put('teacher', $teacher);
-        
-        return redirect()->route('teacher.dashboard');  // Fixed route name
+    
+        return redirect()->route('teacher.dashboard')->with('success', 'Login successful!');
     }
+    
 
-    function teacherDashbord(){
+
+    public function teacherDashboard()
+    {
         // Check if teacher is logged in
         if (!session('teacher')) {
             return redirect()->route('teacher.login');
         }
         $teacher = session('teacher');
         $showTeacher = Teachers::displayTeacher($teacher->tea_id);
-        return view('teacher.dashboard', ['teacher' => $teacher , 'Teacher' => $showTeacher]);
+        return view('teacher.dashboard', ['teacher' => $teacher, 'Teacher' => $showTeacher]);
+
     }
 
     public function logout(Request $request)
@@ -159,26 +170,27 @@ class TeacherController extends Controller
         $request->session()->forget('teacher');
         return redirect()->route('teacher.login');
     }
+
     function teacherAttendance($id)
     {
         if (!session('teacher')) {
             return redirect()->route('teacher.login');
         }
-        
+
         $teacher = session('teacher');
 
         // cheack if sch_cou_id = cou_id
 
-        $selectatt = Schedules::join('courses' ,'courses.cou_id','=','schedules.sch_cou_id')
-            ->where('courses.cou_id' , $id)
+        $selectatt = Schedules::join('courses', 'courses.cou_id', '=', 'schedules.sch_cou_id')
+            ->where('courses.cou_id', $id)
             ->get();
         $currentday = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d'); // Format as date string
-            // $currentday = '2025-04-07'; // Format as date string
+        // $currentday = '2025-04-07'; // Format as date string
 
-        $getatt = Attendances::join('schedules', 'schedules.sch_id','=', 'attendances.att_sch_id')
-        ->where('schedules.sch_cou_id' , $id)
-        ->where('att_date' , $currentday)->first();
-        
+        $getatt = Attendances::join('schedules', 'schedules.sch_id', '=', 'attendances.att_sch_id')
+            ->where('schedules.sch_cou_id', $id)
+            ->where('att_date', $currentday)->first();
+
 
         // Get schedule information
         // $displayschedule = Course::join('schedules', 'courses.cou_id', '=', 'schedules.sch_cou_id')
@@ -197,11 +209,11 @@ class TeacherController extends Controller
         //         'subjects.sub_name'
         //     ])
         //     ->get();
-            
+
 
         // Get course information
         $getcourse = Course::where('cou_id', $id)->first();
-        
+
         // $selectStudentSubmit = Attendancesubmit::get();
 
         // Get today's attendance if exists
@@ -215,7 +227,7 @@ class TeacherController extends Controller
         // ->whereDate('att_startime', Carbon::today('Asia/Phnom_Penh'))
         // ->select('att_code')
         // ->first();
-            // $currentdayi = '2025-04-04'; // Format as date string
+        // $currentdayi = '2025-04-04'; // Format as date string
 
         $selectAttSub = Attendancesubmit::join('students', 'attendance_submit.att_sub_stu_id', '=', 'students.stu_id')
             ->join('schedules', 'attendance_submit.att_sub_sch_id', '=', 'schedules.sch_id')
@@ -233,7 +245,7 @@ class TeacherController extends Controller
             'selectAttSub' => $selectAttSub,
             // 'attendance' => $currentAttendance,
             // 'selectStudentSubmit' => $selectStudentSubmit,
-             
+
         ]);
     }
     public function openatt(Request $request)
@@ -249,45 +261,45 @@ class TeacherController extends Controller
             ]);
             $currentday = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d'); // Format as date string
             // $status = "Open";
-                        // Check if attendance already exists for today
-            $existingAttendance = Attendances::join('schedules' , 'attendances.att_sch_id','=', 'schedules.sch_id')
-            ->where('schedules.sch_id', $request->sch_id)
-            ->whereDate('attendances.att_date',$currentday)
-            ->first();
+            // Check if attendance already exists for today
+            $existingAttendance = Attendances::join('schedules', 'attendances.att_sch_id', '=', 'schedules.sch_id')
+                ->where('schedules.sch_id', $request->sch_id)
+                ->whereDate('attendances.att_date', $currentday)
+                ->first();
 
             if ($existingAttendance) {
                 throw new \Exception('Attendance already exists for today');
-            }else{
+            } else {
 
-            // Create new attendance
-            $code = Str::upper(Str::random(6));
-            $startTime = Carbon::now('Asia/Phnom_Penh');
-            $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(5);
-            
-            Attendances::create([
-                'att_code' => $code,
-                'att_startime' => $startTime,
-                'att_endtime' => $endTime,
-                'att_sch_id' => $request->sch_id,
-                'att_date' => $currentday, 
-                'att_status'=> 'Open' 
-            ]);
+                // Create new attendance
+                $code = Str::upper(Str::random(6));
+                $startTime = Carbon::now('Asia/Phnom_Penh');
+                $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(5);
+
+                Attendances::create([
+                    'att_code' => $code,
+                    'att_startime' => $startTime,
+                    'att_endtime' => $endTime,
+                    'att_sch_id' => $request->sch_id,
+                    'att_date' => $currentday,
+                    'att_status' => 'Open'
+                ]);
             }
 
             // create submit attendance for see student
-            $selectedStudent = Course::join('grade' , 'courses.cou_gra_id', '=', 'grade.gra_id')
-            ->join('students' , 'grade.gra_id', '=', 'students.stu_gra_id')
-            ->where('courses.cou_id', $request->course_id)
-            ->select('students.stu_id')->get();
-            
-            foreach($selectedStudent as $student){
+            $selectedStudent = Course::join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+                ->join('students', 'grade.gra_id', '=', 'students.stu_gra_id')
+                ->where('courses.cou_id', $request->course_id)
+                ->select('students.stu_id')->get();
+
+            foreach ($selectedStudent as $student) {
                 Attendancesubmit::create([
                     'att_sub_stu_id' => $student->stu_id,
                     'att_sub_date' => $currentday,
                     'att_sub_sch_id' => $request->sch_id,
                 ]);
             }
-    
+
 
             return redirect()->back()->with('success', 'Attendance opened successfully!');
         } catch (\Exception $e) {
@@ -295,39 +307,39 @@ class TeacherController extends Controller
         }
     }
 
-//     public function openatt(Request $request)
+    //     public function openatt(Request $request)
 // {
 //     try {
 //         if (!session('teacher')) {
 //             return redirect()->route('teacher.login');
 //         }
 
-//         $request->validate([
+    //         $request->validate([
 //             'sch_id' => 'required',
 //             'course_id' => 'required'
 //         ]);
 
-//         $currentday = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
+    //         $currentday = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
 
-//         // Check if attendance already exists for today
+    //         // Check if attendance already exists for today
 //         $existingAttendance = Attendances::join('schedules', 'attendances.att_sch_id', '=', 'schedules.sch_id')
 //             ->where('schedules.sch_id', $request->sch_id)
 //             ->whereDate('attendances.att_date', $currentday)
 //             ->first();
 
-//         if ($existingAttendance) {
+    //         if ($existingAttendance) {
 //             throw new \Exception('Attendance already exists for today');
 //         }
 
-//         // Begin database transaction
+    //         // Begin database transaction
 //         DB::beginTransaction();
 //         try {
 //             // Create new attendance
 //             $code = Str::upper(Str::random(6));
 //             $startTime = Carbon::now('Asia/Phnom_Penh');
 //             $endTime = Carbon::now('Asia/Phnom_Penh')->addMinutes(1);
-            
-//             $attendance = Attendances::create([
+
+    //             $attendance = Attendances::create([
 //                 'att_code' => $code,
 //                 'att_startime' => $startTime,
 //                 'att_endtime' => $endTime,
@@ -336,14 +348,14 @@ class TeacherController extends Controller
 //                 'att_status' => 'Open'
 //             ]);
 
-//             // Get all students in the course
+    //             // Get all students in the course
 //             $students = Course::join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
 //                 ->join('students', 'grade.gra_id', '=', 'students.stu_gra_id')
 //                 ->where('courses.cou_id', $request->course_id)
 //                 ->select('students.stu_id')
 //                 ->get();
 
-//             // Create attendance submissions for each student
+    //             // Create attendance submissions for each student
 //             $attendanceSubmissions = [];
 //             foreach ($students as $student) {
 //                 $attendanceSubmissions[] = [
@@ -355,25 +367,26 @@ class TeacherController extends Controller
 //                 ];
 //             }
 
-//             // Bulk insert attendance submissions
+    //             // Bulk insert attendance submissions
 //             if (!empty($attendanceSubmissions)) {
 //                 Attendancesubmit::insert($attendanceSubmissions);
 //             }
 
-//             DB::commit();
+    //             DB::commit();
 //             return redirect()->back()->with('success', 'Attendance opened successfully!');
 
-//         } catch (\Exception $e) {
+    //         } catch (\Exception $e) {
 //             DB::rollback();
 //             throw $e;
 //         }
 
-//     } catch (\Exception $e) {
+    //     } catch (\Exception $e) {
 //         return redirect()->back()->with('error', 'Failed to open attendance: ' . $e->getMessage());
 //     }
 // }
-    
-    function teacherCourse(){
+
+    function teacherCourse()
+    {
         // Check if teacher is logged in
         if (!session('teacher')) {
             return redirect()->route('teacher.login');
@@ -394,9 +407,9 @@ class TeacherController extends Controller
             ]);
 
             $attendance = Attendances::where('att_sch_id', $request->att_sch_id)
-            ->where('att_id', $request->attendance_id)
-            // ->whereDate('attendances.att_date',$currentday)
-            ->first();
+                ->where('att_id', $request->attendance_id)
+                // ->whereDate('attendances.att_date',$currentday)
+                ->first();
             // if (!$attendance) {
             //     throw new \Exception('Attendance record not found');
             // }
@@ -407,14 +420,14 @@ class TeacherController extends Controller
 
             // Update attendance status
             DB::table('attendances')
-            ->where('att_id', $request->attendance_id)
-            ->update([
-                'att_status' => 'None',
-                'att_endtime' => Carbon::now('Asia/Phnom_Penh')
-            ]);
+                ->where('att_id', $request->attendance_id)
+                ->update([
+                    'att_status' => 'None',
+                    'att_endtime' => Carbon::now('Asia/Phnom_Penh')
+                ]);
 
-            $message = $request->input('auto_close') ? 
-                'Attendance closed automatically due to time expiration' : 
+            $message = $request->input('auto_close') ?
+                'Attendance closed automatically due to time expiration' :
                 'Attendance closed successfully';
 
             return redirect()->back()->with('success', $message);
@@ -445,30 +458,31 @@ class TeacherController extends Controller
 
         return view('teacher.document', compact('select', 'documents'));
     }
-    function uploadsfile($data,$name){
+    function uploadsfile($data, $name)
+    {
         if ($data) {
-            $file =$data;
-            
+            $file = $data;
+
             // Create unique filename
             $imageName = $name . '_' . time() . '.' . $file->getClientOriginalExtension();
-            
+
             // Store file in public/images directory
             $path = $file->storeAs('documents', $imageName, 'public');
         }
         return $path;
-        }
+    }
     public function uploadDocument(Request $request)
     {
         $request->validate([
             'file' => 'required|file|mimes:pdf|max:2048',
-            'description'=> 'required',
-            'tittle'=> 'required',
-            'course'=> 'required',
-            'typeOfdoc'=> 'required',
+            'description' => 'required',
+            'tittle' => 'required',
+            'course' => 'required',
+            'typeOfdoc' => 'required',
         ]);
 
-        $path = $this->uploadsfile($request->file('file'),$request->tittle);
-        
+        $path = $this->uploadsfile($request->file('file'), $request->tittle);
+
         if (!$path) {
             return redirect()->back()
                 ->with('error', 'Failed to upload file')
@@ -484,7 +498,7 @@ class TeacherController extends Controller
         $doc->doc_file = $path; // Assuming you have a column for the file path
         $doc->save();
 
-        
+
         return redirect()->back()->with('success', 'File uploaded successfully!');
     }
     // function to download document
@@ -492,25 +506,35 @@ class TeacherController extends Controller
     {
         $document = Documents::findOrFail($id);
         $path = storage_path('app/public/' . $document->doc_file);
-        
+
         if (file_exists($path)) {
             return response()->download($path, $document->doc_title);
         }
-        
+
         return redirect()->back()->with('error', 'File not found.');
     }
 
     public function deleteDocument($id)
     {
         $document = Documents::findOrFail($id);
-        
+
         // Delete file from storage
         Storage::disk('public')->delete($document->doc_file);
-        
+
         // Delete record from database
         $document->delete();
-        
+
         return redirect()->back()->with('success', 'Document deleted successfully.');
+    }
+
+    public function displayStudent() {
+        if (!session('teacher')) {
+            return redirect()->route('teacher.login');
+        }
+        $teacher = session('teacher');
+        $showTeacher = Course::displayCourseByTeacher($teacher->tea_id);
+        return view('teacher.courses.student', ['Teacher' => $showTeacher]);
+    
     }
 
     function teacherScore($id)
@@ -520,23 +544,30 @@ class TeacherController extends Controller
         }
         $getcourse = Course::where('cou_id', $id)->first();
         $teacher = session('teacher');
-        $getScoreBymonth = Scores::join('courses','scores.sco_cou_id' ,'=', 'courses.cou_id')
-        ->join('students' ,'students.stu_id' , '=' , 'scores.sco_stu_id')
-        ->join('teachers' , 'teachers.tea_id' ,'=', 'courses.cou_tea_id')
-        ->where('scores.sco_cou_id', $id)->get();
+        $getScoreBymonth = Scores::join('courses', 'scores.sco_cou_id', '=', 'courses.cou_id')
+            ->join('students', 'students.stu_id', '=', 'scores.sco_stu_id')
+            ->join('teachers', 'teachers.tea_id', '=', 'courses.cou_tea_id')
+            ->where('scores.sco_cou_id', $id)->get();
 
-        $selectallStudent = Course::join('grade' , 'courses.cou_gra_id', '=', 'grade.gra_id')
-        ->join('students' , 'grade.gra_id', '=', 'students.stu_gra_id')
-        // ->join('scores' , 'scores.sco_stu_id', '=', 'students.stu_id')
-        ->where('courses.cou_id', $id)
-        ->get();
+        $selectallStudent = Course::join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+            ->join('students', 'grade.gra_id', '=', 'students.stu_gra_id')
+            // ->join('scores' , 'scores.sco_stu_id', '=', 'students.stu_id')
+            ->where('courses.cou_id', $id)
+            ->get();
 
         $selectallpoint = Course::join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+<<<<<<< HEAD
         ->join('students', 'grade.gra_id', '=', 'students.stu_gra_id')
         ->join('scores', 'scores.sco_stu_id', '=', 'students.stu_id')
         ->where('courses.cou_id', $id)
         ->orderByRaw("FIELD(sco_month, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December')")
         ->get();
+=======
+            ->join('students', 'grade.gra_id', '=', 'students.stu_gra_id')
+            ->join('scores', 'scores.sco_stu_id', '=', 'students.stu_id')
+            ->where('courses.cou_id', $id)
+            ->get();
+>>>>>>> c2b06d77f2e4aaff8d7a5d5da5a4f111d69fa141
 
         return view('teacher.courses.score', [
             'teacher' => $teacher,
@@ -544,7 +575,7 @@ class TeacherController extends Controller
             'score' => $getScoreBymonth,
             'selectallStudent' => $selectallStudent,
             'selectallpoint' => $selectallpoint,
-        ] );
+        ]);
     }
 
     public function addscore(Request $request)
@@ -567,7 +598,7 @@ class TeacherController extends Controller
         DB::table('scores')
             ->where('sco_id', $request->sco_id)
             ->update([
-                'sco_point' => $request->sco_point,  
+                'sco_point' => $request->sco_point,
             ]);
 
 
@@ -589,21 +620,21 @@ class TeacherController extends Controller
             return redirect()->back()->with('error', 'Score already exists for this student in this course and month.');
         }
 
-        $selectedStudent = Course::join('grade' , 'courses.cou_gra_id', '=', 'grade.gra_id')
-            ->join('students' , 'grade.gra_id', '=', 'students.stu_gra_id')
+        $selectedStudent = Course::join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+            ->join('students', 'grade.gra_id', '=', 'students.stu_gra_id')
             ->where('courses.cou_id', $request->cou_id)
             ->select('students.stu_id')->get();
 
-            foreach($selectedStudent as $student){
-                Scores::create([
-                    'sco_month' => $request->sco_month,
-                    'sco_cou_id' => $request->cou_id,
-                    'sco_stu_id' => $student->stu_id
-                ]);
-                
-                
-            }
-    
+        foreach ($selectedStudent as $student) {
+            Scores::create([
+                'sco_month' => $request->sco_month,
+                'sco_cou_id' => $request->cou_id,
+                'sco_stu_id' => $student->stu_id
+            ]);
+
+
+        }
+
         // $data = [
         //     'sco_point' => $request->sco_point,
         //     'sco_month' => $request->sco_month,
@@ -615,8 +646,9 @@ class TeacherController extends Controller
         return redirect()->back()->with('success', 'Score created successfully!');
     }
 
-    public function showSchedule(){
-       
+    public function showSchedule()
+    {
+
 
         $teacher = session('teacher');
         if (!$teacher) {
@@ -631,14 +663,14 @@ class TeacherController extends Controller
         //     ->select('schedules.*', 'courses.*', 'teachers.*', 'subjects.*', 'grade.gra_class')
         //     ->get();
         $schedules = Schedules::join('courses', 'schedules.sch_cou_id', '=', 'courses.cou_id')
-        ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
-        ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
-        ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
-        ->where('teachers.tea_id', $teacher->tea_id)
-        ->select('schedules.*', 'teachers.*', 'subjects.*','grade.*')
-        ->orderByRaw("FIELD(sch_day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')")
-        ->orderBy('sch_start_time', 'asc')
-        ->get();
+            ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+            ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+            ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+            ->where('teachers.tea_id', $teacher->tea_id)
+            ->select('schedules.*', 'teachers.*', 'subjects.*', 'grade.*')
+            ->orderByRaw("FIELD(sch_day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')")
+            ->orderBy('sch_start_time', 'asc')
+            ->get();
         // $schedules = Students::getScheduleByStudent($student->stu_id);
         return view('teacher.scheldule', [
             'schedules' => $schedules,
