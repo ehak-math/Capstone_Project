@@ -86,13 +86,9 @@ Route::prefix('student')->group(function () {
     Route::post('/courses/subject/submit-attendance', [StudentController::class, 'subAttendance'])->name('student.course.submit');
     Route::get('/student/course/document/{id}', [StudentController::class, 'showDoc'])->name('student.course.document');    
     // Route::get('/student/scheldule', [StudentController::class, 'showSchedule'])->name('student.scheldule');
-<<<<<<< HEAD
     Route::get('/scheldule', [StudentController::class, 'showSchedule'])->name('student.scheldule');
     Route::get('/attendance', [StudentController::class, 'showAttSubStu'])->name('student.attendance');
-=======
-    Route::get('/schedule', [StudentController::class, 'showSchedule'])->name('student.scheldule');
 
->>>>>>> c2b06d77f2e4aaff8d7a5d5da5a4f111d69fa141
     Route::post('/logout', [StudentController::class, 'logout'])->name('student.logout');
     Route::get('/score',  [StudentController::class, 'displayStudentSocre'])->name('student.score');
 });
