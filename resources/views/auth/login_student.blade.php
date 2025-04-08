@@ -24,7 +24,7 @@
 <body>
     <div class="container-login">
         <div class="login-form">
-            <form action="{{ route('login.submit') }}" method="POST">
+            <form action="{{ route('student.login.submit') }}" method="POST">
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}
@@ -32,21 +32,21 @@
                     </div>
                 @endif
                 @csrf
-                <h1>Login</h1>
+                <h1>Student Login</h1>
                 <div class="input-box">
                     <i class="fa-solid fa-lock"></i>
-                    <input type="email" name="email" value="{{ old('email') }}" class="input-field" required>
-                    <label for="email">Email</label>
+                    <input type="text" name="username" id="username" class="input-field" required>
+                    <label for="username">Username</label>
                 </div>
                 <div class="input-box">
                     <i class="fa-solid fa-lock"></i>
-                    <input type="password" name="password" class="input-field" required>
+                    <input type="password" name="password" id="password" class="input-field" required>
                     <label for="password">Password</label>
                 </div>
                 <button type="submit" class="btn-submit">Login</button>
-                <div class="register-link mt-3 text-center">
+                <!-- <div class="register-link mt-3 text-center">
                     <p>Don't have an account? <a href="{{ route('register') }}">Register</a></p>
-                </div>
+                </div> -->
                 <!-- validation error -->
                 @if ($errors->any())
                     <div class="alert alert-danger mt-2">

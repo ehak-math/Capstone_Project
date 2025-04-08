@@ -42,9 +42,9 @@
         <a href="/teacher/dashboard" class="nav-link {{ Request::is('teacher/dashboard') ? 'active' : '' }}" id="dashboard-link">
             <i class="fa-solid fa-gauge"></i><span>Dashboard</span>
         </a>
-        <a href="/teacher/student" class="nav-link {{ Request::is('teacher/student') ? 'active' : '' }}" id="student-link">
+        <!-- <a href="/teacher/student" class="nav-link {{ Request::is('teacher/student') ? 'active' : '' }}" id="student-link">
             <i class="fa-solid fa-graduation-cap"></i><span>Students</span>
-        </a>
+        </a> -->
         <a href="/teacher/attendance" class="nav-link {{ Request::is('teacher/attendance') ? 'active' : '' }}" id="attendance-link">
             <i class="fa-solid fa-user-clock"></i><span>Attendance</span>
         </a>
@@ -57,7 +57,7 @@
         <a href="/teacher/document" class="nav-link {{ Request::is('teacher/document') ? 'active' : '' }}" id="document-link">
             <i class="fa-solid fa-calendar-days"></i><span>Document</span>
         </a>
-        <form action="{{ route('logout') }}" method="POST">
+        <form action="{{ route('teacher.logout') }}" method="POST">
             @csrf
             <button class="nav-link" id="logout-link">
                 <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>

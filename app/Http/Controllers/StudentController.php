@@ -13,52 +13,61 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\Documents;
 use App\Models\Schedules;
+use Illuminate\Validation\ValidationException;
 
 class StudentController extends Controller
 {
     public function showLoginForm()
     {
-        return view('login_student');
+        return view('auth.login_student');
     }
 
     public function studentLogin(Request $request)
     {
         $request->validate([
             'username' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         $username = $request->input('username');
         $password = $request->input('password');
 
-        $student = Students::where('stu_username', $username)->first();
+        // Find teacher by username
+        $student = students::where('stu_username', $username)->first();
 
-        // Changed to direct password comparison since passwords are not hashed
+        // Check if student exists and password matches
         if (!$student || $password !== $student->stu_password) {
-            return redirect()->back()
-                ->with('error', 'Username or Password is incorrect');
+            return back()->withErrors([
+                'username' => 'Username or Password is incorrect.',
+            ])->withInput();
         }
 
-        // Store student data in session
+
+        // Store student info in session
         $request->session()->put('student', $student);
 
-        // Redirect to student dashboard
-        return redirect()->route('student.dashboard');
+        return redirect()->route('student.dashboard')->with('success', 'Login successful!');
     }
+
+    public function logout(Request $request)
+    {
+        $request->session()->forget('student');
+        return redirect()->route('student.login');
+    }
+
 
     public function dashboard()
     {
         // Check if student is logged in
-        // if (!session('student')) {
-        //     return redirect()->route('student.login');
-        // }
+        if (!session('student')) {
+            return redirect()->route('student.login');
+        }
 
-        // $student = session('student');
-        // $showStudent = Students::join('grade', 'students.stu_gra_id', '=', 'grade.gra_id')
-        //     ->where('stu_id', $student->stu_id)
-        //     ->first();
-        // return view('student.dashboard', ['student' => $student , 'showStudent' => $showStudent]);
-        return  view('student.dashboard');
+        $student = session('student');
+        $showStudent = Students::join('grade', 'students.stu_gra_id', '=', 'grade.gra_id')
+            ->where('stu_id', $student->stu_id)
+            ->first();
+        return view('student.dashboard', ['student' => $student, 'showStudent' => $showStudent]);
     }
 
     public function displayCourseStudent()
@@ -76,12 +85,13 @@ class StudentController extends Controller
         ]);
     }
 
-    public function displayStudentSocre(){
+    public function displayStudentSocre()
+    {
         if (!session('student')) {
             return redirect()->route('student.login');
         }
         $student = session('student');
-        $score =  Scores::getAllScoresByStudent($student->stu_id);
+        $score = Scores::getAllScoresByStudent($student->stu_id);
 
         return view('student.score', ['score' => $score, 'student' => $student]);
     }
@@ -90,24 +100,24 @@ class StudentController extends Controller
         if (!session('student')) {
             return redirect()->route('student.login');
         }
-        
+
         $student = session('student');
         $currentTime = Carbon::now('Asia/Phnom_Penh');
         $currentday = Carbon::today('Asia/Phnom_Penh')->format('Y-m-d'); // Format as date string
 
-        $subAttendance = Attendances::join('schedules' , 'attendances.att_sch_id' , '=', 'schedules.sch_id')
+        $subAttendance = Attendances::join('schedules', 'attendances.att_sch_id', '=', 'schedules.sch_id')
             // ->where('attendances.att_status' , 'Open')
-            ->where('attendances.att_date' , $currentTime->toDateString())
-            ->where('schedules.sch_cou_id' , $id)
+            ->where('attendances.att_date', $currentTime->toDateString())
+            ->where('schedules.sch_cou_id', $id)
             ->first();
-        
+
         // Get active attendance for the course
         // $attendance = Attendances::join('courses', 'attendances.att_cou_id', '=', 'courses.cou_id')
         //     ->where('attendances.att_cou_id', $id)
         //     ->where('attendances.att_status', 'Open')
         //     ->whereDate('attendances.att_startime', $currentTime->toDateString())  
         //     ->first();
-        
+
         $selectAttSub = Attendancesubmit::join('students', 'attendance_submit.att_sub_stu_id', '=', 'students.stu_id')
             ->join('schedules', 'attendance_submit.att_sub_sch_id', '=', 'schedules.sch_id')
             ->where('students.stu_id', $student->stu_id)
@@ -116,8 +126,8 @@ class StudentController extends Controller
             ->orderBy('attendance_submit.att_sub_id', 'desc')
             ->select('attendance_submit.*', 'students.*')
             ->first();
-            
-       
+
+
 
         return view('student.courses.submit_attendance', [
             'getId' => $id,
@@ -136,16 +146,16 @@ class StudentController extends Controller
         try {
 
             $request->validate([
-                'code_sub' => 'required',            
-                'cou_id' => 'required',            
-                'att_id' => 'required', 
+                'code_sub' => 'required',
+                'cou_id' => 'required',
+                'att_id' => 'required',
                 'att_start' => 'required',
                 'att_end' => 'required',
-                'att_sub_id' => 'required',          
+                'att_sub_id' => 'required',
             ]);
 
             $student = session('student');
-            
+
             // Check if student already submitted attendance
             $existingSubmission = Attendancesubmit::where('att_sub_stu_id', $student->stu_id)
                 ->where('att_sub_att_id', $request->att_id)
@@ -163,17 +173,17 @@ class StudentController extends Controller
             // $status =  checkAttendanceStatus($startTime, $endTime, $currentTime); // "Present";
             if ($currentTime->between($startTime, $endTime)) {
                 if ($attendance) {
-                    $status =  "Present";
+                    $status = "Present";
                     DB::table('attendance_submit')
-                    ->where('att_sub_id', $request->att_sub_id)
-                    ->update([
-                        'att_sub_code' => $request->code_sub,
-                        'att_sub_time' =>$currentTime ,
-                        'att_sub_status' => $status,
-                        // 'att_sub_stu_id' => $student->stu_id,
-                        'att_sub_att_id' => $request->att_id,
-                    ]);
-                }else {
+                        ->where('att_sub_id', $request->att_sub_id)
+                        ->update([
+                            'att_sub_code' => $request->code_sub,
+                            'att_sub_time' => $currentTime,
+                            'att_sub_status' => $status,
+                            // 'att_sub_stu_id' => $student->stu_id,
+                            'att_sub_att_id' => $request->att_id,
+                        ]);
+                } else {
                     throw new \Exception('Invalid attendance code or attendance session is closed');
                 }
             }
@@ -182,7 +192,7 @@ class StudentController extends Controller
             // } else {
             //     $status =  "Absent";
             // }
-                
+
             // if ($existingSubmission) {
             //     throw new \Exception('You have already submitted attendance for this session');
             // }
@@ -198,21 +208,21 @@ class StudentController extends Controller
             // }
 
             // Create attendance submission
-                // $attendanceSubmit = new Attendancesubmit();
-                // $attendanceSubmit->att_sub_stu_id = $student->stu_id;
-                // $attendanceSubmit->att_sub_att_id = $request->att_id;
-                // $attendanceSubmit->att_sub_code = $request->code_sub;
-                // $attendanceSubmit->att_sub_time = $currentTime;
-                // $attendanceSubmit->att_sub_status = $status;
-                // $attendanceSubmit->save();
-                
+            // $attendanceSubmit = new Attendancesubmit();
+            // $attendanceSubmit->att_sub_stu_id = $student->stu_id;
+            // $attendanceSubmit->att_sub_att_id = $request->att_id;
+            // $attendanceSubmit->att_sub_code = $request->code_sub;
+            // $attendanceSubmit->att_sub_time = $currentTime;
+            // $attendanceSubmit->att_sub_status = $status;
+            // $attendanceSubmit->save();
+
 
 
 
             return redirect()->back()->with('success', 'Attendance submitted successfully!');
-            } catch (\Exception $e) {
-                return redirect()->back()->with('error', $e->getMessage());
-            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function showDoc($id)
@@ -236,27 +246,28 @@ class StudentController extends Controller
             'documents' => $documents
         ]);
     }
-    public function showSchedule(){
+    public function showSchedule()
+    {
         if (!session('student')) {
             return redirect()->route('student.login');
         }
         $student = session('student');
-        
-        $disSchedule= Schedules::join('courses','courses.cou_id','=','schedules.sch_cou_id')
-            ->join('teachers','teachers.tea_id','=','courses.cou_tea_id')
-            ->join('subjects','subjects.sub_id' ,'=', 'teachers.tea_id')
-            ->join('grade','grade.gra_id','=','courses.cou_gra_id')
-            ->join('students','students.stu_gra_id','=','grade.gra_id')
+
+        // Direct query to get the schedule for the student
+        $schedules = Schedules::join('courses', 'courses.cou_id', '=', 'schedules.sch_cou_id')
+            ->join('teachers', 'teachers.tea_id', '=', 'courses.cou_tea_id')
+            ->join('subjects', 'subjects.sub_id', '=', 'teachers.tea_id')
+            ->join('grade', 'grade.gra_id', '=', 'courses.cou_gra_id')
+            ->join('students', 'students.stu_gra_id', '=', 'grade.gra_id')
             ->where('students.stu_id', $student->stu_id)
             ->select('schedules.*', 'courses.*', 'teachers.*', 'subjects.*', 'grade.gra_class')
             ->get();
-       
-        $schedules = Students::getScheduleByStudent($student->stu_id);
-        return view('student.scheldule', [
+
+        return view('student.schedule', [
             'schedules' => $schedules,
             'student' => $student
         ]);
     }
 
-            
+
 }

@@ -90,7 +90,7 @@ class AdminController extends Controller
         $student->stu_fname = $request->stu_fname;
         $student->stu_gra_id = $request->stu_grade;
         $student->stu_username = $request->stu_username;
-        $student->stu_password = bcrypt($request->stu_password);
+        $student->stu_password = $request->stu_password;
         $student->stu_gender = $request->stu_gender;
         $student->stu_dob = $request->stu_dob;
         $student->stu_ph_number = $request->stu_ph_number;

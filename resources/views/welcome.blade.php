@@ -132,7 +132,13 @@
             @endif
         @else
             <a href="{{ route('login') }}" class="btn btn-animated btn-login">
-                <i class="fa-solid fa-right-to-bracket"></i> Login
+                <i class="fa-solid fa-right-to-bracket mx-2"></i>Admin Login
+            </a>
+            <a href="{{ route('teacher.login') }}" class="btn btn-animated btn-login">
+                <i class="fa-solid fa-right-to-bracket mx-2"></i>Teacher Login
+            </a>
+            <a href="{{ route('student.login') }}" class="btn btn-animated btn-login">
+                <i class="fa-solid fa-right-to-bracket mx-2"></i>Student Login
             </a>
             <a href="{{ route('register') }}" class="btn btn-animated btn-register">
                 <i class="fa-solid fa-user-plus"></i> Register

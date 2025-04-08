@@ -79,13 +79,14 @@ Route::get('/', function () {
 Route::prefix('student')->group(function () {
     Route::get('/login', [StudentController::class, 'showLoginForm'])->name('student.login');
     Route::post('/login', [StudentController::class, 'studentLogin'])->name('student.login.submit');
+    Route::post('/logout', [StudentController::class, 'logout'])->name('student.logout');
     Route::get('/dashboard', [StudentController::class, 'dashboard'])->name('student.dashboard');
     Route::get('/courses/subject', [StudentController::class, 'displayCourseStudent']);
     Route::get('/courses/subject/{id}', [StudentController::class, 'submitAtt'])->name('student.course.submit.show');
     Route::post('/courses/subject/submit-attendance', [StudentController::class, 'subAttendance'])->name('student.course.submit');
     Route::get('/student/course/document/{id}', [StudentController::class, 'showDoc'])->name('student.course.document');    
     // Route::get('/student/scheldule', [StudentController::class, 'showSchedule'])->name('student.scheldule');
-    Route::get('/scheldule', [StudentController::class, 'showSchedule'])->name('student.scheldule');
+    Route::get('/schedule', [StudentController::class, 'showSchedule'])->name('student.scheldule');
 
     Route::post('/logout', [StudentController::class, 'logout'])->name('student.logout');
     Route::get('/score',  [StudentController::class, 'displayStudentSocre'])->name('student.score');
@@ -98,11 +99,12 @@ Route::prefix('student')->group(function () {
 
 
 Route::prefix('teacher')->group(function () {
-    Route::get('/login', [TeacherController::class, 'TeacherLoginForm'])->name('teacherLogin');
+    Route::get('/login', [TeacherController::class, 'TeacherLoginForm'])->name('teacher.login');
     Route::post('/login', [TeacherController::class, 'TeacherLogin'])->name('teacher.login.submit');
-    Route::get('/dashboard', [TeacherController::class, 'teacherDashbord'])->name('teacher.dashboard');
+    Route::get('/dashboard', [TeacherController::class, 'teacherDashboard'])->name('teacher.dashboard');
     Route::post('/logout', [TeacherController::class, 'logout'])->name('teacher.logout');
     Route::get('/course', [TeacherController::class, 'teacherCourse'])->name('teacher.course');
+    Route::get('/course/student/{id}', [TeacherController::class, 'teacherStudent'])->name('teacher.student.show');
     // Route::get('/course/attendance/{id}', [TeacherController::class, 'teacherAttendance'])->name('attendance');
     Route::post('/attendance/close', [TeacherController::class, 'closeatt'])->name('teacher.attendance.close');
     Route::post('/attendance/open', [TeacherController::class, 'openatt'])->name('teacher.attendance.open');
@@ -174,9 +176,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 
 
-/////////////
-// admin schedule//
-/////////////
+///////////////////
+//admin schedule//
+///////////////////
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/schedule/index', [AdminController::class, 'displaySchedule'])->name('admin.schedule.index');
     Route::post('/admin/schedule/add', [AdminController::class, 'addSchedule'])->name('addSchedule');
@@ -184,7 +186,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/admin/schedule/{id}', [AdminController::class, 'updateSchedule'])->name('updateSchedule');
    
 });
-
 
 
 // / Login/Logout Routes
