@@ -8,82 +8,104 @@
             <div class="col-lg-8 col-md-12">
                 <div class="date_name">
                     <h3>Greatings, {{$teacher->tea_fname}}!</h3>
-                    <p >Subject, {{ $teacher->subject->sub_name }}
+                    <p>Subject, {{ $teacher->subject->sub_name }}
                     </p>
                 </div>
+
                 <div class="row g-4 mt-2">
                     <div class="col-md-6">
-                        <div class="overview-box1 d-flex">
-                            <canvas id="myChart"></canvas>
-                            <div class="total-teach-stu">
-                                <h4>Attendance</h4>
-                                <div class="lh-1">
-                                    <p style="font-size: 10px"><span class="color-icon-female"><i class="fa-solid fa-droplet"></i></span>Absent(60%)</p>
-                                    <p style="font-size: 10px"><span class="color-icon-male"><i class="fa-solid fa-droplet"></i></span>Present(40%)</p>
-                                </div>
-                                <h2>108</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="overview-box2 d-flex">
-                            <canvas id="myChart1"></canvas>
+                        <div class="overview-box1 d-flex gap-2">
+                            <h2 class="title_over">{{ $totalStudents }}</h2>
+
                             <div class="total-teach-stu">
                                 <h4>Students</h4>
                                 <div class="lh-1">
-                                    <p style="font-size: 10px"><span class="color-icon-female"><i class="fa-solid fa-droplet"></i></span>Female(60%)</p>
-                                    <p style="font-size: 10px"><span class="color-icon-male"><i class="fa-solid fa-droplet"></i></span>Male(40%)</p>
+                                    <p style="font-size: 15px"><span class="color-female"><i
+                                                class="fa-solid fa-user"></i></span>Female({{ $femaleCount }})</p>
+                                    <p style="font-size: 15px"><span class="color-male"><i
+                                                class="fa-solid fa-user"></i></span>Male({{ $maleCount }})</p>
                                 </div>
-                                <h2>308</h2>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row g-4 mt-2">
+
                     <div class="col-md-6">
-                        <div class="overview-box3 p-3">
-                            <div class="attendance-summary mb-4 d-flex justify-content-between align-items-center">
-                                <h4>Attendance Summary</h4>
-                                <div class="d-flex">
-                                    <!-- Date Range Dropdown -->
-                                    <div class="dropdown me-2">
-                                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dateDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Today
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="dateDropdown">
-                                            <li><a class="dropdown-item" href="#" onclick="updateAttendanceChart('today')">Today</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="updateAttendanceChart('weekly')">Weekly</a></li>
-                                        </ul>
-                                    </div>
-                        
-                                    <!-- Category Dropdown -->
-                                    <div class="dropdown">
-                                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Students
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
-                                            <li><a class="dropdown-item" href="#" onclick="updateAttendanceCategory('students')">Students</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="updateAttendanceCategory('teas')">Teachers</a></li>
-                                        </ul>
-                                    </div>
+                        <div class="overview-box1 d-flex gap-2">
+                            <h2 class="title_over">{{ $totalStudents }}</h2>
+
+                            <div class="total-teach-stu">
+                                <h4>Attandance</h4>
+                                <div class="lh-1">
+                                    <p style="font-size: 15px"><span class="color-female"><i
+                                                class="fa-solid fa-user"></i></span>Absent({{ $femaleCount }})</p>
+                                    <p style="font-size: 15px"><span class="color-male"><i
+                                                class="fa-solid fa-user"></i></span>Present({{ $maleCount }})</p>
                                 </div>
                             </div>
-                            <canvas id="attendanceChart"></canvas>
-                        </div>
-                        
-                    </div>
-                    <div class="col-md-6">
-                        <div class="overview-box4 p-3">
-                            <div class="student-selected mb-4 d-flex justify-content-between align-items-center">
-                                <h4>Student Selected</h4>
-                            </div>
-                            <canvas id="departmentChart"></canvas>
                         </div>
                     </div>
 
                 </div>
+
+                <div class="row g-4 mt-2">
+                    <!-- Display Documents -->
+                    <div class="col-lg-12 mt-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Uploaded Documents</h3>
+                            </div>
+                            <div class="card-body">
+                                @if($documents && $documents->count() > 0)
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Title</th>
+                                                    <th>Course</th>
+                                                    <th>Type</th>
+                                                    <th>Description</th>
+                                                    <th>Upload Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($documents as $document)
+                                                    <tr>
+                                                        <td>{{ $document->doc_name }}</td>
+                                                        <td>{{ $document->course->sub_name ?? 'N/A' }}</td>
+                                                        <td>{{ $document->doc_type }}</td>
+                                                        <td>{{ Str::limit($document->doc_deatial, 50) }}</td>
+                                                        {{-- <td>{{ $document->created_at->format('Y-m-d H:i') }}</td> --}}
+                                                        <td>
+                                                            <a href="{{ route('teacher.document.download', $document->doc_id) }}"
+                                                                class="btn btn-sm btn-primary">
+                                                                <i class="fas fa-download"></i> Download
+                                                            </a>
+                                                            <form action="{{ route('teacher.document.delete', $document->doc_id) }}"
+                                                                method="POST" class="d-inline">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-sm btn-danger"
+                                                                    onclick="return confirm('Are you sure you want to delete this document?')">
+                                                                    <i class="fas fa-trash"></i> Delete
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @else
+                                    <div class="alert alert-info">
+                                        No documents uploaded yet.
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-    
+
             <!-- Schedule section -->
             <div class="col-lg-4 col-md-12 mt-4 mt-lg-5 p-3 scheldule-section">
                 <!-- FullCalendar -->
@@ -110,46 +132,6 @@
                         <div class="dates" id="dates"></div>
                     </div>
                 </div>
-                <!-- next Event -->
-                <div class="next-event mt-4 rounded">
-                    <div class="event-today mb-2 d-flex justify-content-between">
-                        <h3 style="color: #11117E">Event</h3>
-                        <h5 style="color: #11117E" id="currentDate"></h5>
-                    </div>
-                    <div class="event">
-                        <div class="event1 rounded">
-                            <div>
-                                <h5>7h - 8h</h5>
-                                <h5>Math</h5>
-                            </div>
-                            <div class="lh-1">
-                                <p>Event 1 Description</p>
-                                <p>12A</p>
-                            </div>
-                        </div>
-                        <div class="event2 rounded">
-                            <div>
-                                <h5>8h - 9h</h5>
-                                <h5>Physical</h5>
-                            </div>
-                            <div class="lh-1">
-                                <p>Event 1 Description</p>
-                                <p>12A</p>
-                            </div>
-                        </div>
-                        <div class="event3 rounded">
-                            <div>
-                                <h5>9h - 10h</h5>
-                                <h5>Khmer</h5>
-                            </div>
-                            <div class="lh-1">
-                                <p>Event 1 Description</p>
-                                <p>12A</p>
-                            </div>
-                        </div>
-
-                    </div>
             </div>
         </div>
-    </div>
 @endsection

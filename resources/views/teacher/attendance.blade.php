@@ -1,19 +1,16 @@
 @extends('layout.navbar_teacher')
 @section('title', 'Attendance')
 @section('mainContent')
-<div class="content">
-    <div class="row justify-content-center">
-        <div class="col-lg-10 col-md-12">
-            <!-- Teacher Info -->
-            <div class="card shadow-sm mt-5 mb-4">
-                <div class="card-body">
-                    <h4 class="card-title">Teacher: {{$teacher->tea_fname}}</h4>
-                </div>
-            </div>
-
-            <!-- Attendance Table -->
-            <div class="card shadow-sm">
-                <div class="card-body">
+    <div class="content">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="info-teacher rounded">
+                    <div class="date_name">
+                        <h3>Greatings, {{ $teacher->tea_fname }}!</h3>
+                        <p id="currentDate"></p>
+                    </div>
+                    <!-- Attendance Table -->
+                    <hr>
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -32,7 +29,8 @@
                                         <td>{{$attSub->stu_id}}</td>
                                         <td>{{$attSub->stu_fname}}</td>
                                         <td>
-                                            <span class="badge bg-{{ $attSub->att_sub_status == 'Present' ? 'success' : 'danger' }}">
+                                            <span
+                                                class="badge bg-{{ $attSub->att_sub_status == 'Present' ? 'success' : 'danger' }}">
                                                 {{$attSub->att_sub_status}}
                                             </span>
                                         </td>
@@ -44,32 +42,33 @@
                             </tbody>
                         </table>
                     </div>
+
                 </div>
+
             </div>
         </div>
     </div>
-</div>
 
-<style>
-.table {
-    margin-bottom: 0;
-}
+    <style>
+        .table {
+            margin-bottom: 0;
+        }
 
-.badge {
-    font-weight: 500;
-}
+        .badge {
+            font-weight: 500;
+        }
 
-.card {
-    border: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,.05);
-}
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .05);
+        }
 
-.table > :not(caption) > * > * {
-    padding: 1rem;
-}
+        .table> :not(caption)>*>* {
+            padding: 1rem;
+        }
 
-.table-hover tbody tr:hover {
-    background-color: rgba(0,0,0,.02);
-}
-</style>
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 0, 0, .02);
+        }
+    </style>
 @endsection

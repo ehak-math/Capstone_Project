@@ -2,13 +2,33 @@
 @section('title', 'Manage Scores')
 @section('mainContent')
 <div class="content">
-    <div class="row justify-content-center">
-        <div class="col-lg-10 col-md-12">
-            <!-- Course Info Card -->
+    <div class="row ">
+        <div class="col-lg-12 col-md-12">
+        <div class="row g-2 mt-2">
+            <div class="date_name">
+                <h3>Greatings, {{ $teacher->tea_fname }}!</h3>
+                <p id="currentDate"></p>
+            </div>
+            <div class="info-coures rounded mt-2">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex align-items-center gap-4">
+                        <a href="{{ route('teacher.course') }}" class="btn btn-primary"><i
+                                class="fa-solid fa-arrow-left"></i></a>
+                        <h3>Manage Score</h3>
+                    </div>
+                </div>
+                <hr>
+                            <!-- Course Info Card -->
             <div class="card shadow-sm mt-4 mb-4">
                 <div class="card-body">
-                    <h4 class="card-title">Course: {{$course->cou_id}}</h4>
-                    <p class="text-muted">Teacher ID: {{$teacher->tea_id}}</p>
+                    <h4 class="card-title">
+                        @if($course->teacher)
+                            {{$course->sub_name}}
+                        @else
+                            No subject available
+                        @endif
+                    </h4>
+                    <p class="text-muted">Teacher: {{$teacher->tea_fname}}</p>
                     
                     <!-- Add Score Form -->
                     <form action="{{route('teacher.score.create')}}" method="post">
@@ -92,6 +112,10 @@
                     @endforeach
                 @endif
             </div>
+
+            </div>
+        </div>
+
         </div>
     </div>
 </div>

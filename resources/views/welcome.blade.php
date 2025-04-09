@@ -140,9 +140,9 @@
             <a href="{{ route('student.login') }}" class="btn btn-animated btn-login">
                 <i class="fa-solid fa-right-to-bracket mx-2"></i>Student Login
             </a>
-            <a href="{{ route('register') }}" class="btn btn-animated btn-register">
+            <!-- <a href="{{ route('register') }}" class="btn btn-animated btn-register">
                 <i class="fa-solid fa-user-plus"></i> Register
-            </a>
+            </a> -->
         @endauth
     </div>
 

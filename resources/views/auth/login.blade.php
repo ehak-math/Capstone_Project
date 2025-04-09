@@ -45,7 +45,7 @@
                 </div>
                 <button type="submit" class="btn-submit">Login</button>
                 <div class="register-link mt-3 text-center">
-                    <p>Don't have an account? <a href="{{ route('register') }}">Register</a></p>
+                    <p>go to home page? <a href="{{ route('welcome') }}">Home page</a></p>
                 </div>
                 <!-- validation error -->
                 @if ($errors->any())

@@ -52,7 +52,7 @@ Route::post('/students/import', function (Request $request) {
 
 Route::get('/', function () {
     return view('welcome');
-})->name('Welcome');
+})->name('welcome');
 //
 //
 
@@ -81,7 +81,7 @@ Route::prefix('student')->group(function () {
     Route::post('/login', [StudentController::class, 'studentLogin'])->name('student.login.submit');
     Route::post('/logout', [StudentController::class, 'logout'])->name('student.logout');
     Route::get('/dashboard', [StudentController::class, 'dashboard'])->name('student.dashboard');
-    Route::get('/courses/subject', [StudentController::class, 'displayCourseStudent']);
+    Route::get('/courses/subject', [StudentController::class, 'displayCourseStudent'])->name('student.courses');
     Route::get('/courses/subject/{id}', [StudentController::class, 'submitAtt'])->name('student.course.submit.show');
     Route::post('/courses/subject/submit-attendance', [StudentController::class, 'subAttendance'])->name('student.course.submit');
     Route::get('/student/course/document/{id}', [StudentController::class, 'showDoc'])->name('student.course.document');    

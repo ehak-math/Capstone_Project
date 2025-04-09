@@ -7,82 +7,62 @@
             <!-- Main content area -->
             <div class="col-lg-8 col-md-12">
                 <div class="date_name">
-                    <h3>Greatings, Bro!</h3>
-       
+                    <h3>Greatings, {{ $student->stu_fname }}!</h3>
+                    <p>Your grade, {{ $student->grade->gra_class }}{{ $student->grade->gra_group }}</p>
                 </div>
                 <div class="row g-4 mt-2">
                     <div class="col-md-6">
-                        <div class="overview-box1 d-flex">
-                            <canvas id="myChart"></canvas>
-                            <div class="total-teach-stu">
-                                <h4>Attendance</h4>
-                                <div class="lh-1">
-                                    <p style="font-size: 10px"><span class="color-icon-female"><i class="fa-solid fa-droplet"></i></span>Absent(60%)</p>
-                                    <p style="font-size: 10px"><span class="color-icon-male"><i class="fa-solid fa-droplet"></i></span>Present(40%)</p>
-                                </div>
-                                <h2>108</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="overview-box2 d-flex">
-                            <canvas id="myChart1"></canvas>
+                        <div class="overview-box1 d-flex gap-2">
+                            <h2 class="title_over">10</h2>
+
                             <div class="total-teach-stu">
                                 <h4>Students</h4>
                                 <div class="lh-1">
-                                    <p style="font-size: 10px"><span class="color-icon-female"><i class="fa-solid fa-droplet"></i></span>Female(60%)</p>
-                                    <p style="font-size: 10px"><span class="color-icon-male"><i class="fa-solid fa-droplet"></i></span>Male(40%)</p>
+                                    <p style="font-size: 15px"><span class="color-female"><i
+                                                class="fa-solid fa-user"></i></span>Female(6)</p>
+                                    <p style="font-size: 15px"><span class="color-male"><i
+                                                class="fa-solid fa-user"></i></span>Male(4)</p>
                                 </div>
-                                <h2>308</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="overview-box1 d-flex gap-2">
+                            <h2 class="title_over">2</h2>
+
+                            <div class="total-teach-stu">
+                                <h4>Attendance</h4>
+                                <div class="lh-1">
+                                    <p style="font-size: 15px"><span class="color-female"><i
+                                                class="fa-solid fa-user"></i></span>Absent(0)</p>
+                                    <p style="font-size: 15px"><span class="color-male"><i
+                                                class="fa-solid fa-user"></i></span>Present(2)</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row g-4 mt-2">
-                    <div class="col-md-6">
-                        <div class="overview-box3 p-3">
-                            <div class="attendance-summary mb-4 d-flex justify-content-between align-items-center">
-                                <h4>Attendance Summary</h4>
-                                <div class="d-flex">
-                                    <!-- Date Range Dropdown -->
-                                    <div class="dropdown me-2">
-                                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dateDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Today
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="dateDropdown">
-                                            <li><a class="dropdown-item" href="#" onclick="updateAttendanceChart('today')">Today</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="updateAttendanceChart('weekly')">Weekly</a></li>
-                                        </ul>
-                                    </div>
-                        
-                                    <!-- Category Dropdown -->
-                                    <div class="dropdown">
-                                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Students
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
-                                            <li><a class="dropdown-item" href="#" onclick="updateAttendanceCategory('students')">Students</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="updateAttendanceCategory('teachers')">Teachers</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <canvas id="attendanceChart"></canvas>
-                        </div>
-                        
+                    <h2>List of Attendance</h2>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="col-md-6">
-                        <div class="overview-box4 p-3">
-                            <div class="student-selected mb-4 d-flex justify-content-between align-items-center">
-                                <h4>Student Selected</h4>
-                            </div>
-                            <canvas id="departmentChart"></canvas>
-                        </div>
-                    </div>
-
+                    
                 </div>
             </div>
-    
+
             <!-- Schedule section -->
             <div class="col-lg-4 col-md-12 mt-4 mt-lg-5 p-3 scheldule-section">
                 <!-- FullCalendar -->
@@ -113,42 +93,12 @@
                 <div class="next-event mt-4 rounded">
                     <div class="event-today mb-2 d-flex justify-content-between">
                         <h3 style="color: #11117E">Event</h3>
-                        <h5 style="color: #11117E">22</h5>
+                        <h5 style="color: #11117E" id="currentDate"></h5>
                     </div>
                     <div class="event">
-                        <div class="event1 rounded">
-                            <div>
-                                <h5>7h - 8h</h5>
-                                <h5>Math</h5>
-                            </div>
-                            <div class="lh-1">
-                                <p>Event 1 Description</p>
-                                <p>12A</p>
-                            </div>
-                        </div>
-                        <div class="event2 rounded">
-                            <div>
-                                <h5>8h - 9h</h5>
-                                <h5>Physical</h5>
-                            </div>
-                            <div class="lh-1">
-                                <p>Event 1 Description</p>
-                                <p>12A</p>
-                            </div>
-                        </div>
-                        <div class="event3 rounded">
-                            <div>
-                                <h5>9h - 10h</h5>
-                                <h5>Khmer</h5>
-                            </div>
-                            <div class="lh-1">
-                                <p>Event 1 Description</p>
-                                <p>12A</p>
-                            </div>
-                        </div>
 
                     </div>
+                </div>
             </div>
         </div>
-    </div>
 @endsection

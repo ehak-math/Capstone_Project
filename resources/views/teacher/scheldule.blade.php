@@ -3,19 +3,19 @@
 @section('mainContent')
 <div class="content">
     <div class="row justify-content-center">
-        <div class="col-lg-11 col-md-12 mt-4">
+        <div class="col-lg-12 col-md-12 mt-4">
             <div class="schedule-wrapper">
-                <h1 class="schedule-title">My Class Schedule</h1>
+                <h1 class="schedule-title mt-2">My Class Schedule</h1>
                 <p>Teacher: {{$teacher->tea_fname}}</p>
                 <div class="table-responsive">
-                    <table class="schedule-table">
+                    <table class="schedule-table table  table-hover">
                         <thead>
                             <tr>
-                                <th>Day</th>
-                                <th>Time</th>
-                                <th>Subject</th>
-                                <th>Teacher</th>
-                                <th>Grade</th>
+                                <th scope="col">Day</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Subject</th>
+                                <th scope="col">Teacher</th>
+                                <th scope="col">Grade</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -44,7 +44,7 @@
 
                                     <td data-label="Grade">
                                         <div class="grade-info">
-                                            {{ $sch->gra_class }} | {{ $sch->gra_group }}
+                                            {{ $sch->gra_class }}{{ $sch->gra_group }}
                                         </div>
                                     </td>
                                     
@@ -156,68 +156,6 @@
     justify-content: center;
     align-items: center;
     /* color: #495057; */
-}
-
-@media screen and (max-width: 768px) {
-    .schedule-wrapper {
-        padding: 15px;
-        margin: 10px;
-    }
-
-    .schedule-table thead {
-        display: none;
-    }
-
-    .schedule-row {
-        display: block;
-        margin-bottom: 20px;
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        padding: 10px;
-    }
-
-    .schedule-table td {
-        display: block;
-        text-align: right;
-        padding: 8px;
-        border: none;
-        position: relative;
-    }
-
-    .schedule-table td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 8px;
-        font-weight: 600;
-        color: #2c3e50;
-    }
-
-    .day-badge {
-        float: right;
-    }
-
-    .time-slot, .subject-info, .teacher-info, .grade-info {
-        margin-left: 120px;
-    }
-
-    .schedule-title {
-        font-size: 1.5rem;
-        margin-bottom: 20px;
-    }
-}
-
-@media screen and (max-width: 576px) {
-    .schedule-wrapper {
-        padding: 10px;
-    }
-
-    .schedule-title {
-        font-size: 1.3rem;
-    }
-
-    .time-slot, .subject-info, .teacher-info, .grade-info {
-        margin-left: 100px;
-    }
 }
 </style>
 @endsection

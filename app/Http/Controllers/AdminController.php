@@ -27,6 +27,8 @@ class AdminController extends Controller
 
     public function dashboard()
     {
+        $students = Students::all();
+        $teachers = Teachers::all();
         $totalTeachers = Teachers::count();
         $totalStudents = Students::count();
         $maleTeachers = Teachers::where('tea_gender', 'Male')->count();
@@ -46,6 +48,8 @@ class AdminController extends Controller
             'femaleTeachers' => $femaleTeachers,
             'maleStudents' => $maleStudents,
             'femaleStudents' => $femaleStudents,
+            'teachers' => $teachers,
+            'students' => $students
         ]);
     }
 

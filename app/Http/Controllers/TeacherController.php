@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Students;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Teachers;
@@ -156,15 +157,39 @@ class TeacherController extends Controller
 
     public function teacherDashboard()
     {
-        // Check if teacher is logged in
         if (!session('teacher')) {
             return redirect()->route('teacher.login');
         }
+    
         $teacher = session('teacher');
-        $showTeacher = Teachers::displayTeacher($teacher->tea_id);
-        return view('teacher.dashboard', ['teacher' => $teacher, 'Teacher' => $showTeacher]);
-
+    
+        $students = Students::join('grade', 'students.stu_gra_id', '=', 'grade.gra_id')
+            ->join('courses', 'grade.gra_id', '=', 'courses.cou_gra_id')
+            ->where('courses.cou_tea_id', $teacher->tea_id)
+            ->select('students.stu_gender', 'students.stu_id')
+            ->get();
+    
+        $totalStudents = $students->unique('stu_id')->count();
+        $maleCount = $students->where('stu_gender', 'Male')->count();
+        $femaleCount = $students->where('stu_gender', 'Female')->count();
+    
+        // 👇 Fetch only documents uploaded by this teacher (if filtered), or all
+        $documents = Documents::join('courses', 'documents.doc_cou_id', '=', 'courses.cou_id')
+            ->where('courses.cou_tea_id', $teacher->tea_id)
+            ->select('documents.*')
+            ->get();
+    
+        return view('teacher.dashboard', [
+            'teacher' => $teacher,
+            'maleCount' => $maleCount,
+            'femaleCount'=> $femaleCount,
+            'teaStudentGender' => [$maleCount, $femaleCount],
+            'totalStudents' => $totalStudents,
+            'documents' => $documents // 👈 Pass to view
+        ]);
     }
+    
+    
 
     public function logout(Request $request)
     {
@@ -213,7 +238,13 @@ class TeacherController extends Controller
 
 
         // Get course information
-        $getcourse = Course::where('cou_id', $id)->first();
+        $getcourse = Course::join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+        ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+        ->where('cou_id', $id)
+        ->select('courses.*', 'subjects.sub_name') // Selecting the subject name from subjects table
+        ->first();
+    
+    
 
         // $selectStudentSubmit = Attendancesubmit::get();
 
@@ -244,6 +275,7 @@ class TeacherController extends Controller
             'course' => $getcourse,
             'getatt' => $getatt,
             'selectAttSub' => $selectAttSub,
+            'teacher' => $teacher,
             // 'attendance' => $currentAttendance,
             // 'selectStudentSubmit' => $selectStudentSubmit,
 
@@ -457,7 +489,7 @@ class TeacherController extends Controller
 
         $documents = Documents::all();
 
-        return view('teacher.document', compact('select', 'documents'));
+        return view('teacher.document', compact('select', 'documents', 'teacher'));
     }
     function uploadsfile($data, $name)
     {
@@ -544,6 +576,7 @@ class TeacherController extends Controller
             return redirect()->route('teacher.login');
         }
         $getcourse = Course::join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+<<<<<<< HEAD
             ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
             ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
             ->where('courses.cou_id', $id)
@@ -554,6 +587,14 @@ class TeacherController extends Controller
                 'grade.gra_class'
             ])
         ->where('cou_id', $id)->first();
+=======
+        ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+        ->where('cou_id', $id)
+        ->select('courses.*', 'subjects.sub_name') // Selecting the subject name from subjects table
+        ->first();
+
+    
+>>>>>>> 01fc0b3493fb4a6c3c7a5c5daa5826d336ab8d8b
         $teacher = session('teacher');
         $getScoreBymonth = Scores::join('courses', 'scores.sco_cou_id', '=', 'courses.cou_id')
             ->join('students', 'students.stu_id', '=', 'scores.sco_stu_id')
