@@ -13,15 +13,15 @@
                 <div class="row g-4 mt-2">
                     <div class="col-md-6">
                         <div class="overview-box1 d-flex gap-2">
-                            <h2 class="title_over">111</h2>
+                            <h2 class="title_over">10</h2>
 
                             <div class="total-teach-stu">
                                 <h4>Students</h4>
                                 <div class="lh-1">
                                     <p style="font-size: 15px"><span class="color-female"><i
-                                                class="fa-solid fa-user"></i></span>Female(11)</p>
+                                                class="fa-solid fa-user"></i></span>Female(6)</p>
                                     <p style="font-size: 15px"><span class="color-male"><i
-                                                class="fa-solid fa-user"></i></span>Male(11)</p>
+                                                class="fa-solid fa-user"></i></span>Male(4)</p>
                                 </div>
                             </div>
                         </div>
@@ -29,22 +29,37 @@
 
                     <div class="col-md-6">
                         <div class="overview-box1 d-flex gap-2">
-                            <h2 class="title_over">1111</h2>
+                            <h2 class="title_over">2</h2>
 
                             <div class="total-teach-stu">
-                                <h4>Attandance</h4>
+                                <h4>Attendance</h4>
                                 <div class="lh-1">
                                     <p style="font-size: 15px"><span class="color-female"><i
-                                                class="fa-solid fa-user"></i></span>Absent(11)</p>
+                                                class="fa-solid fa-user"></i></span>Absent(0)</p>
                                     <p style="font-size: 15px"><span class="color-male"><i
-                                                class="fa-solid fa-user"></i></span>Present(11)</p>
+                                                class="fa-solid fa-user"></i></span>Present(2)</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row g-4 mt-2">
-
+                    <h2>List of Attendance</h2>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
                 </div>
             </div>
 
