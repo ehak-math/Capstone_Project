@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <!-- FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
 
@@ -42,9 +42,9 @@
         <a href="/teacher/dashboard" class="nav-link {{ Request::is('teacher/dashboard') ? 'active' : '' }}" id="dashboard-link">
             <i class="fa-solid fa-gauge"></i><span>Dashboard</span>
         </a>
-        <!-- <a href="/teacher/student" class="nav-link {{ Request::is('teacher/student') ? 'active' : '' }}" id="student-link">
-            <i class="fa-solid fa-graduation-cap"></i><span>Students</span>
-        </a> -->
+         <a href="/teacher/topstudent" class="nav-link {{ Request::is('teacher/topstudent') ? 'active' : '' }}" id="topstudent-link">
+            <i class="fa-solid fa-graduation-cap"></i><span>Top Students</span>
+        </a> 
         <a href="/teacher/attendance" class="nav-link {{ Request::is('teacher/attendance') ? 'active' : '' }}" id="attendance-link">
             <i class="fa-solid fa-user-clock"></i><span>Attendance</span>
         </a>

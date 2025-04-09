@@ -119,6 +119,7 @@ Route::prefix('teacher')->group(function () {
     Route::post('/document/upload', [TeacherController::class, 'uploadDocument'])->name('teacher.document');
     Route::get('/teacher/document/download/{id}', [TeacherController::class, 'downloadDocument'])->name('teacher.document.download');
     Route::delete('/teacher/document/delete/{id}', [TeacherController::class, 'deleteDocument'])->name('teacher.document.delete');
+    Route::get('/topstudent', [TeacherController::class, 'showTopStudent'])->name('teacher.topstudent');
 });
 
 

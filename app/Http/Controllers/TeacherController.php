@@ -8,9 +8,10 @@ use App\Models\Subject;
 use App\Models\Attendances;
 use App\Models\Attendancesubmit;
 use App\Models\Documents;
-use App\Models\Student;
+use App\Models\Students;
 use App\Models\Schedules;
 use App\Models\Scores;
+
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\Course;
@@ -188,9 +189,9 @@ class TeacherController extends Controller
         // $currentday = '2025-04-07'; // Format as date string
 
         $getatt = Attendances::join('schedules', 'schedules.sch_id', '=', 'attendances.att_sch_id')
-            ->where('schedules.sch_cou_id', $id)
-            ->where('att_date', $currentday)->first();
-
+        ->where('schedules.sch_cou_id', $id)
+        ->where('att_date', $currentday)
+        ->first();
 
         // Get schedule information
         // $displayschedule = Course::join('schedules', 'courses.cou_id', '=', 'schedules.sch_cou_id')
@@ -542,7 +543,17 @@ class TeacherController extends Controller
         if (!session('teacher')) {
             return redirect()->route('teacher.login');
         }
-        $getcourse = Course::where('cou_id', $id)->first();
+        $getcourse = Course::join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+            ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+            ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+            ->where('courses.cou_id', $id)
+            ->select([
+                'courses.*',
+                'teachers.tea_fname',
+                'subjects.sub_name',
+                'grade.gra_class'
+            ])
+        ->where('cou_id', $id)->first();
         $teacher = session('teacher');
         $getScoreBymonth = Scores::join('courses', 'scores.sco_cou_id', '=', 'courses.cou_id')
             ->join('students', 'students.stu_id', '=', 'scores.sco_stu_id')
@@ -694,6 +705,7 @@ class TeacherController extends Controller
             'courses.cou_id', 
             'teachers.tea_fname', 
             'grade.gra_class',
+            'grade.gra_group',
             'subjects.sub_name',
             )
             ->where('teachers.tea_id', $teacher->tea_id)
@@ -705,5 +717,51 @@ class TeacherController extends Controller
             'teacher' => $teacher
         ]);
 
+    }
+    function showTopStudent(){
+        $teacher = session('teacher');
+        if (!$teacher) {
+            return redirect()->route('teacher.login')->with('error', 'Teacher session not found');
+        }
+        // $topStudents = Students::join('attendance_submit', 'students.stu_id', '=', 'attendance_submit.att_sub_stu_id')
+        //     ->join('schedules', 'attendance_submit.att_sub_sch_id', '=', 'schedules.sch_id')
+        //     ->join('courses', 'schedules.sch_cou_id', '=', 'courses.cou_id')
+        //     ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+        //     ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+        //     ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+        //     ->select(
+        //         'students.*',
+        //         'attendance_submit.*',
+        //         'courses.cou_id',
+        //         'teachers.tea_fname',
+        //         'grade.gra_class',
+        //         'grade.gra_group',
+        //         'subjects.sub_name',
+        //         'attendance_submit.att_sub_status',
+        //     )
+        //     ->where('teachers.tea_id', $teacher->tea_id)
+        //     ->orderBy('attendance_submit.att_sub_date', 'desc')
+        //     ->get();
+        $topStudents = Students::join('scores', 'students.stu_id', '=', 'scores.sco_stu_id')
+            ->join('courses', 'scores.sco_cou_id', '=', 'courses.cou_id')
+            ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+            ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+            ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
+            ->select(
+                'students.*',
+                'scores.*',
+                'courses.cou_id',
+                'teachers.tea_fname',
+                'grade.gra_class',
+                'grade.gra_group',
+                'subjects.sub_name'
+            )
+            ->where('teachers.tea_id', $teacher->tea_id)
+            ->orderBy('scores.sco_point', 'desc')
+            ->get();
+        return view('teacher.topstudent', [
+            'topStudent' => $topStudents,
+            'teacher' => $teacher
+        ]);
     }
 }

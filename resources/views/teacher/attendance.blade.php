@@ -23,6 +23,7 @@
                                     <th>Status</th>
                                     <th>Time</th>
                                     <th>Date</th>
+                                    <th>Course</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -37,6 +38,7 @@
                                         </td>
                                         <td>{{$attSub->att_sub_time ?? 'N/A'}}</td>
                                         <td>{{$attSub->att_sub_date ?? 'N/A'}}</td>
+                                        <td>{{$attSub->gra_class}}{{$attSub->gra_group}}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
