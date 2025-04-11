@@ -51,18 +51,10 @@
             id="dashboard-link">
             <i class="fa-solid fa-gauge"></i><span>Dashboard</span>
         </a>
-<<<<<<< HEAD
          <a href="/teacher/topstudent" class="nav-link {{ Request::is('teacher/topstudent') ? 'active' : '' }}" id="topstudent-link">
             <i class="fa-solid fa-graduation-cap"></i><span>Top Students</span>
         </a> 
         <a href="/teacher/attendance" class="nav-link {{ Request::is('teacher/attendance') ? 'active' : '' }}" id="attendance-link">
-=======
-        <!-- <a href="/teacher/student" class="nav-link {{ Request::is('teacher/student') ? 'active' : '' }}" id="student-link">
-            <i class="fa-solid fa-graduation-cap"></i><span>Students</span>
-        </a> -->
-        <a href="/teacher/attendance" class="nav-link {{ Request::is('teacher/attendance') ? 'active' : '' }}"
-            id="attendance-link">
->>>>>>> 01fc0b3493fb4a6c3c7a5c5daa5826d336ab8d8b
             <i class="fa-solid fa-user-clock"></i><span>Attendance</span>
         </a>
         <a href="/teacher/course" class="nav-link {{ Request::is('teacher/course') ? 'active' : '' }}" id="course-link">

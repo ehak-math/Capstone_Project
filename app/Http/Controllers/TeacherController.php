@@ -9,7 +9,6 @@ use App\Models\Subject;
 use App\Models\Attendances;
 use App\Models\Attendancesubmit;
 use App\Models\Documents;
-use App\Models\Students;
 use App\Models\Schedules;
 use App\Models\Scores;
 
@@ -487,7 +486,11 @@ class TeacherController extends Controller
             ->get();
         // $select = Course::all();
 
-        $documents = Documents::all();
+        $documents = Documents::join('courses', 'courses.cou_id', '=', 'documents.doc_cou_id')
+        ->join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
+        ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
+        ->where('courses.cou_tea_id', $teacher->tea_id)
+        ->get();
 
         return view('teacher.document', compact('select', 'documents', 'teacher'));
     }
@@ -576,25 +579,12 @@ class TeacherController extends Controller
             return redirect()->route('teacher.login');
         }
         $getcourse = Course::join('teachers', 'courses.cou_tea_id', '=', 'teachers.tea_id')
-<<<<<<< HEAD
-            ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
-            ->join('grade', 'courses.cou_gra_id', '=', 'grade.gra_id')
-            ->where('courses.cou_id', $id)
-            ->select([
-                'courses.*',
-                'teachers.tea_fname',
-                'subjects.sub_name',
-                'grade.gra_class'
-            ])
-        ->where('cou_id', $id)->first();
-=======
         ->join('subjects', 'teachers.tea_subject', '=', 'subjects.sub_id')
         ->where('cou_id', $id)
         ->select('courses.*', 'subjects.sub_name') // Selecting the subject name from subjects table
         ->first();
 
     
->>>>>>> 01fc0b3493fb4a6c3c7a5c5daa5826d336ab8d8b
         $teacher = session('teacher');
         $getScoreBymonth = Scores::join('courses', 'scores.sco_cou_id', '=', 'courses.cou_id')
             ->join('students', 'students.stu_id', '=', 'scores.sco_stu_id')

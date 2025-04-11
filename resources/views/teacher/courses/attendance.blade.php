@@ -14,7 +14,6 @@ $currentdmy = $carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
 
 @endphp
 
-<<<<<<< HEAD
 <div class="content">
     <div class="container py-4">
         <div class="row justify-content-center">
@@ -64,9 +63,33 @@ $currentdmy = $carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
                             @endphp
                             @if($att->sch_day == $currentDay && $isTimeValid )
                                 @if($getatt) 
-                                <p>{{$getatt->sch_id}}</p>
-                                <p>{{$getatt->att_code}}</p>
-                                <p>{{$getatt->att_status}}</p>
+                                <div class="attendance-status-card p-4 bg-white rounded-3 shadow-sm">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-4 text-center border-end">
+                                            <div class="mb-2">
+                                                <i class="fas fa-calendar-check text-primary fs-3"></i>
+                                            </div>
+                                            <h6 class="text-muted mb-1">Schedule ID</h6>
+                                            <p class="h5 mb-0">{{$getatt->sch_id}}</p>
+                                        </div>
+                                        <div class="col-md-4 text-center border-end">
+                                            <div class="mb-2">
+                                                <i class="fas fa-key text-warning fs-3"></i>
+                                            </div>
+                                            <h6 class="text-muted mb-1">Attendance Code</h6>
+                                            <p class="h5 mb-0">{{$getatt->att_code}}</p>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <div class="mb-2">
+                                                <i class="fas fa-door-{{$getatt->att_status == 'Open' ? 'open text-success' : 'closed text-danger'}} fs-3"></i>
+                                            </div>
+                                            <h6 class="text-muted mb-1">Status</h6>
+                                            <span class="badge {{$getatt->att_status == 'Open' ? 'bg-success' : 'bg-danger'}} px-3 py-2">
+                                                {{$getatt->att_status}}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                                 @if($getatt->att_status == 'Open')
                                     <div class="action-buttons mb-4">
                                         <form action="{{ route('teacher.attendance.close') }}" method="POST" id="closeAttendanceForm">
@@ -90,6 +113,8 @@ $currentdmy = $carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
                                         // ->select('attendance_submit.*', 'students.*')
                                         ->get();
                                     @endphp
+                                    <p>List of all Students </p>
+
                                     @foreach($selectAttSub as $stuSub)
                                         <div class="student-card">
                                             
@@ -137,135 +162,12 @@ $currentdmy = $carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
                     <div class="empty-state">
                         <i class="fas fa-calendar-times"></i>
                         <p>No schedules available for this course.</p>
-=======
-    <div class="content">
-        <div class="row">
-            <!-- Main content area -->
-            <div class="col-lg-12 col-md-12">
-                <div class="row g-2 mt-2">
-                    <div class="date_name">
-                        <h3>Greatings, {{ $teacher->tea_fname }}!</h3>
-                        <p id="currentDate"></p>
-                    </div>
-                    <div class="info-coures rounded mt-2">
-                        <div class="d-flex justify-content-between">
-                            <div class="d-flex align-items-center gap-4">
-                                <a href="{{ route('teacher.course') }}" class="btn btn-primary"><i
-                                        class="fa-solid fa-arrow-left"></i></a>
-                                <h3>Attandance</h3>
-                            </div>
-                        </div>
-                        <hr>
-                        @if($att_dis->count() > 0)
-                                        @foreach($att_dis as $att)
-                                                        <div class="card shadow-sm mb-4">
-                                                            <div class="card-header bg-primary text-white">
-                                                                <h5 class="mb-0">
-                                                                    <i class="fas fa-calendar-alt me-2"></i>
-                                                                    Course:
-                                                                    @if($course->teacher)
-                                                                        {{$course->sub_name}}
-                                                                    @else
-                                                                        No subject available
-                                                                    @endif
-                                                                </h5>
-                                                            </div>
-                                                            <div class="card-body">
-                                                                @php
-                                                                    $scheduleStart = \Carbon\Carbon::parse($att->sch_start_time);
-                                                                    $scheduleEnd = \Carbon\Carbon::parse($att->sch_end_time);
-                                                                    $isTimeValid = $currentTime->between($scheduleStart, $scheduleEnd);
-                                                                @endphp
-                                                                <p><strong>Day:</strong> {{$att->sch_day}}</p>
-                                                                <p><strong>Time:</strong> {{$att->sch_start_time}} to {{$att->sch_end_time}}</p>
-                                                                <p><strong>Current Day:</strong> {{$currentDay}}</p>
-
-                                                                @if($att->sch_day == $currentDay && $isTimeValid)
-                                                                    @if(!isset($getatt))
-                                                                        <div class="text-center">
-                                                                            <form action="{{ route('teacher.attendance.open') }}" method="POST">
-                                                                                @csrf
-                                                                                <input type="hidden" name="sch_id" value="{{ $att->sch_id }}">
-                                                                                <input type="hidden" name="course_id" value="{{ $course->cou_id }}">
-                                                                                <button type="submit" class="btn btn-success btn-lg w-100">
-                                                                                    <i class="fas fa-door-open me-2"></i>Open Attendance
-                                                                                </button>
-                                                                            </form>
-                                                                        </div>
-                                                                    @elseif($getatt->att_status == 'Open')
-                                                                        <div class="alert alert-info text-center">
-                                                                            <p><strong>Attendance Code:</strong> {{$getatt->att_code}}</p>
-                                                                            <p><strong>Status:</strong> <span
-                                                                                    class="badge bg-success">{{$getatt->att_status}}</span>
-                                                                            </p>
-                                                                        </div>
-                                                                        <div class="text-center">
-                                                                            <form id="closeAttendanceForm" action="{{ route('teacher.attendance.close') }}"
-                                                                                method="POST">
-                                                                                @csrf
-                                                                                <input type="hidden" name="att_sch_id" value="{{$att->sch_id}}">
-                                                                                <input type="hidden" name="attendance_id" value="{{$getatt->att_id}}">
-                                                                                <input type="hidden" name="auto_close" value="false">
-                                                                                <button type="submit" class="btn btn-danger btn-lg w-100">
-                                                                                    <i class="fas fa-door-closed me-2"></i>Close Attendance
-                                                                                </button>
-                                                                            </form>
-
-                                                                        </div>
-
-                                                                        @if($selectAttSub->contains('sch_id', $att->sch_id))
-                                                                            <div class="text-center">
-                                                                                @foreach($selectAttSub as $stuSub)
-                                                                                    <div class="alert alert-info mt-2">
-                                                                                        <p><strong>Student ID:</strong> {{$stuSub->stu_id}}</p>
-                                                                                        <p><strong>Status:</strong> <span
-                                                                                                class="badge bg-success">{{$stuSub->att_sub_status}}</span></p>
-                                                                                    </div>
-                                                                                @endforeach
-                                                                            </div>
-                                                                        @endif
-                                                                    @else
-                                                                        <div class="alert alert-warning text-center">
-                                                                            <p><strong>Attendance Code:</strong> {{$getatt->att_code}}</p>
-                                                                            <p><strong>Status:</strong> <span
-                                                                                    class="badge bg-warning">{{$getatt->att_status}}</span>
-                                                                            </p>
-                                                                        </div>
-                                                                        @if($selectAttSub->contains('sch_id', $att->sch_id))
-                                                                            <div class="text-center">
-                                                                                @foreach($selectAttSub as $stuSub)
-                                                                                    <div class="alert alert-info mt-2">
-                                                                                        <p><strong>Student ID:</strong> {{$stuSub->stu_id}}</p>
-                                                                                        <p><strong>Status:</strong> <span
-                                                                                                class="badge bg-success">{{$stuSub->att_sub_status}}</span></p>
-                                                                                    </div>
-                                                                                @endforeach
-                                                                            </div>
-                                                                        @endif
-                                                                    @endif
-                                                                @else
-                                                                    <div class="alert alert-secondary text-center">
-                                                                        <i class="fas fa-clock me-2"></i>
-                                                                        Attendance can only be opened on <strong>{{$att->sch_day}}</strong> between
-                                                                        <strong>{{$att->sch_start_time}}</strong> and <strong>{{$att->sch_end_time}}</strong>.
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                        </div>
-                                        @endforeach
-                        @else
-                            <div class="alert alert-danger text-center">
-                                <i class="fas fa-exclamation-circle me-2"></i>No schedules available for this course.
-                            </div>
-                        @endif
->>>>>>> 01fc0b3493fb4a6c3c7a5c5daa5826d336ab8d8b
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-<<<<<<< HEAD
+    @endif
 <style>
 .attendance-card {
     border: none;
@@ -362,6 +264,20 @@ $currentdmy = $carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
     border-radius: 6px;
     font-weight: 500;
 }
+
+.attendance-status-card {
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.attendance-status-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+}
+
+.attendance-status-card .border-end {
+    border-color: rgba(0,0,0,0.05) !important;
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -407,39 +323,3 @@ $currentdmy = $carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
     }
 </script>
 @endsection
-=======
-    <style>
-        .card {
-            border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-header {
-            font-size: 1.25rem;
-            font-weight: bold;
-        }
-
-        .alert {
-            margin-top: 10px;
-            border-left: 5px solid;
-        }
-
-        .alert-info {
-            border-left-color: #0dcaf0;
-        }
-
-        .alert-warning {
-            border-left-color: #ffc107;
-        }
-
-        .alert-danger {
-            border-left-color: #dc3545;
-        }
-
-        .btn-lg {
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-        }
-    </style>
-@endsection
->>>>>>> 01fc0b3493fb4a6c3c7a5c5daa5826d336ab8d8b
