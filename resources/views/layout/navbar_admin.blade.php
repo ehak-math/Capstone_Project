@@ -25,7 +25,7 @@
 <body>
 
     <!-- Toggle Button for Large Screen -->
-    <div class="bar">
+    <div class="bar" style="z-index: 1000;">
         <button class="btn btn-bar d-none d-md-block" onclick="toggleSidebar()">
             <i class="fa-solid fa-bars"></i>
         </button>
@@ -39,10 +39,10 @@
     </div>
 
     <!-- Mobile Header with Notifications and Profile -->
-    <div class="mobile-header d-flex d-md-none position-fixed top-0 ">
+    <div class="mobile-header d-flex d-md-none position-fixed top-0 " style="z-index: 1000;">
         <button class="btn btn-color" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
         <div class="header-icons">
-            <i class="fa-solid fa-bell"></i> <!-- Notification Icon -->
+            <!-- <i class="fa-solid fa-bell"></i> Notification Icon -->
             <i class="fa-solid fa-circle-user"></i> <!-- User Profile Icon -->
         </div>
     </div>

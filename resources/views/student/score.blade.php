@@ -5,7 +5,7 @@
     <div class="content">
         <div class="row justify-content-center">
             <!-- Main content area -->
-            <div class="col-lg-8 col-md-12 mt-5">
+            <div class="col-lg-12 col-md-12 mt-5">
                 <div class="list-of-student m-2">
                     <h1 class="mt-5 text-center text-primary">List of Scores</h1>
                     <!-- List of scores -->
@@ -13,7 +13,7 @@
                         @foreach($score as $sco)
                             <div class="attendance d-flex justify-content-between align-items-center shadow-sm">
                                 <div class="image-text d-flex align-items-center">
-                                    <img src="{{ asset('images/math.jpg') }}" class="rounded-3" alt="Subject Image" width="80px" height="80px">
+                                    <img src="{{ asset('images/subject.jpg') }}" class="rounded-3" alt="Subject Image" width="auto" height="80px">
                                     <div class="sub-text ms-3">
                                         <h4 class="mb-1 text-dark">{{$sco->sub_name}}</h4>
                                         <h6 class="mb-1 text-muted">{{$sco->gra_class}}{{$sco->gra_group}}</h6>

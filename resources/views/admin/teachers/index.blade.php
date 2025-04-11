@@ -6,12 +6,12 @@
             <!-- Main content area -->
             <div class="col-lg-12 col-md-12">
                 @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <div class="alert alert-success alert-dismissible fade show" style="z-index: 100000;" role="alert">
                         {{ session('success') }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
-                
+
                 <div class="date_name">
                     <h3>Greatings, {{Auth::user()->name}}!</h3>
                     <p id="currentDate"></p>
@@ -23,8 +23,7 @@
                         <div class="d-flex gap-2">
                             <a href="{{ route('teachers.export') }}" class="btn border d-flex align-items-center">Export</a>
                             <!-- Import Button -->
-                            <button type="button" class="btn border" data-bs-toggle="modal"
-                                data-bs-target="#importModal">
+                            <button type="button" class="btn border" data-bs-toggle="modal" data-bs-target="#importModal">
                                 Import
                             </button>
 

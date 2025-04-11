@@ -37,7 +37,7 @@
                         <label for="sch_day" class="form-label">Day</label>
                         <select name="sch_day" class="form-select" required>
                             <option value="" disabled>Select Day</option>
-                            @foreach (['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as $day)
+                            @foreach (['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as $day)
                                 <option value="{{ $day }}" {{ $schedule->sch_day == $day ? 'selected' : '' }}>
                                     {{ $day }}
                                 </option>

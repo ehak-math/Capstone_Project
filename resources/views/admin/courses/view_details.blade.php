@@ -102,7 +102,7 @@
                                         <td>{{ $student->stu_gender }}</td>
                                         <td>{{ \Carbon\Carbon::parse($student->stu_dob)->age }}</td>
                                         <td style="color: green">{{ $studentScore ? $studentScore->sco_point : 'N/A' }}</td>
-                                        <td>{{ $studentScore ? \Carbon\Carbon::create()->month((int) $studentScore->sco_month)->format('F') : 'N/A' }}</td>
+                                        <td>{{ $studentScore ? $studentScore->sco_month : 'N/A' }}</td>
                                         <td>
                                             @if ($student->stu_status == 1)
                                                 <span class="badge bg-success">Active</span>
@@ -112,7 +112,6 @@
                                         </td>
                                         <td>
                                             <a href="#" class="btn btn-primary">EDIT</a>
-                                            <a href="#" class="btn btn-danger">DELETE</a>
                                         </td>
                                     </tr>
                                 @endforeach

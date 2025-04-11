@@ -18,7 +18,7 @@
 <body>
 
     <!-- Toggle Button for Large Screen -->
-    <div class="bar">
+    <div class="bar" style="z-index: 1000;">
         <button class="btn btn-bar d-none d-md-block" onclick="toggleSidebar()">
             <i class="fa-solid fa-bars"></i>
         </button>
@@ -36,11 +36,14 @@
     </div>
 
     <!-- Mobile Header with Notifications and Profile -->
-    <div class="mobile-header d-flex d-md-none position-fixed top-0">
+    <div class="mobile-header d-flex d-md-none position-fixed top-0" style="z-index: 1000;" >
         <button class="btn btn-color" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
         <div class="header-icons">
-            <i class="fa-solid fa-bell"></i> <!-- Notification Icon -->
-            <i class="fa-solid fa-circle-user"></i> <!-- User Profile Icon -->
+        @if($teacher->tea_profile && file_exists(public_path('storage/' . $teacher->tea_profile)))
+                <img class="profile_bar_mobile" src="{{ asset('storage/' . $teacher->tea_profile) }}" alt="teacher Profile">
+            @else
+                <img class="profile_bar_mobile" src="{{ asset('images/placeholder_teacher.jpg') }}" alt="Placeholder Image">
+            @endif
         </div>
     </div>
 

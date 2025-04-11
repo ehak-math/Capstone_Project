@@ -5,15 +5,14 @@
     <div class="content">
         <div class="row">
             <!-- Main content area -->
-            <div class="col-lg-8 col-md-12 mt-5">
+            <div class="col-lg-12 col-md-12 mt-5">
                 <div class="list-of-student m-2">
                     <h1 class="mt-5">List of attendance</h1>`
-                    <h3>StudentName:{{$student->stu_fname}} {{$student->stu_id}}</h3>
                     <!-- list of attendance -->
                     @foreach($attendances as $att_stu)
                      <div class="attendance d-flex justify-content-between">
                         <div class="image-text d-flex">
-                            <img src="{{ asset('images/math.jpg') }}" class="rounded-3" alt="" width="80px" height="80px">
+                            <img src="{{ asset('images/subject.jpg') }}" class="rounded-3" alt="" width="auto" height="80px">
                             <div class="sub-text align-items-center justify-content-center">
                                 <h4>Teacher:{{$att_stu->tea_fname}}</h4>
                                 <p>Date: {{$att_stu->att_sub_date}}</p>

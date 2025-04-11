@@ -5,12 +5,12 @@
     <div class="content">
         <div class="row">
             <!-- Main content area -->
-            <div class="col-lg-8 col-md-12">
+            <div class="col-lg-12 col-md-12">
                 <div class="row g-2 mt-5">
                     <h1 class="mt-5 mx-2">Courses</h1>
                     <!-- Loop through courses for the student -->
                     @foreach($course as $cou)
-                        <div class="col-6 col-md-5">
+                        <div class="col-6 col-md-3">
                             <div class="subject">
                                 <div class="card" style="z-index: 1;">
                                 <img src="{{ asset('images/subject.jpg') }}" class="card-img-top" alt="Mathematics">

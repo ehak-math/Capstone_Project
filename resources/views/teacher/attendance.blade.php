@@ -15,18 +15,18 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Student ID</th>
+                                    <th>No.1</th>
                                     <th>Name</th>
                                     <th>Status</th>
                                     <th>Time</th>
                                     <th>Date</th>
-                                    <th>Course</th>
+                                    <th>Grade</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($attendances as $attSub)
                                     <tr>
-                                        <td>{{$attSub->stu_id}}</td>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{$attSub->stu_fname}}</td>
                                         <td>
                                             <span

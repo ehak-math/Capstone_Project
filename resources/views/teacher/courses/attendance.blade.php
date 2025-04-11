@@ -15,14 +15,13 @@ $currentdmy = $carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
 @endphp
 
 <div class="content">
-    <div class="container py-4">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 col-md-12">
+    <div class="container">
+        <div class="row ">
+            <div class="col-lg-12 col-md-12 mt-5">
                 <!-- Course Header -->
-                <div class="course-header mb-4">
+                <div class="course-header mb-4 mt-5">
                     <h2 class="text-primary">
-                        <i class="fas fa-graduation-cap me-2"></i>
-                        Course: {{$course->cou_id}}
+                        Attendance
                     </h2>
                 </div>
 
@@ -32,9 +31,7 @@ $currentdmy = $carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
                         <div class="card-header">
                             <div class="d-flex align-items-center">
                                 <i class="fas fa-calendar-alt text-primary me-2"></i>
-                                <h5 class="mb-0">Schedule Time:{{$att->sch_id}}</h5>
-                                <span>{{$att->sch_start_time}} - {{$att->sch_end_time}}</span>
-
+                                <h5 class="mb-0">Schedule Time: <span>{{$att->sch_start_time}} - {{$att->sch_end_time}}</span></h5>
                             </div>
                         </div>
 
@@ -59,6 +56,7 @@ $currentdmy = $carbon::today('Asia/Phnom_Penh')->format('Y-m-d');
                             ->where('schedules.sch_id', $att->sch_id)
                             ->where('att_date', $currentdmy)
                             ->first();
+
                             
                             @endphp
                             @if($att->sch_day == $currentDay && $isTimeValid )

@@ -7,7 +7,7 @@
             <!-- Main content area -->
             <div class="col-lg-12 col-md-12">
                 @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <div class="alert alert-success alert-dismissible fade show" style="z-index: 100000;" role="alert">
                         {{ session('success') }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
@@ -65,7 +65,7 @@
                                                     <td>{{ $grade->gra_class }} {{ $grade->gra_group }}</td>
                                                     <td>
                                                         @include('admin.grade_subject.grade.edit_grade')
-                                                        
+
                                                         @include('admin.grade_subject.grade.delete_grade')
 
                                                     </td>

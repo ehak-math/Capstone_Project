@@ -2,11 +2,11 @@
 @section('title', 'Top Students')
 @section('mainContent')
 <div class="content">
-    <div class="container py-4">
-        <div class="row justify-content-center">
-            <div class="col-lg-10 col-md-12">
+    <div class="container">
+        <div class="row ">
+            <div class="col-lg-12 col-md-12 mt-5">
                 <!-- Header -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-4 mt-5">
                     <h2 class="text-primary mb-0">
                         <i class="fas fa-trophy me-2"></i>Top Students
                     </h2>
@@ -20,7 +20,6 @@
                                 <thead>
                                     <tr>
                                         <th>Top</th>
-                                        <th>Student ID</th>
                                         <th>Name</th>
                                         <th>Class</th>
                                         <th>Subject</th>
@@ -34,9 +33,6 @@
                                     <tr>
                                         <td>
                                             <span class="text-muted">{{ $index + 1 }}</span>
-                                        </td>
-                                        <td>
-                                            <span class="fw-medium">{{$student->stu_id}}</span>
                                         </td>
                                         <td>{{$student->stu_fname}}</td>
                                         <td>

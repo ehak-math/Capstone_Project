@@ -78,7 +78,7 @@
                                                 <div class="card-body">
                                                     <div class="d-flex justify-content-between align-items-center">
                                                         <div>
-                                                            <h6>{{$score->stu_fname}} ({{$score->stu_id}})</h6>
+                                                            <h6>{{$score->stu_fname}}</h6>
                                                             <small class="text-muted">Class: {{$score->gra_class}}{{$score->gra_group}}</small>
                                                         </div>
                                                         <h4><span class="badge bg-success">{{$score->sco_point}}</span></h4>

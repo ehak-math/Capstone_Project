@@ -639,3 +639,9 @@ input:valid ~ label {
     text-decoration: underline;
 
 }
+
+.profile_bar_mobile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+}
